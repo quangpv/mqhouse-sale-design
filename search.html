@@ -3,16 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tìm kiếm</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Danh Sách Tìm Kiếm Phòng - Tìm Kiếm Bất Động Sản</title>
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Inter:wght=400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
                     colors: {
                         primary: '#2563EB',
                         background: '#F8FAFC',
@@ -25,70 +29,226 @@
                         error: '#DC2626',
                     },
                     borderRadius: {
-                        input: '10px',
-                        button: '12px',
-                        card: '16px',
-                        modal: '20px',
+                        'input': '10px',
+                        'button': '12px',
+                        'card': '16px',
+                        'modal': '20px',
                     },
                     boxShadow: {
-                        soft: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+                        'soft': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
                     },
                     fontSize: {
-                        small: ['12px', '16px'],
-                        body: ['14px', '20px'],
-                        h3: ['20px', '28px'],
-                        h2: ['24px', '32px'],
-                        h1: ['32px', '40px'],
+                        'small': ['12px', '16px'],
+                        'body': ['14px', '20px'],
+                        'h3': ['20px', '28px'],
+                        'h2': ['24px', '32px'],
+                        'h1': ['32px', '40px'],
                     }
                 }
             }
         }
     </script>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <style>
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
-<body class="bg-background text-textPrimary min-h-screen">
-    <div class="p-4 space-y-4">
-        <div class="relative">
-            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-textSecondary"></i>
-            <input type="text" value="Bình Thạnh" class="w-full pl-9 pr-4 py-2.5 bg-surface border border-border rounded-input text-body focus:outline-none focus:border-primary">
+<body class="flex justify-center items-center min-h-screen p-0 sm:p-4 text-textPrimary">
+
+    <!-- Mobile Device Container -->
+    <div class="w-full max-w-[430px] h-screen sm:h-[880px] bg-background sm:rounded-modal shadow-2xl relative flex flex-col overflow-hidden border border-border">
+        
+        <!-- Top Sticky Header Section -->
+        <div class="bg-surface border-b border-border z-10">
+            <!-- Search Row with Icon Buttons -->
+            <div class="p-4 pb-3 flex items-center gap-2">
+                <div class="relative flex-1">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-textSecondary">
+                        <i data-lucide="search" class="w-5 h-5"></i>
+                    </span>
+                    <input type="text" placeholder="Nhập tên bất động sản..." class="w-full pl-10 pr-4 py-2.5 bg-background border border-border rounded-input text-body focus:outline-none focus:border-primary transition-colors duration-150 placeholder:text-textSecondary text-textPrimary">
+                </div>
+                <!-- Map Icon Button -->
+                <button class="w-[44px] h-[44px] flex items-center justify-center bg-surface border border-border rounded-input text-textPrimary hover:bg-slate-50 hover:text-primary transition-colors duration-150 shadow-soft" title="Tìm trên Bản đồ">
+                    <i data-lucide="map" class="w-5 h-5"></i>
+                </button>
+                <!-- Advanced Filter Icon Button -->
+                <button class="w-[44px] h-[44px] flex items-center justify-center bg-surface border border-border rounded-input text-textPrimary hover:bg-slate-50 hover:text-primary transition-colors duration-150 shadow-soft" title="Bộ lọc nâng cao">
+                    <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Quick Filter Comboboxes Toolbar -->
+            <div class="px-4 pb-4 flex gap-2 overflow-x-auto no-scrollbar">
+                <!-- Status Combobox -->
+                <div class="relative min-w-[115px] flex-shrink-0">
+                    <select class="w-full pl-3 pr-8 py-2 bg-background border border-border rounded-input text-small font-medium appearance-none focus:outline-none focus:border-primary text-textPrimary cursor-pointer">
+                        <option value="">Trạng thái</option>
+                        <option value="available">Còn phòng</option>
+                        <option value="rented">Hết phòng</option>
+                    </select>
+                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-textSecondary pointer-events-none"></i>
+                </div>
+
+                <!-- District Combobox -->
+                <div class="relative min-w-[90px] flex-shrink-0">
+                    <select class="w-full pl-3 pr-8 py-2 bg-background border border-border rounded-input text-small font-medium appearance-none focus:outline-none focus:border-primary text-textPrimary cursor-pointer">
+                        <option value="">Quận</option>
+                        <option value="q1">Quận 1</option>
+                        <option value="q3">Quận 3</option>
+                        <option value="bt">Bình Thạnh</option>
+                    </select>
+                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-textSecondary pointer-events-none"></i>
+                </div>
+
+                <!-- Room Type Combobox -->
+                <div class="relative min-w-[115px] flex-shrink-0">
+                    <select class="w-full pl-3 pr-8 py-2 bg-background border border-border rounded-input text-small font-medium appearance-none focus:outline-none focus:border-primary text-textPrimary cursor-pointer">
+                        <option value="">Loại phòng</option>
+                        <option value="studio">Studio</option>
+                        <option value="1br">1 Phòng ngủ</option>
+                        <option value="2br">2 Phòng ngủ</option>
+                    </select>
+                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-textSecondary pointer-events-none"></i>
+                </div>
+
+                <!-- Budget Combobox -->
+                <div class="relative min-w-[100px] flex-shrink-0">
+                    <select class="w-full pl-3 pr-8 py-2 bg-background border border-border rounded-input text-small font-medium appearance-none focus:outline-none focus:border-primary text-textPrimary cursor-pointer">
+                        <option value="">Giá thuê</option>
+                        <option value="u5">Dưới 5tr</option>
+                        <option value="5-10">5tr - 10tr</option>
+                    </select>
+                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-textSecondary pointer-events-none"></i>
+                </div>
+
+                <!-- Sort Combobox -->
+                <div class="relative min-w-[100px] flex-shrink-0">
+                    <select class="w-full pl-3 pr-8 py-2 bg-background border border-border rounded-input text-small font-medium appearance-none focus:outline-none focus:border-primary text-textPrimary cursor-pointer">
+                        <option value="">Sắp xếp</option>
+                        <option value="new">Mới nhất</option>
+                        <option value="p-asc">Giá tăng</option>
+                    </select>
+                    <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-textSecondary pointer-events-none"></i>
+                </div>
+            </div>
         </div>
-        <div class="flex items-center justify-between text-small text-textSecondary border-b border-border pb-2">
-            <span>Tìm thấy 2 kết quả phù hợp</span>
-            <span class="flex items-center gap-1 text-primary font-medium"><i data-lucide="sliders-horizontal" class="w-3.5 h-3.5"></i> Bộ lọc</span>
-        </div>
-        <div class="space-y-3">
-            <div class="flex bg-surface border border-border rounded-card p-3 gap-3 shadow-soft">
-                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=400&q=80" class="w-20 h-20 rounded-button object-cover flex-shrink-0">
-                <div class="min-w-0 flex-1 flex flex-col justify-between">
-                    <div>
-                        <h4 class="text-small font-bold text-textPrimary truncate">Flora Novia Apartment</h4>
-                        <p class="text-[11px] text-textSecondary truncate">128 Nguyễn Văn Bánh, Bình Thạnh</p>
+
+        <!-- Scrollable Vertical Rooms Stream List -->
+        <div class="flex-1 overflow-y-auto no-scrollbar p-4 space-y-4 pb-24">
+            
+            <!-- Item Card 1 -->
+            <div class="bg-surface rounded-card border border-border p-3 shadow-soft space-y-3 flex flex-col group">
+                
+                <!-- Max 4 Images Structural Layout Grid -->
+                <div class="grid grid-cols-4 gap-1.5 h-[130px] w-full rounded-input overflow-hidden bg-slate-100 flex-shrink-0 relative">
+                    <div class="col-span-2 h-full">
+                        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400" alt="Room Area" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]">
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-small font-bold text-primary">18tr - 20tr/tháng</span>
-                        <span class="text-[11px] font-semibold text-success">Còn phòng</span>
+                    <div class="col-span-1 h-full">
+                        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400" alt="Kitchen View" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]">
+                    </div>
+                    <div class="col-span-1 h-full relative">
+                        <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400" alt="Bathroom layout" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]">
+                        <div class="absolute inset-0 bg-slate-900/40 flex items-center justify-center text-white text-small font-semibold backdrop-blur-[1px]">+1 ảnh</div>
+                    </div>
+                </div>
+
+                <!-- Details Context Row -->
+                <div class="space-y-2 flex-1 flex flex-col justify-between">
+                    <div class="space-y-1">
+                        <!-- Room category and status tags -->
+                        <div class="flex items-center justify-between">
+                            <span class="text-small font-semibold text-primary tracking-wide">CĂN HỘ CHUNG CƯ</span>
+                            <span class="text-small font-semibold text-success bg-green-50 px-2 py-0.5 rounded-full border border-success/10">Còn phòng</span>
+                        </div>
+                        <!-- Header names -->
+                        <h4 class="text-body font-semibold text-textPrimary line-clamp-1">Flora Novia Skyline Studio</h4>
+                        <!-- Address lines -->
+                        <p class="text-small text-textSecondary truncate">128 Nguyễn Văn Bánh, Phường 15, Bình Thạnh</p>
+                    </div>
+
+                    <!-- Bottom Functional Actions Layer -->
+                    <div class="flex items-center justify-between pt-1 border-t border-slate-50">
+                        <!-- Valuation metrics -->
+                        <div class="text-textSecondary text-small font-medium">
+                            <span class="text-body font-semibold text-primary">14.5tr</span> /tháng
+                        </div>
+                        <!-- Utility Actions -->
+                        <div class="flex items-center gap-2">
+                            <!-- Share icon button -->
+                            <button class="w-8 h-8 flex items-center justify-center text-textSecondary hover:text-primary bg-slate-50 hover:bg-blue-50/50 rounded-full transition-colors duration-150" title="Chia sẻ bài đăng">
+                                <i data-lucide="share-2" class="w-4 h-4"></i>
+                            </button>
+                            <!-- Favorite icon button -->
+                            <button class="w-8 h-8 flex items-center justify-center text-error bg-red-50/30 rounded-full transition-colors duration-150" title="Bỏ yêu thích">
+                                <i data-lucide="heart" class="w-4 h-4 fill-current"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="flex bg-surface border border-border rounded-card p-3 gap-3 shadow-soft">
-                <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80" class="w-20 h-20 rounded-button object-cover flex-shrink-0">
-                <div class="min-w-0 flex-1 flex flex-col justify-between">
-                    <div>
-                        <h4 class="text-small font-bold text-textPrimary truncate">Vinhomes Central Park</h4>
-                        <p class="text-[11px] text-textSecondary truncate">208 Nguyễn Hữu Cảnh, Bình Thạnh</p>
+
+            <!-- Item Card 2 -->
+            <div class="bg-surface rounded-card border border-border p-3 shadow-soft space-y-3 flex flex-col group">
+                
+                <!-- Max 4 Images Layout Grid -->
+                <div class="grid grid-cols-4 gap-1.5 h-[130px] w-full rounded-input overflow-hidden bg-slate-100 flex-shrink-0">
+                    <div class="col-span-2 h-full">
+                        <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400" alt="Studio Main View" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]">
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-small font-bold text-primary">25tr - 35tr/tháng</span>
-                        <span class="text-[11px] font-semibold text-success">Còn phòng</span>
+                    <div class="col-span-1 h-full">
+                        <img src="https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=400" alt="Kitchen setup" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]">
+                    </div>
+                    <div class="col-span-1 h-full">
+                        <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=400" alt="Bedroom side" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]">
+                    </div>
+                </div>
+
+                <!-- Details Context Row -->
+                <div class="space-y-2 flex-1 flex flex-col justify-between">
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-small font-semibold text-primary tracking-wide">PHÒNG TRỌ KHÉP KÍN</span>
+                            <span class="text-small font-semibold text-error bg-red-50 px-2 py-0.5 rounded-full border border-error/10">Hết phòng</span>
+                        </div>
+                        <h4 class="text-body font-semibold text-textPrimary line-clamp-1">Vinhomes Central Cozy Room</h4>
+                        <p class="text-small text-textSecondary truncate">208 Nguyễn Hữu Cảnh, Phường 22, Bình Thạnh</p>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-1 border-t border-slate-50">
+                        <div class="text-textSecondary text-small font-medium">
+                            <span class="text-body font-semibold text-primary">6.8tr</span> /tháng
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <!-- Share icon button -->
+                            <button class="w-8 h-8 flex items-center justify-center text-textSecondary hover:text-primary bg-slate-50 hover:bg-blue-50/50 rounded-full transition-colors duration-150">
+                                <i data-lucide="share-2" class="w-4 h-4"></i>
+                            </button>
+                            <!-- Favorite icon button -->
+                            <button class="w-8 h-8 flex items-center justify-center text-textSecondary hover:text-error bg-slate-50 hover:bg-red-50/50 rounded-full transition-colors duration-150" title="Thêm vào yêu thích">
+                                <i data-lucide="heart" class="w-4 h-4"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
+
         </div>
+
     </div>
-    <script>lucide.createIcons()</script>
+
+    <!-- Initialize Lucide Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>
