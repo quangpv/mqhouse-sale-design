@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác Nhận OTP - Tìm Kiếm Bất Động Sản</title>
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#2563EB',
+                        background: '#F8FAFC',
+                        surface: '#FFFFFF',
+                        border: '#E2E8F0',
+                        textPrimary: '#0F172A',
+                        textSecondary: '#64748B',
+                        success: '#16A34A',
+                        warning: '#F59E0B',
+                        error: '#DC2626',
+                    },
+                    borderRadius: {
+                        'input': '10px',
+                        'button': '12px',
+                        'card': '16px',
+                        'modal': '20px',
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+                    },
+                    fontSize: {
+                        'small': ['12px', '16px'],
+                        'body': ['14px', '20px'],
+                        'h3': ['20px', '28px'],
+                        'h2': ['24px', '32px'],
+                        'h1': ['32px', '40px'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0F172A;
+        }
+    </style>
+</head>
+<body class="flex justify-center items-center min-h-screen p-0 sm:p-4 text-textPrimary">
+
+    <!-- Mobile Device Container -->
+    <div class="w-full max-w-[430px] h-screen sm:h-[880px] bg-background sm:rounded-modal shadow-2xl relative flex flex-col justify-between overflow-hidden border border-border p-6">
+        
+        <!-- Top Section: Back Button & Header -->
+        <div class="space-y-6">
+            <button class="w-[44px] h-[44px] flex items-center justify-center bg-surface border border-border rounded-input text-textPrimary hover:bg-slate-50 transition-colors duration-150 shadow-soft">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            </button>
+            
+            <div class="space-y-2">
+                <h1 class="text-h2 font-semibold text-textPrimary">Xác nhận OTP</h1>
+                <p class="text-body text-textSecondary">Vui lòng nhập mã xác thực gồm 4 chữ số vừa được gửi đến số điện thoại hoặc email của bạn.</p>
+            </div>
+        </div>
+
+        <!-- Middle Section: OTP Verification Form -->
+        <div class="flex-1 flex flex-col justify-center max-y-[300px] my-auto space-y-6">
+            <!-- 4 OTP Input Fields -->
+            <div class="flex justify-center gap-3">
+                <input type="text" maxlength="1" pattern="[0-9]*" inputmode="numeric" class="w-14 h-14 bg-surface border border-border rounded-input text-h2 font-semibold text-center text-textPrimary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-soft transition-all duration-150">
+                <input type="text" maxlength="1" pattern="[0-9]*" inputmode="numeric" class="w-14 h-14 bg-surface border border-border rounded-input text-h2 font-semibold text-center text-textPrimary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-soft transition-all duration-150">
+                <input type="text" maxlength="1" pattern="[0-9]*" inputmode="numeric" class="w-14 h-14 bg-surface border border-border rounded-input text-h2 font-semibold text-center text-textPrimary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-soft transition-all duration-150">
+                <input type="text" maxlength="1" pattern="[0-9]*" inputmode="numeric" class="w-14 h-14 bg-surface border border-border rounded-input text-h2 font-semibold text-center text-textPrimary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-soft transition-all duration-150">
+            </div>
+
+            <!-- Verification Button -->
+            <div class="pt-2">
+                <button onclick="parent.switchScreen('resetPassword')" class="w-full py-3 bg-primary text-white font-semibold text-body rounded-button shadow-soft hover:bg-blue-700 transition-colors duration-150 flex items-center justify-center gap-2 group">
+                    <span>Xác nhận</span>
+                    <i data-lucide="shield-check" class="w-4 h-4 transition-transform duration-150 group-hover:scale-110"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Bottom Section: Resend Verification Code -->
+        <div class="pb-4 mt-4 pt-4 text-center space-y-2">
+            <p class="text-body text-textSecondary">Không nhận được mã?</p>
+            <button class="text-body text-primary font-semibold hover:underline transition-all duration-150">
+                Gửi lại mã mới
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Initialize Lucide Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

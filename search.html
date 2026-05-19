@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm kiếm</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        primary: '#2563EB',
+                        background: '#F8FAFC',
+                        surface: '#FFFFFF',
+                        border: '#E2E8F0',
+                        textPrimary: '#0F172A',
+                        textSecondary: '#64748B',
+                        success: '#16A34A',
+                        warning: '#F59E0B',
+                        error: '#DC2626',
+                    },
+                    borderRadius: {
+                        input: '10px',
+                        button: '12px',
+                        card: '16px',
+                        modal: '20px',
+                    },
+                    boxShadow: {
+                        soft: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+                    },
+                    fontSize: {
+                        small: ['12px', '16px'],
+                        body: ['14px', '20px'],
+                        h3: ['20px', '28px'],
+                        h2: ['24px', '32px'],
+                        h1: ['32px', '40px'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background text-textPrimary min-h-screen">
+    <div class="p-4 space-y-4">
+        <div class="relative">
+            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-textSecondary"></i>
+            <input type="text" value="Bình Thạnh" class="w-full pl-9 pr-4 py-2.5 bg-surface border border-border rounded-input text-body focus:outline-none focus:border-primary">
+        </div>
+        <div class="flex items-center justify-between text-small text-textSecondary border-b border-border pb-2">
+            <span>Tìm thấy 2 kết quả phù hợp</span>
+            <span class="flex items-center gap-1 text-primary font-medium"><i data-lucide="sliders-horizontal" class="w-3.5 h-3.5"></i> Bộ lọc</span>
+        </div>
+        <div class="space-y-3">
+            <div class="flex bg-surface border border-border rounded-card p-3 gap-3 shadow-soft">
+                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=400&q=80" class="w-20 h-20 rounded-button object-cover flex-shrink-0">
+                <div class="min-w-0 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h4 class="text-small font-bold text-textPrimary truncate">Flora Novia Apartment</h4>
+                        <p class="text-[11px] text-textSecondary truncate">128 Nguyễn Văn Bánh, Bình Thạnh</p>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-small font-bold text-primary">18tr - 20tr/tháng</span>
+                        <span class="text-[11px] font-semibold text-success">Còn phòng</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex bg-surface border border-border rounded-card p-3 gap-3 shadow-soft">
+                <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80" class="w-20 h-20 rounded-button object-cover flex-shrink-0">
+                <div class="min-w-0 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h4 class="text-small font-bold text-textPrimary truncate">Vinhomes Central Park</h4>
+                        <p class="text-[11px] text-textSecondary truncate">208 Nguyễn Hữu Cảnh, Bình Thạnh</p>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-small font-bold text-primary">25tr - 35tr/tháng</span>
+                        <span class="text-[11px] font-semibold text-success">Còn phòng</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>lucide.createIcons()</script>
+</body>
+</html>
