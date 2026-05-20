@@ -82,7 +82,7 @@
                         <button onclick="switchScreen('otp')" id="btn-forgot-password" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
                             <i data-lucide="user-plus" class="w-4 h-4"></i> Xác nhận OTP
                         </button>
-                        <button onclick="switchScreen('resetPassword')" id="btn-forgot-password" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
+                        <button onclick="switchScreen('resetPassword')" id="btn-reset-password" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
                             <i data-lucide="user-plus" class="w-4 h-4"></i> Khởi tạo lại mật khẩu
                         </button>
                     </div>
@@ -103,6 +103,9 @@
                         <button onclick="switchScreen('profile')" id="btn-profile" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
                             <i data-lucide="user" class="w-4 h-4"></i> Hồ sơ cá nhân
                         </button>
+                        <button onclick="switchScreen('map')" id="btn-map" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
+                            <i data-lucide="user" class="w-4 h-4"></i> Bản đồ
+                        </button>
                     </div>
                 </div>
             </div>
@@ -119,7 +122,7 @@
     <main class="flex-1 bg-background relative flex items-center justify-center p-6 overflow-y-auto">
         <div class="absolute inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px]"></div>
 
-        <div class="relative w-[390px] h-[800px] max-h-[calc(100vh-48px)] bg-surface rounded-[40px] shadow-phone border-[10px] border-textPrimary overflow-hidden flex flex-col justify-between transition-all duration-300">
+        <div class="relative w-[350px] h-[800px] max-h-[calc(100vh-48px)] bg-surface rounded-[40px] shadow-phone border-[10px] border-textPrimary overflow-hidden flex flex-col justify-between transition-all duration-300">
             
             <div class="h-7 bg-surface w-full absolute top-0 left-0 right-0 z-50 px-6 flex justify-between items-center text-[12px] font-semibold text-textPrimary">
                 <span>09:41</span>
@@ -167,6 +170,7 @@
             profile: 'profile.html',
             forgotPassword: 'forgot-password.html',
             resetPassword: 'reset-password.html',
+            map: 'map.html',
         };
 
         function switchScreen(screenKey) {
