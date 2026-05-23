@@ -214,7 +214,7 @@
         // Component builders
         function createHorizontalCard(item) {
             return `
-                <div class="w-[240px] flex-shrink-0 bg-surface border border-border rounded-card overflow-hidden shadow-soft transition-all duration-150 hover:border-primary/50">
+                <div onclick="parent.switchScreen('propertyDetails')" class="w-[240px] flex-shrink-0 bg-surface border border-border rounded-card overflow-hidden shadow-soft transition-all duration-150 hover:border-primary/50 cursor-pointer">
                     <div class="relative w-full h-32 bg-slate-100 overflow-hidden">
                         <img src="${item.imageUrl}" alt="${item.title}" class="w-full h-full object-cover">
                         <button class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-surface/80 backdrop-blur-sm text-textSecondary rounded-full hover:text-error transition-colors duration-150">
@@ -237,7 +237,7 @@
 
         function createVerticalRow(item) {
             return `
-                <div class="w-full flex bg-surface border border-border rounded-card overflow-hidden shadow-soft p-3 gap-3 transition-all duration-150 hover:border-primary/50">
+                <div onclick="parent.switchScreen('propertyDetails')" class="w-full flex bg-surface border border-border rounded-card overflow-hidden shadow-soft p-3 gap-3 transition-all duration-150 hover:border-primary/50 cursor-pointer">
                     <div class="w-24 h-24 bg-slate-100 rounded-button overflow-hidden flex-shrink-0">
                         <img src="${item.imageUrl}" alt="${item.title}" class="w-full h-full object-cover">
                     </div>

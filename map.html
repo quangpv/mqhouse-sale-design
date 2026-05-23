@@ -76,8 +76,12 @@
     <div class="absolute top-0 left-0 right-0 bg-transparent py-3 z-30 shrink-0">
         <div class="max-w-7xl mx-auto flex flex-col gap-3">
             
-            <!-- Hàng 1: Ô tìm kiếm & Button Lọc chi tiết -->
+            <!-- Hàng 1: Nút Back, Ô tìm kiếm & Button Lọc chi tiết -->
             <div class="flex items-center gap-2 w-full px-4">
+                <!-- Nút Back -->
+                <button onclick="history.back()" class="p-2.5 bg-surface border border-border rounded-input hover:bg-slate-50 transition-colors duration-150 text-textPrimary shadow-sm shrink-0">
+                    <i data-lucide="arrow-left" class="w-5 h-5 text-textPrimary"></i>
+                </button>
                 <div class="relative flex-1">
                     <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-textSecondary"></i>
                     <input type="text" 
@@ -561,7 +565,8 @@
             }
             data.forEach(item => {
                 const isSelected = selectedPropertyId === item.id; const card = document.createElement("div"); card.id = `card-item-${item.id}`;
-                card.className = `p-3 bg-surface rounded-card border transition-all duration-150 flex gap-3 shadow-soft ${isSelected ? 'border-primary ring-1 ring-primary/20' : 'border-border'}`;
+                card.className = `p-3 bg-surface rounded-card border transition-all duration-150 flex gap-3 shadow-soft cursor-pointer ${isSelected ? 'border-primary ring-1 ring-primary/20' : 'border-border'}`;
+                card.onclick = () => window.parent.switchScreen('propertyDetails');
                 let typeIcon = "home"; if(item.type === "Căn hộ") typeIcon = "building-2"; if(item.type === "Tòa nhà") typeIcon = "building";
                 card.innerHTML = `
                     <div class="w-24 h-24 rounded-input overflow-hidden relative shrink-0 bg-slate-100">

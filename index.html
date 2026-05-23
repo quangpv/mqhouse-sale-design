@@ -108,6 +108,15 @@
                         </button>
                     </div>
                 </div>
+
+                <div>
+                    <span class="px-3 text-small font-bold text-textSecondary/70 uppercase tracking-wider block mb-2">Bất động sản</span>
+                    <div class="space-y-1">
+                        <button onclick="switchScreen('propertyDetails')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
+                            <i data-lucide="home" class="w-4 h-4"></i> Chi tiết bất động sản
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -171,6 +180,7 @@
             forgotPassword: 'forgot-password.html',
             resetPassword: 'reset-password.html',
             map: 'map.html',
+            propertyDetails: 'property-detail.html',
         };
 
         function switchScreen(screenKey) {
