@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chi Tiết Phòng - Cập Nhật Kết Cấu</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            primary: '#2563EB',
+            bgMain: '#F8FAFC',
+            surface: '#FFFFFF',
+            borderClr: '#E2E8F0',
+            textPrimary: '#0F172A',
+            textSecondary: '#64748B',
+            success: '#16A34A',
+            warning: '#F59E0B',
+            error: '#DC2626',
+          },
+          borderRadius: {
+            'card': '16px',
+            'btn': '12px',
+            'input': '10px',
+            'modal': '20px',
+          },
+          boxShadow: {
+            'soft': '0 2px 8px -1px rgba(15, 23, 42, 0.05), 0 1px 4px -1px rgba(15, 23, 42, 0.03)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: #0F172A;
+      background-color: #F8FAFC;
+    }
+    .text-h1 { font-size: 32px; font-weight: 600; line-height: 1.2; }
+    .text-h2 { font-size: 24px; font-weight: 600; line-height: 1.3; }
+    .text-h3 { font-size: 20px; font-weight: 500; line-height: 1.4; }
+    .text-body { font-size: 14px; font-weight: 400; }
+    .text-small { font-size: 12px; font-weight: 400; }
+  </style>
+</head>
+<body class="bg-bgMain min-h-screen flex justify-center">
+
+  <!-- Mobile Screen Shell Sim -->
+  <div class="w-full max-w-md bg-surface h-dvh shadow-soft relative flex flex-col overflow-x-hidden">
+    
+    <!-- Main Content Flow Scroll Container -->
+    <div class="flex-1 overflow-y-auto pb-20">
+      
+      <!-- Overlaid Nav Controls -->
+      <div class="absolute top-4 left-0 right-0 z-10 px-4 flex justify-between items-center">
+        <button class="w-10 h-10 bg-surface rounded-full flex items-center justify-center shadow-soft text-textPrimary hover:scale-95 transition-transform duration-150">
+          <i data-lucide="arrow-left" class="w-5 h-5"></i>
+        </button>
+        <div class="flex gap-2">
+          <button onclick="copyShareTrigger()" class="w-10 h-10 bg-surface rounded-full flex items-center justify-center shadow-soft text-textPrimary hover:scale-95 transition-transform duration-150">
+            <i data-lucide="share-2" class="w-5 h-5"></i>
+          </button>
+          <button onclick="toggleRoomFav()" id="fav-btn-node" class="w-10 h-10 bg-surface rounded-full flex items-center justify-center shadow-soft text-textPrimary hover:scale-95 transition-transform duration-150">
+            <i data-lucide="heart" id="fav-icon-node" class="w-5 h-5 transition-colors duration-150"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Room Media Cover Slider -->
+      <div class="relative h-64 bg-borderClr overflow-hidden">
+        <img id="gallery-carousel-viewport" src="https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=800&q=80" alt="Room Space" class="w-full h-full object-cover transition-all duration-200">
+        <!-- Dots Track Indicators -->
+        <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+          <span onclick="jumpToRoomSlide(0)" id="carousel-dot-0" class="w-2 h-2 rounded-full bg-surface cursor-pointer transition-all duration-150"></span>
+          <span onclick="jumpToRoomSlide(1)" id="carousel-dot-1" class="w-2 h-2 rounded-full bg-surface/50 cursor-pointer transition-all duration-150"></span>
+          <span onclick="jumpToRoomSlide(2)" id="carousel-dot-2" class="w-2 h-2 rounded-full bg-surface/50 cursor-pointer transition-all duration-150"></span>
+        </div>
+      </div>
+
+      <!-- Heading Identity Block -->
+      <div class="p-4 border-b border-borderClr">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="text-small font-medium px-2.5 py-0.5 bg-primary/10 text-primary rounded-full">Mã phòng: P.102</span>
+          <span class="text-small font-medium px-2.5 py-0.5 bg-textSecondary/10 text-textSecondary rounded-full">Căn hộ</span>
+          <span id="room-state-indicator" class="text-small font-medium px-2.5 py-0.5 bg-warning/10 text-warning rounded-full ml-auto">Đã cọc</span>
+        </div>
+        <h1 class="text-h3 text-textPrimary mb-2">Phòng Studio Ban Công Hướng Đông</h1>
+        <p class="text-h3 text-primary font-semibold">7.500.000 <span class="text-body font-normal text-textSecondary">đ / tháng</span></p>
+      </div>
+
+      <!-- Service Fee Utilities Block -->
+      <div class="p-4 border-b border-borderClr">
+        <h3 class="text-small font-semibold text-textSecondary uppercase tracking-wider mb-3">Phí dịch vụ phòng</h3>
+        <div class="flex flex-wrap gap-2">
+          <span class="text-small text-textPrimary bg-bgMain border border-borderClr px-3 py-1.5 rounded-full flex items-center gap-1.5">
+            <i data-lucide="zap" class="w-3.5 h-3.5 text-warning"></i> Điện: 4.000đ/kWh
+          </span>
+          <span class="text-small text-textPrimary bg-bgMain border border-borderClr px-3 py-1.5 rounded-full flex items-center gap-1.5">
+            <i data-lucide="droplet" class="w-3.5 h-3.5 text-primary"></i> Nước: 100.000đ/Người
+          </span>
+          <span class="text-small text-textPrimary bg-bgMain border border-borderClr px-3 py-1.5 rounded-full flex items-center gap-1.5">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-success"></i> Quản lý: 150.000đ/Phòng
+          </span>
+        </div>
+      </div>
+
+      <!-- Double-Tier Layout Utilities Section -->
+      <div class="p-4 border-b border-borderClr space-y-4">
+        <h3 class="text-small font-semibold text-textSecondary uppercase tracking-wider">Thông tin chi tiết tiện ích</h3>
+        
+        <!-- Category Segment: Nội thất cơ bản -->
+        <div>
+          <p class="text-small font-medium text-textPrimary mb-2 flex items-center gap-1">
+            <i data-lucide="armchair" class="w-3.5 h-3.5 text-textSecondary"></i> Nội thất cơ bản:
+          </p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="text-small text-textSecondary bg-bgMain px-2.5 py-1 rounded-md border border-borderClr">Balcony</span>
+            <span class="text-small text-textSecondary bg-bgMain px-2.5 py-1 rounded-md border border-borderClr">Cửa sổ</span>
+            <span class="text-small text-textSecondary bg-bgMain px-2.5 py-1 rounded-md border border-borderClr">Dọn phòng</span>
+            <span class="text-small text-textSecondary bg-bgMain px-2.5 py-1 rounded-md border border-borderClr">Nuôi Pet</span>
+          </div>
+        </div>
+
+        <!-- Category Segment: Kết cấu kiến trúc -->
+        <div>
+          <p class="text-small font-medium text-textPrimary mb-2 flex items-center gap-1">
+            <i data-lucide="layout" class="w-3.5 h-3.5 text-textSecondary"></i> Kết cấu không gian:
+          </p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="text-small text-textSecondary bg-bgMain px-2.5 py-1 rounded-md border border-borderClr">Cửa sổ ngoài trời</span>
+            <span class="text-small text-textSecondary bg-bgMain px-2.5 py-1 rounded-md border border-borderClr">Ban công thật</span>
+            <span class="text-small text-textSecondary bg-bgMain px-2.5 py-1 rounded-md border border-borderClr">Thang máy</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Operations Information -->
+      <div class="p-4">
+        <h3 class="text-small font-semibold text-textSecondary uppercase tracking-wider mb-3">Thông tin liên hệ</h3>
+        <div class="bg-bgMain p-4 rounded-card border border-borderClr flex items-center justify-between">
+          <div>
+            <p class="text-body font-semibold text-textPrimary">Nguyễn Văn An</p>
+            <p class="text-small text-textSecondary">Quản lý vận hành</p>
+          </div>
+          <div class="flex gap-2">
+            <a href="tel:0901234567" class="w-10 h-10 bg-surface border border-borderClr rounded-btn flex items-center justify-center text-primary shadow-soft hover:bg-primary/5 transition-all">
+              <i data-lucide="phone" class="w-5 h-5"></i>
+            </a>
+            <a href="https://zalo.me" target="_blank" class="w-10 h-10 bg-surface border border-borderClr rounded-btn flex items-center justify-center text-primary text-small font-semibold shadow-soft hover:bg-primary/5 transition-all">
+              Zalo
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Permanent Sticky Action Footer -->
+    <div class="absolute bottom-0 left-0 right-0 p-4 bg-surface border-t border-borderClr shadow-md z-10">
+      <button onclick="revealRoomStatusDrawer()" class="w-full bg-primary text-surface py-3.5 rounded-btn font-semibold text-body shadow-soft hover:bg-primary/90 active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+        <i data-lucide="refresh-cw" class="w-4 h-4"></i> Chuyển trạng thái phòng
+      </button>
+    </div>
+
+    <!-- Quick Room Update Context Sheet (~[] Bottom sheet) -->
+    <div id="room-status-sheet" class="fixed inset-0 bg-textPrimary/40 z-30 hidden transition-opacity duration-200 opacity-0 pointer-events-none">
+      <div class="absolute bottom-0 left-0 right-0 bg-surface rounded-t-modal p-6 shadow-xl transition-transform duration-200 translate-y-full max-h-[85vh]">
+        <div class="w-12 h-1 bg-borderClr rounded-full mx-auto mb-6"></div>
+        
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-h3 text-textPrimary">Cập nhật trạng thái phòng</h2>
+          <button onclick="hideRoomStatusDrawer()" class="text-textSecondary hover:text-textPrimary">
+            <i data-lucide="x" class="w-6 h-6"></i>
+          </button>
+        </div>
+
+        <div class="space-y-2 mb-6">
+          <label class="flex items-center justify-between p-3.5 border border-borderClr rounded-input bg-bgMain cursor-pointer hover:bg-surface transition-colors">
+            <span class="flex items-center gap-2 text-body font-medium text-textPrimary">
+              <span class="w-2.5 h-2.5 rounded-full bg-success"></span> Đang trống
+            </span>
+            <input type="radio" name="statusSelectRadio" value="Đang trống" class="w-4 h-4 text-primary">
+          </label>
+          
+          <label class="flex items-center justify-between p-3.5 border border-borderClr rounded-input bg-bgMain cursor-pointer hover:bg-surface transition-colors">
+            <span class="flex items-center gap-2 text-body font-medium text-textPrimary">
+              <span class="w-2.5 h-2.5 rounded-full bg-warning"></span> Đã cọc
+            </span>
+            <input type="radio" name="statusSelectRadio" value="Đã cọc" class="w-4 h-4 text-primary">
+          </label>
+
+          <label class="flex items-center justify-between p-3.5 border border-borderClr rounded-input bg-bgMain cursor-pointer hover:bg-surface transition-colors">
+            <span class="flex items-center gap-2 text-body font-medium text-textPrimary">
+              <span class="w-2.5 h-2.5 rounded-full bg-textSecondary"></span> Đã cho thuê
+            </span>
+            <input type="radio" name="statusSelectRadio" value="Đã cho thuê" class="w-4 h-4 text-primary">
+          </label>
+
+          <label class="flex items-center justify-between p-3.5 border border-borderClr rounded-input bg-bgMain cursor-pointer hover:bg-surface transition-colors">
+            <span class="flex items-center gap-2 text-body font-medium text-textPrimary">
+              <span class="w-2.5 h-2.5 rounded-full bg-error"></span> Sắp trống
+            </span>
+            <input type="radio" name="statusSelectRadio" value="Sắp trống" class="w-4 h-4 text-primary">
+          </label>
+        </div>
+
+        <div class="flex gap-3">
+          <button onclick="hideRoomStatusDrawer()" class="flex-1 bg-bgMain text-textPrimary border border-borderClr py-3 rounded-btn text-body font-medium hover:bg-borderClr/50 transition-colors">Đóng</button>
+          <button onclick="commitRoomStatusUpdate()" class="flex-1 bg-primary text-surface py-3 rounded-btn text-body font-semibold shadow-soft hover:bg-primary/90 transition-colors">Xác nhận lưu</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Lucide Script Stack Asset -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script>
+    const assetImagesPool = [
+      "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=800&q=80"
+    ];
+    let activeCarouselIndex = 0;
+    let baselineRoomStatus = "Đã cọc";
+
+    function runtimeApplicationInit() {
+      lucide.createIcons();
+      jumpToRoomSlide(0);
+      
+      const radios = document.getElementsByName('statusSelectRadio');
+      radios.forEach(radio => {
+        if(radio.value === baselineRoomStatus) radio.checked = true;
+      });
+    }
+
+    function jumpToRoomSlide(targetIdx) {
+      activeCarouselIndex = targetIdx;
+      document.getElementById('gallery-carousel-viewport').src = assetImagesPool[targetIdx];
+      for(let i = 0; i < 3; i++) {
+        const targetDot = document.getElementById(`carousel-dot-${i}`);
+        if(i === targetIdx) {
+          targetDot.classList.remove('bg-surface/50');
+          targetDot.classList.add('bg-surface', 'w-4');
+        } else {
+          targetDot.classList.remove('bg-surface', 'w-4');
+          targetDot.classList.add('bg-surface/50');
+        }
+      }
+    }
+
+    function toggleRoomFav() {
+      const parentBtn = document.getElementById('fav-btn-node');
+      const heartIcon = document.getElementById('fav-icon-node');
+      parentBtn.classList.toggle('bg-red-50');
+      
+      if(heartIcon.getAttribute('fill') === 'currentColor') {
+        heartIcon.removeAttribute('fill');
+        heartIcon.classList.remove('text-error');
+        heartIcon.classList.add('text-textPrimary');
+      } else {
+        heartIcon.setAttribute('fill', 'currentColor');
+        heartIcon.classList.remove('text-textPrimary');
+        heartIcon.classList.add('text-error');
+      }
+    }
+
+    function copyShareTrigger() {
+      alert("Đã sao chép liên kết chia sẻ chi tiết phòng thành công!");
+    }
+
+    // Modal Control Animations Handles
+    function revealRoomStatusDrawer() {
+      const targetSheet = document.getElementById('room-status-sheet');
+      targetSheet.classList.remove('hidden');
+      setTimeout(() => {
+        targetSheet.classList.remove('opacity-0', 'pointer-events-none');
+        targetSheet.firstElementChild.classList.remove('translate-y-full');
+      }, 10);
+    }
+
+    function hideRoomStatusDrawer() {
+      const targetSheet = document.getElementById('room-status-sheet');
+      targetSheet.firstElementChild.classList.add('translate-y-full');
+      targetSheet.classList.add('opacity-0', 'pointer-events-none');
+      setTimeout(() => targetSheet.classList.add('hidden'), 200);
+    }
+
+    function commitRoomStatusUpdate() {
+      const evaluatedRadioOption = document.querySelector('input[name="statusSelectRadio"]:checked').value;
+      baselineRoomStatus = evaluatedRadioOption;
+      
+      const textIndicator = document.getElementById('room-state-indicator');
+      textIndicator.innerText = evaluatedRoomOption;
+      
+      textIndicator.className = `text-small font-medium px-2.5 py-0.5 rounded-full ml-auto ${
+        evaluatedRadioOption === 'Đang trống' ? 'bg-success/10 text-success' :
+        evaluatedRadioOption === 'Đã cọc' ? 'bg-warning/10 text-warning' :
+        evaluatedRadioOption === 'Đã cho thuê' ? 'bg-textSecondary/10 text-textSecondary' : 'bg-error/10 text-error'
+      }`;
+
+      hideRoomStatusDrawer();
+    }
+
+    window.onload = runtimeApplicationInit;
+  </script>
+</body>
+</html>

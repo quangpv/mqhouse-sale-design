@@ -116,6 +116,11 @@
                             <i data-lucide="home" class="w-4 h-4"></i> Chi tiết bất động sản
                         </button>
                     </div>
+                    <div class="space-y-1">
+                        <button onclick="switchScreen('roomDetails')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
+                            <i data-lucide="home" class="w-4 h-4"></i> Chi tiết phòng
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -181,6 +186,7 @@
             resetPassword: 'reset-password.html',
             map: 'map.html',
             propertyDetails: 'property-detail.html',
+            roomDetails: 'room-detail.html',
         };
 
         function switchScreen(screenKey) {
