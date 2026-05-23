@@ -186,33 +186,30 @@
           </button>
         </div>
 
-        <div class="space-y-2 mb-6">
-          <label class="flex items-center justify-between p-3.5 border border-borderClr rounded-input bg-bgMain cursor-pointer hover:bg-surface transition-colors">
-            <span class="flex items-center gap-2 text-body font-medium text-textPrimary">
-              <span class="w-2.5 h-2.5 rounded-full bg-success"></span> Đang trống
+        <div class="flex flex-wrap gap-2 mb-6">
+          <label class="cursor-pointer select-none">
+            <input type="radio" name="roomStatusRadio" value="Đang trống" class="peer sr-only">
+            <span class="flex items-center gap-1.5 px-3 py-2.5 rounded-btn border border-success/20 bg-success/10 text-success text-small font-medium transition-all duration-150 peer-checked:bg-success peer-checked:text-surface peer-checked:border-success peer-checked:shadow-soft">
+              <span class="w-2 h-2 rounded-full bg-success peer-checked:bg-white"></span> Đang trống
             </span>
-            <input type="radio" name="statusSelectRadio" value="Đang trống" class="w-4 h-4 text-primary">
           </label>
-          
-          <label class="flex items-center justify-between p-3.5 border border-borderClr rounded-input bg-bgMain cursor-pointer hover:bg-surface transition-colors">
-            <span class="flex items-center gap-2 text-body font-medium text-textPrimary">
-              <span class="w-2.5 h-2.5 rounded-full bg-warning"></span> Đã cọc
+          <label class="cursor-pointer select-none">
+            <input type="radio" name="roomStatusRadio" value="Đã cọc" class="peer sr-only">
+            <span class="flex items-center gap-1.5 px-3 py-2.5 rounded-btn border border-warning/20 bg-warning/10 text-warning text-small font-medium transition-all duration-150 peer-checked:bg-warning peer-checked:text-surface peer-checked:border-warning peer-checked:shadow-soft">
+              <span class="w-2 h-2 rounded-full bg-warning peer-checked:bg-white"></span> Đã cọc
             </span>
-            <input type="radio" name="statusSelectRadio" value="Đã cọc" class="w-4 h-4 text-primary">
           </label>
-
-          <label class="flex items-center justify-between p-3.5 border border-borderClr rounded-input bg-bgMain cursor-pointer hover:bg-surface transition-colors">
-            <span class="flex items-center gap-2 text-body font-medium text-textPrimary">
-              <span class="w-2.5 h-2.5 rounded-full bg-textSecondary"></span> Đã cho thuê
+          <label class="cursor-pointer select-none">
+            <input type="radio" name="roomStatusRadio" value="Đã cho thuê" class="peer sr-only">
+            <span class="flex items-center gap-1.5 px-3 py-2.5 rounded-btn border border-textSecondary/20 bg-textSecondary/10 text-textSecondary text-small font-medium transition-all duration-150 peer-checked:bg-textSecondary peer-checked:text-surface peer-checked:border-textSecondary peer-checked:shadow-soft">
+              <span class="w-2 h-2 rounded-full bg-textSecondary peer-checked:bg-white"></span> Đã cho thuê
             </span>
-            <input type="radio" name="statusSelectRadio" value="Đã cho thuê" class="w-4 h-4 text-primary">
           </label>
-
-          <label class="flex items-center justify-between p-3.5 border border-borderClr rounded-input bg-bgMain cursor-pointer hover:bg-surface transition-colors">
-            <span class="flex items-center gap-2 text-body font-medium text-textPrimary">
-              <span class="w-2.5 h-2.5 rounded-full bg-error"></span> Sắp trống
+          <label class="cursor-pointer select-none">
+            <input type="radio" name="roomStatusRadio" value="Sắp trống" class="peer sr-only">
+            <span class="flex items-center gap-1.5 px-3 py-2.5 rounded-btn border border-error/20 bg-error/10 text-error text-small font-medium transition-all duration-150 peer-checked:bg-error peer-checked:text-surface peer-checked:border-error peer-checked:shadow-soft">
+              <span class="w-2 h-2 rounded-full bg-error peer-checked:bg-white"></span> Sắp trống
             </span>
-            <input type="radio" name="statusSelectRadio" value="Sắp trống" class="w-4 h-4 text-primary">
           </label>
         </div>
 
@@ -240,7 +237,7 @@
       lucide.createIcons();
       jumpToRoomSlide(0);
       
-      const radios = document.getElementsByName('statusSelectRadio');
+      const radios = document.getElementsByName('roomStatusRadio');
       radios.forEach(radio => {
         if(radio.value === baselineRoomStatus) radio.checked = true;
       });
@@ -299,7 +296,7 @@
     }
 
     function commitRoomStatusUpdate() {
-      const evaluatedRadioOption = document.querySelector('input[name="statusSelectRadio"]:checked').value;
+      const evaluatedRadioOption = document.querySelector('input[name="roomStatusRadio"]:checked').value;
       baselineRoomStatus = evaluatedRadioOption;
       
       const textIndicator = document.getElementById('room-state-indicator');
