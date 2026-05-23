@@ -200,9 +200,9 @@
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-h3 text-textPrimary" id="target-room-node-title">Cập nhật phòng</h2>
           <button onclick="dismissActionSheet()" class="text-textSecondary hover:text-textPrimary">
-            <i data-lucide="x" class="w-6 h-6"></i>
-          </button>
-        </div>
+              <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+          </div>
 
         <div class="mb-6">
           <label class="text-small font-semibold text-textSecondary uppercase block mb-2">Giá phòng cấu hình (VND)</label>
@@ -211,7 +211,7 @@
 
         <div class="mb-6">
           <label class="text-small font-semibold text-textSecondary uppercase block mb-3">Trạng thái phòng hiện tại</label>
-          <div class="grid grid-cols-2 gap-2">
+          <div class="flex flex-wrap gap-2">
             <label class="cursor-pointer select-none">
               <input type="radio" name="modalRoomStatusRadio" value="Đang trống" class="peer sr-only">
               <span class="flex items-center justify-center px-3 py-2.5 rounded-btn border border-success/20 bg-success/10 text-success text-small font-medium transition-all duration-150 peer-checked:bg-success peer-checked:text-surface peer-checked:border-success peer-checked:shadow-soft">Đang trống</span>
@@ -231,6 +231,10 @@
           </div>
         </div>
 
+        <button class="w-full flex items-center justify-center gap-2 py-3 mb-3 rounded-btn border border-primary/20 bg-primary/5 text-primary text-body font-medium hover:bg-primary/10 transition-colors duration-150">
+          <i data-lucide="eye" class="w-4 h-4"></i> Xem chi tiết
+        </button>
+
         <div class="flex gap-3">
           <button onclick="dismissActionSheet()" class="flex-1 bg-bgMain text-textPrimary border border-borderClr py-3 rounded-btn text-body font-medium hover:bg-borderClr/50 transition-colors">Hủy</button>
           <button onclick="commitRoomStateModification()" class="flex-1 bg-primary text-surface py-3 rounded-btn text-body font-semibold shadow-soft hover:bg-primary/90 transition-colors">Lưu thay đổi</button>
@@ -242,10 +246,10 @@
     <div id="prop-status-dialog" class="absolute inset-0 bg-textPrimary/40 z-30 hidden transition-opacity duration-200 opacity-0 pointer-events-none flex items-center justify-center p-4">
       <div class="bg-surface rounded-modal p-6 shadow-xl w-full max-w-xs transition-transform duration-200 scale-95">
         <h3 class="text-h3 text-textPrimary mb-4">Trạng thái tòa nhà</h3>
-        <div class="flex gap-2 mb-6">
-          <button onclick="commitPropStatusChange('Có phòng trống')" class="flex-1 px-3 py-2.5 rounded-btn border border-success/20 bg-success/10 text-success text-small font-medium hover:bg-success hover:text-surface hover:border-success transition-all duration-150">Có phòng trống</button>
-          <button onclick="commitPropStatusChange('Hết phòng')" class="flex-1 px-3 py-2.5 rounded-btn border border-textSecondary/20 bg-textSecondary/10 text-textSecondary text-small font-medium hover:bg-textSecondary hover:text-surface hover:border-textSecondary transition-all duration-150">Hết phòng</button>
-          <button onclick="commitPropStatusChange('Sắp có phòng trống')" class="flex-1 px-3 py-2.5 rounded-btn border border-warning/20 bg-warning/10 text-warning text-small font-medium hover:bg-warning hover:text-surface hover:border-warning transition-all duration-150">Sắp có phòng trống</button>
+        <div class="flex flex-wrap gap-2 mb-6">
+          <button onclick="commitPropStatusChange('Có phòng trống')" class="px-3 py-2.5 rounded-btn border border-success/20 bg-success/10 text-success text-small font-medium hover:bg-success hover:text-surface hover:border-success transition-all duration-150">Có phòng trống</button>
+          <button onclick="commitPropStatusChange('Hết phòng')" class="px-3 py-2.5 rounded-btn border border-textSecondary/20 bg-textSecondary/10 text-textSecondary text-small font-medium hover:bg-textSecondary hover:text-surface hover:border-textSecondary transition-all duration-150">Hết phòng</button>
+          <button onclick="commitPropStatusChange('Sắp có phòng trống')" class="px-3 py-2.5 rounded-btn border border-warning/20 bg-warning/10 text-warning text-small font-medium hover:bg-warning hover:text-surface hover:border-warning transition-all duration-150">Sắp có phòng trống</button>
         </div>
         <button onclick="dismissPropStatusDialog()" class="w-full bg-bgMain text-textPrimary py-2.5 rounded-btn text-body font-medium border border-borderClr">Đóng</button>
       </div>
