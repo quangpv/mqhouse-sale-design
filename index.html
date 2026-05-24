@@ -54,8 +54,8 @@
 </head>
 <body class="bg-[#0F172A] text-textPrimary h-screen flex overflow-hidden antialiased">
 
-    <aside class="w-72 bg-surface border-r border-border flex flex-col justify-between z-20 shadow-sm">
-        <div>
+    <aside class="w-72 bg-surface border-r border-border flex flex-col z-20 shadow-sm h-screen">
+        <div class="flex-1 overflow-y-auto no-scrollbar">
             <div class="p-6 border-b border-border flex items-center gap-3">
                 <div class="w-10 h-10 bg-primary/10 rounded-button flex items-center justify-center text-primary">
                     <i data-lucide="monitor" class="w-5 h-5 stroke-[2.5]"></i>
@@ -115,10 +115,11 @@
                         <button onclick="switchScreen('propertyDetails')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
                             <i data-lucide="home" class="w-4 h-4"></i> Chi tiết bất động sản
                         </button>
-                    </div>
-                    <div class="space-y-1">
                         <button onclick="switchScreen('roomDetails')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
                             <i data-lucide="home" class="w-4 h-4"></i> Chi tiết phòng
+                        </button>
+                        <button onclick="switchScreen('myProperties')" id="btn-myProperties" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
+                            <i data-lucide="building-2" class="w-4 h-4"></i> Bất động sản của tôi
                         </button>
                     </div>
                 </div>
@@ -137,7 +138,7 @@
         <div class="absolute inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px]"></div>
 
         <div class="relative w-[350px] h-[800px] max-h-[calc(100vh-48px)] bg-surface rounded-[40px] shadow-phone border-[10px] border-textPrimary overflow-hidden flex flex-col justify-between transition-all duration-300">
-            
+
             <div class="h-7 bg-surface w-full absolute top-0 left-0 right-0 z-50 px-6 flex justify-between items-center text-[12px] font-semibold text-textPrimary">
                 <span>09:41</span>
                 <div class="w-28 h-4 bg-textPrimary rounded-full absolute left-1/2 -translate-x-1/2 top-1.5"></div>
@@ -185,6 +186,7 @@
             forgotPassword: 'forgot-password.html',
             resetPassword: 'reset-password.html',
             map: 'map.html',
+            myProperties: 'my-properties.html',
             propertyDetails: 'property-detail.html',
             roomDetails: 'room-detail.html',
         };

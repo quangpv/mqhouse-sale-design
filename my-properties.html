@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bất động sản của tôi</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563EB',
+                        background: '#F8FAFC',
+                        surface: '#FFFFFF',
+                        border: '#E2E8F0',
+                        textPrimary: '#0F172A',
+                        textSecondary: '#64748B',
+                        success: '#16A34A',
+                        warning: '#F59E0B',
+                        error: '#DC2626',
+                    },
+                    borderRadius: {
+                        'card': '16px',
+                        'button': '12px',
+                        'input': '10px',
+                        'modal': '20px',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'soft': '0 2px 8px -1px rgba(15, 23, 42, 0.05), 0 1px 4px -1px rgba(15, 23, 42, 0.03)',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .text-h2 { font-size: 24px; font-weight: 600; line-height: 1.3; }
+        .text-h3 { font-size: 20px; font-weight: 500; line-height: 1.4; }
+        .text-body { font-size: 14px; font-weight: 400; line-height: 1.5; }
+        .text-small { font-size: 12px; font-weight: 400; line-height: 1.5; }
+    </style>
+</head>
+<body class="bg-background text-textPrimary min-h-screen flex justify-center antialiased">
+
+    <!-- Container mobile view layout -->
+    <div class="w-full max-w-md bg-background min-h-screen flex flex-col justify-between relative shadow-soft">
+        
+        <!-- Sticky Header Configuration -->
+        <header class="bg-surface px-4 pt-6 pb-3 border-b border-border sticky top-0 z-40 space-y-3">
+            <!-- Screen Title Area -->
+            <div class="flex items-center gap-3">
+                <button onclick="parent.switchScreen('profile')" class="w-9 h-9 rounded-button flex items-center justify-center text-textSecondary hover:text-textPrimary hover:bg-background transition-colors duration-150 -ml-1">
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                </button>
+                <h1 class="text-h2 text-textPrimary tracking-tight">Bất động sản của tôi</h1>
+            </div>
+            
+            <!-- Search & Quick Action Controls -->
+            <div class="flex items-center gap-2">
+                <div class="relative flex-1">
+                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-textSecondary"></i>
+                    <input 
+                        type="text" 
+                        id="search-input"
+                        placeholder="Tìm kiếm theo tên..." 
+                        oninput="handleSearch(this.value)"
+                        class="w-full pl-9 pr-4 py-2 bg-surface border border-border rounded-input text-body text-textPrimary placeholder:text-textSecondary focus:outline-none focus:border-primary transition-colors duration-150"
+                    >
+                </div>
+                <button id="btn-create-top" onclick="openBottomSheet()" class="bg-primary text-surface p-2 rounded-button hover:bg-blue-700 transition-colors duration-150 flex items-center justify-center shadow-soft">
+                    <i data-lucide="plus" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Tab Segmented Layout Link Component -->
+            <div class="bg-background p-1 rounded-button flex gap-1">
+                <button id="tab-published" onclick="switchTab('published')" class="flex-1 py-1.5 text-body font-medium rounded-[8px] text-center transition-colors duration-150 bg-surface text-primary shadow-soft">
+                    Đã đăng
+                </button>
+                <button id="tab-favorites" onclick="switchTab('favorites')" class="flex-1 py-1.5 text-body font-medium rounded-[8px] text-center transition-colors duration-150 text-textSecondary hover:text-textPrimary">
+                    Yêu thích
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Workspace Feed Framework -->
+        <main class="flex-1 px-3 py-3">
+            <!-- Real Estate Content List Feed (Cards are now much more compact) -->
+            <div id="listings-list" class="space-y-2.5 pb-12">
+                <!-- Data injection point -->
+            </div>
+        </main>
+
+        <!-- Bottom Sheet Interactive Action Layer ~[] -->
+        <div id="bottom-sheet-overlay" onclick="closeBottomSheet()" class="fixed inset-0 bg-textPrimary/20 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-200"></div>
+        <div id="bottom-sheet" class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-surface rounded-t-modal p-6 z-50 transform translate-y-full transition-transform duration-200 shadow-xl">
+            <div class="w-12 h-1 bg-border rounded-full mx-auto mb-6"></div>
+            <h3 class="text-h3 text-textPrimary mb-4">Đăng tin mới</h3>
+            <p class="text-body text-textSecondary mb-6">Tính năng đăng tin bất động sản mới đang được xử lý hệ thống SaaS.</p>
+            <div class="space-y-3">
+                <button onclick="closeBottomSheet()" class="w-full bg-primary text-surface py-3 rounded-button font-medium text-body transition-colors duration-150 hover:bg-blue-700">
+                    Xác nhận
+                </button>
+                <button onclick="closeBottomSheet()" class="w-full bg-surface border border-border text-textPrimary py-3 rounded-button font-medium text-body transition-colors duration-150 hover:bg-background">
+                    Hủy bỏ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lucide System Core Icons Engine -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script>
+        // High Quality Public Assets mapped from Unsplash
+        const mockData = [
+            {
+                id: 1,
+                title: "Vinhomes Central Park Gold Suite",
+                type: "Căn hộ",
+                status: "Đang trống",
+                address: "Bình Thạnh, TP. HCM",
+                price: "18.5 Tr/tháng",
+                images: [
+                    "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&auto=format&fit=crop&q=80",
+                    "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&auto=format&fit=crop&q=80",
+                    "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=400&auto=format&fit=crop&q=80",
+                    "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=400&auto=format&fit=crop&q=80"
+                ],
+                isFavorite: true,
+                isPublished: true
+            },
+            {
+                id: 2,
+                title: "Phòng trọ Studio cao cấp ban công",
+                type: "Phòng trọ",
+                status: "Đã cọc",
+                address: "Quận 3, TP. HCM",
+                price: "5.2 Tr/tháng",
+                images: [
+                    "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400&auto=format&fit=crop&q=80",
+                    "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&auto=format&fit=crop&q=80",
+                    "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&auto=format&fit=crop&q=80"
+                ],
+                isFavorite: false,
+                isPublished: true
+            },
+            {
+                id: 3,
+                title: "Chung cư Sunrise City View lầu cao",
+                type: "Chung cư",
+                status: "Đã cho thuê",
+                address: "Quận 7, TP. HCM",
+                price: "14.0 Tr/tháng",
+                images: [
+                    "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&auto=format&fit=crop&q=80",
+                    "https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?w=400&auto=format&fit=crop&q=80"
+                ],
+                isFavorite: true,
+                isPublished: true
+            },
+            {
+                id: 4,
+                title: "Căn hộ dịch vụ Minimalist yên tĩnh",
+                type: "Căn hộ",
+                status: "Sắp trống",
+                address: "Phú Nhuận, TP. HCM",
+                price: "8.5 Tr/tháng",
+                images: [
+                    "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&auto=format&fit=crop&q=80",
+                    "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=400&auto=format&fit=crop&q=80",
+                    "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&auto=format&fit=crop&q=80",
+                    "https://images.unsplash.com/photo-1556912173-3bb406ef7e77?w=400&auto=format&fit=crop&q=80"
+                ],
+                isFavorite: false,
+                isPublished: true
+            },
+            {
+                id: 5,
+                title: "Nhà trọ tầng lửng rộng rãi sinh viên",
+                type: "Phòng trọ",
+                status: "Đang trống",
+                address: "Thủ Đức, TP. HCM",
+                price: "3.8 Tr/tháng",
+                images: [
+                    "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=400&auto=format&fit=crop&q=80"
+                ],
+                isFavorite: true,
+                isPublished: true
+            }
+        ];
+
+        let currentTab = 'published';
+        let searchQuery = '';
+
+        const statusStyles = {
+            "Đang trống": "bg-emerald-50 text-success border-emerald-100",
+            "Đã cọc": "bg-amber-50 text-warning border-amber-100",
+            "Đã cho thuê": "bg-blue-50 text-primary border-blue-100",
+            "Sắp trống": "bg-rose-50 text-error border-rose-100"
+        };
+
+        function switchTab(tab) {
+            currentTab = tab;
+            const pubBtn = document.getElementById('tab-published');
+            const favBtn = document.getElementById('tab-favorites');
+            const actionBtn = document.getElementById('btn-create-top');
+
+            if (tab === 'published') {
+                pubBtn.className = "flex-1 py-1.5 text-body font-medium rounded-[8px] text-center transition-colors duration-150 bg-surface text-primary shadow-soft";
+                favBtn.className = "flex-1 py-1.5 text-body font-medium rounded-[8px] text-center transition-colors duration-150 text-textSecondary hover:text-textPrimary";
+                actionBtn.classList.remove('hidden');
+            } else {
+                favBtn.className = "flex-1 py-1.5 text-body font-medium rounded-[8px] text-center transition-colors duration-150 bg-surface text-primary shadow-soft";
+                pubBtn.className = "flex-1 py-1.5 text-body font-medium rounded-[8px] text-center transition-colors duration-150 text-textSecondary hover:text-textPrimary";
+                actionBtn.classList.add('hidden');
+            }
+            renderListings();
+        }
+
+        function handleSearch(val) {
+            searchQuery = val.toLowerCase().trim();
+            renderListings();
+        }
+
+        // Logic like/unlike
+        function toggleFavorite(id, event) {
+            event.stopPropagation();
+            const item = mockData.find(x => x.id === id);
+            if (item) {
+                item.isFavorite = !item.isFavorite;
+                renderListings();
+            }
+        }
+
+        function shareItem(title, event) {
+            event.stopPropagation();
+            alert(`Đã sao chép liên kết chia sẻ cho:\n${title}`);
+        }
+
+        function openBottomSheet() {
+            const overlay = document.getElementById('bottom-sheet-overlay');
+            const sheet = document.getElementById('bottom-sheet');
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                sheet.classList.remove('translate-y-full');
+            }, 10);
+        }
+
+        function closeBottomSheet() {
+            const overlay = document.getElementById('bottom-sheet-overlay');
+            const sheet = document.getElementById('bottom-sheet');
+            overlay.classList.add('opacity-0');
+            sheet.classList.add('translate-y-full');
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 200);
+        }
+
+        function renderListings() {
+            const container = document.getElementById('listings-list');
+            container.innerHTML = '';
+
+            const filteredData = mockData.filter(item => {
+                const matchesTab = (currentTab === 'published' && item.isPublished) || (currentTab === 'favorites' && item.isFavorite);
+                const matchesSearch = item.title.toLowerCase().includes(searchQuery);
+                return matchesTab && matchesSearch;
+            });
+
+            if (filteredData.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-surface rounded-card border border-border p-8 text-center flex flex-col items-center justify-center space-y-4 shadow-soft min-h-[280px]">
+                        <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-textSecondary">
+                            <i data-lucide="folder-open" class="w-5 h-5"></i>
+                        </div>
+                        <p class="text-body text-textSecondary max-w-[200px] mx-auto">Chưa có bất động sản nào, vui lòng tạo mới</p>
+                        <button onclick="openBottomSheet()" class="inline-flex items-center gap-2 bg-primary text-surface px-4 py-2 rounded-button font-medium text-body transition-colors duration-150 hover:bg-blue-700 shadow-soft">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            Đăng tin ngay
+                        </button>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            filteredData.forEach(item => {
+                const badgeColor = statusStyles[item.status] || "bg-slate-100 text-textSecondary border-border";
+                
+                // Optimize images logic: Show single hero thumbnail with total asset count overlay indicator
+                const totalImages = item.images.length;
+                const imageOverlayHtml = totalImages > 1 ? 
+                    `<div class="absolute bottom-1 right-1 bg-textPrimary/70 backdrop-blur-[2px] text-surface font-medium px-1.5 py-0.5 rounded text-[10px]">+${totalImages - 1} ảnh</div>` : '';
+
+                const cardHtml = `
+                    <div onclick="parent.switchScreen('propertyDetails')" class="bg-surface border border-border rounded-card p-2.5 shadow-soft flex gap-3 hover:border-slate-300 transition-colors duration-150 items-center cursor-pointer">
+                        
+                        <!-- Left Side: Compact Square Thumbnails Framework -->
+                        <div class="relative w-24 h-24 shrink-0 rounded-[10px] overflow-hidden bg-slate-100">
+                            <img src="${item.images[0]}" alt="${item.title}" class="w-full h-full object-cover" />
+                            ${imageOverlayHtml}
+                        </div>
+
+                        <!-- Right Side: Structured Text Content Fields Frame -->
+                        <div class="flex-1 min-w-0 flex flex-col justify-between h-24 py-0.5">
+                            <div class="space-y-0.5">
+                                <div class="flex items-center justify-between gap-2">
+                                    <span class="text-[11px] font-medium text-primary bg-blue-50/70 px-1.5 py-0.5 rounded">${item.type}</span>
+                                    <span class="text-[11px] font-medium px-1.5 py-0.5 rounded-full border ${badgeColor}">${item.status}</span>
+                                </div>
+                                <h3 class="text-body font-semibold text-textPrimary truncate">${item.title}</h3>
+                                <p class="text-small text-textSecondary flex items-center gap-0.5">
+                                    <i data-lucide="map-pin" class="w-3 h-3 shrink-0"></i>
+                                    <span class="truncate">${item.address}</span>
+                                </p>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-1">
+                                <span class="text-body font-semibold text-primary">${item.price}</span>
+                                <div class="flex items-center gap-0.5">
+                                    <button onclick="shareItem('${item.title}', event)" class="p-1.5 text-textSecondary hover:text-textPrimary transition-colors rounded-full hover:bg-background">
+                                        <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                    <button onclick="toggleFavorite(${item.id}, event)" class="p-1.5 ${item.isFavorite ? 'text-error fill-error' : 'text-textSecondary'} hover:text-error transition-colors rounded-full hover:bg-background">
+                                        <i data-lucide="${currentTab === 'published' ? 'heart' : 'heart-off'}" class="w-3.5 h-3.5 ${currentTab === 'published' && item.isFavorite ? 'fill-error text-error' : ''}"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += cardHtml;
+            });
+
+            lucide.createIcons();
+        }
+
+        window.onload = () => {
+            renderListings();
+        };
+    </script>
+</body>
+</html>
