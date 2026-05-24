@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Danh mục</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#2563EB',
+                        background: '#F8FAFC',
+                        surface: '#FFFFFF',
+                        border: '#E2E8F0',
+                        textPrimary: '#0F172A',
+                        textSecondary: '#64748B',
+                        success: '#16A34A',
+                        warning: '#F59E0B',
+                        error: '#DC2626',
+                    },
+                    boxShadow: {
+                        soft: '0 2px 12px -2px rgba(15, 23, 42, 0.04), 0 4px 8px -2px rgba(15, 23, 42, 0.02)',
+                    },
+                    borderRadius: {
+                        card: '16px',
+                        button: '12px',
+                        input: '10px',
+                        modal: '20px',
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8FAFC;
+            color: #0F172A;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .text-h1 { font-size: 32px; font-weight: 600; line-height: 40px; }
+        .text-h2 { font-size: 24px; font-weight: 600; line-height: 32px; }
+        .text-h3 { font-size: 20px; font-weight: 500; line-height: 28px; }
+        .text-body { font-size: 14px; font-weight: 400; line-height: 20px; }
+        .text-small { font-size: 12px; font-weight: 400; line-height: 16px; }
+        
+        /* Smooth subtle transitions */
+        .transition-custom {
+            transition: all 175ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Hide scrollbar for clean mobile feel */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex justify-center items-start">
+
+    <div class="w-full max-w-md bg-background h-dvh flex flex-col relative overflow-y-auto pb-12">
+        
+        <header class="bg-surface border-b border-border sticky top-0 z-30 px-4 pt-6 shadow-sm">
+            <h1 class="text-h3 text-textPrimary">Danh mục</h1>
+            
+            <div class="relative">
+                <div class="flex">
+                    <button onclick="switchTab('dia-gioi')" id="tab-dia-gioi-btn" class="flex-1 py-3 text-small font-medium text-center transition-custom text-primary">
+                        <div class="flex items-center justify-center space-x-2">
+                            <i data-lucide="map-pin" class="w-4 h-4"></i>
+                            <span>Địa giới hành chính</span>
+                        </div>
+                    </button>
+                    <button onclick="switchTab('danh-muc-khac')" id="tab-danh-muc-khac-btn" class="flex-1 py-3 text-small font-medium text-center transition-custom text-textSecondary hover:text-textPrimary">
+                        <div class="flex items-center justify-center space-x-2">
+                            <i data-lucide="grid-3x3" class="w-4 h-4"></i>
+                            <span>Danh mục khác</span>
+                        </div>
+                    </button>
+                </div>
+                <div id="tab-indicator" class="absolute bottom-0 left-0 w-1/2 h-0.5 bg-primary rounded-full transition-all duration-300 ease-out"></div>
+            </div>
+        </header>
+
+        <main class="flex-1 p-4">
+            
+            <div id="notification-toast" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 bg-textPrimary text-surface px-4 py-3 rounded-card shadow-soft text-body flex items-center space-x-2 transition-custom opacity-0 pointer-events-none scale-95">
+                <i data-lucide="check-circle-2" class="w-5 h-5 text-success"></i>
+                <span id="notification-msg">Thao tác thành công</span>
+            </div>
+
+            <div id="tab-dia-gioi" class="space-y-4">
+                
+                <div class="flex items-center space-x-2">
+                    <div class="relative flex-1">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-textSecondary"></i>
+                        <input type="text" id="geo-search" oninput="handleGeoSearch()" placeholder="Search địa giới..." class="w-full pl-9 pr-3 py-2 bg-surface border border-border rounded-input text-body focus:outline-none focus:border-primary transition-custom">
+                    </div>
+                    <button onclick="openBottomSheet('tao-tinh')" class="p-2 bg-primary text-surface rounded-input hover:bg-opacity-90 transition-custom flex items-center justify-center shadow-sm" title="Thêm Tỉnh/Thành phố">
+                        <i data-lucide="plus" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <div class="bg-surface rounded-card border border-border shadow-soft">
+                    <div class="flex justify-between items-center p-3 border-b border-border">
+                        <span class="text-small font-medium text-textSecondary uppercase tracking-wider">Đơn vị hành chính</span>
+                        <button onclick="toggleAllTreeNodes()" id="toggle-tree-btn" class="p-1.5 text-textSecondary hover:text-textPrimary hover:bg-background rounded-input transition-custom" title="Mở rộng/Thu gọn">
+                            <i data-lucide="chevrons-up-down" class="w-4 h-4" id="toggle-tree-icon"></i>
+                        </button>
+                    </div>
+                    <div id="geo-tree-container" class="p-3 space-y-1">
+                        </div>
+                </div>
+
+                <div id="geo-detail-box" class="bg-surface rounded-card border border-border shadow-soft p-4 space-y-4 transition-custom hidden">
+                    <div class="border-b border-border pb-3">
+                        <div class="flex items-center gap-2 text-small text-textSecondary mb-2 flex-wrap" id="geo-detail-breadcrumb">
+                            </div>
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <h3 class="text-h3 text-textPrimary font-semibold" id="geo-detail-name">Hồ Chí Minh</h3>
+                                <p class="text-small text-textSecondary mt-0.5">Mã hành chính: <span class="font-mono text-textPrimary font-medium" id="geo-detail-code">79</span></p>
+                            </div>
+                            <span class="px-2 py-0.5 text-small font-medium rounded-full bg-blue-50 text-primary border border-blue-100" id="geo-detail-type">Thành phố</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 text-body bg-background p-3 rounded-input">
+                        <div>
+                            <span class="text-small text-textSecondary block">Trực thuộc cấp</span>
+                            <span class="font-medium text-textPrimary" id="geo-detail-parent">Trung ương</span>
+                        </div>
+                        <div>
+                            <span class="text-small text-textSecondary block">Trạng thái</span>
+                            <span class="inline-flex items-center space-x-1 text-small font-medium text-success" id="geo-detail-status-wrapper">
+                                <span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+                                <span id="geo-detail-status">Hoạt động</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2 pt-1">
+                        <button onclick="openBottomSheet('them-cap-con')" class="flex flex-col items-center justify-center p-2.5 bg-background border border-border rounded-button text-textPrimary hover:bg-slate-50 transition-custom">
+                            <i data-lucide="git-merge" class="w-4 h-4 text-primary mb-1"></i>
+                            <span class="text-small font-medium">Thêm con</span>
+                        </button>
+                        <button onclick="openBottomSheet('sua-dia-gioi')" class="flex flex-col items-center justify-center p-2.5 bg-background border border-border rounded-button text-textPrimary hover:bg-slate-50 transition-custom">
+                            <i data-lucide="edit-3" class="w-4 h-4 text-warning mb-1"></i>
+                            <span class="text-small font-medium">Sửa</span>
+                        </button>
+                        <button onclick="openBottomSheet('xoa-dia-gioi')" class="flex flex-col items-center justify-center p-2.5 bg-background border border-border rounded-button text-error hover:bg-red-50 transition-custom">
+                            <i data-lucide="trash-2" class="w-4 h-4 text-error mb-1"></i>
+                            <span class="text-small font-medium">Xóa</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div id="tab-danh-muc-khac" class="space-y-6 hidden">
+                
+                <section class="bg-surface rounded-card border border-border p-4 shadow-soft space-y-3">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-2">
+                            <div class="p-1.5 bg-blue-50 text-primary rounded-input">
+                                <i data-lucide="home" class="w-4 h-4"></i>
+                            </div>
+                            <h3 class="text-body font-semibold text-textPrimary">Loại phòng</h3>
+                        </div>
+                        <button onclick="openNameDialog('them-loai-phong', 'Loại phòng')" class="p-1.5 text-primary hover:bg-background rounded-input transition-custom">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                    <div class="flex flex-wrap gap-2" id="room-types-container">
+                        </div>
+                </section>
+
+                <section class="bg-surface rounded-card border border-border p-4 shadow-soft space-y-4">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-2">
+                            <div class="p-1.5 bg-blue-50 text-primary rounded-input">
+                                <i data-lucide="armchair" class="w-4 h-4"></i>
+                            </div>
+                            <h3 class="text-body font-semibold text-textPrimary">Nội thất</h3>
+                        </div>
+                        <button onclick="openNameDialog('them-nhom-noi-that', 'Nhóm nội thất')" class="p-1.5 text-primary hover:bg-background rounded-input transition-custom" title="Thêm nhóm nội thất">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-3" id="furniture-groups-container">
+                        </div>
+                </section>
+
+                <section class="bg-surface rounded-card border border-border p-4 shadow-soft space-y-4">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-2">
+                            <div class="p-1.5 bg-blue-50 text-primary rounded-input">
+                                <i data-lucide="wifi" class="w-4 h-4"></i>
+                            </div>
+                            <h3 class="text-body font-semibold text-textPrimary">Tiện ích</h3>
+                        </div>
+                        <button onclick="openNameDialog('them-nhom-tien-ich', 'Nhóm tiện ích')" class="p-1.5 text-primary hover:bg-background rounded-input transition-custom" title="Thêm nhóm tiện ích">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+
+                    <div class="space-y-3" id="amenity-groups-container">
+                        </div>
+                </section>
+
+                <section class="space-y-3">
+                    <div class="flex justify-between items-center px-1">
+                        <div class="flex items-center space-x-2">
+                            <div class="p-1.5 bg-blue-50 text-primary rounded-input">
+                                <i data-lucide="zap" class="w-4 h-4"></i>
+                            </div>
+                            <h3 class="text-body font-semibold text-textPrimary">Dịch vụ</h3>
+                        </div>
+                        <button onclick="openServiceDialog(true)" class="p-1.5 bg-surface text-primary border border-border rounded-input hover:bg-slate-50 transition-custom shadow-sm">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3" id="services-container">
+                        </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <div id="modal-backdrop" class="fixed inset-0 bg-textPrimary bg-opacity-40 z-40 hidden transition-custom opacity-0" onclick="closeAllOverlays()"></div>
+
+    <div id="action-menu-popup" class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-surface rounded-t-modal p-4 z-50 shadow-lg space-y-2 transition-custom translate-y-full hidden">
+        <div class="w-12 h-1 bg-border rounded-full mx-auto mb-2"></div>
+        <div class="flex items-center justify-between pb-2 border-b border-border">
+            <div class="text-small text-textSecondary font-medium" id="menu-target-title">Tên danh mục</div>
+            <button onclick="closeAllOverlays()" class="p-1.5 text-textSecondary hover:text-textPrimary hover:bg-background rounded-input transition-custom">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+        <button onclick="handleMenuAction('edit')" class="w-full flex items-center space-x-3 p-3 hover:bg-background rounded-button transition-custom text-body text-textPrimary">
+            <i data-lucide="edit-2" class="w-4 h-4 text-warning"></i>
+            <span>Sửa tên</span>
+        </button>
+        <button onclick="handleMenuAction('delete')" class="w-full flex items-center space-x-3 p-3 hover:bg-background rounded-button transition-custom text-body text-error">
+            <i data-lucide="trash-2" class="w-4 h-4 text-error"></i>
+            <span>Xóa danh mục</span>
+        </button>
+    </div>
+
+    <div id="name-dialog" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-sm bg-surface rounded-modal p-5 z-50 shadow-lg space-y-4 transition-custom scale-95 opacity-0 pointer-events-none hidden">
+        <div>
+            <h3 class="text-h3 text-textPrimary" id="name-dialog-title">Tiêu đề</h3>
+            <p class="text-small text-textSecondary mt-1" id="name-dialog-desc">Nhập thông tin tên danh mục mới bên dưới.</p>
+        </div>
+        <div class="space-y-1">
+            <label class="text-small font-medium text-textSecondary">Tên hiển thị</label>
+            <input type="text" id="name-dialog-input" class="w-full border border-border rounded-input px-3 py-2 text-body focus:outline-none focus:border-primary transition-custom" placeholder="Nhập tên...">
+        </div>
+        <div class="flex space-x-2 pt-2">
+            <button onclick="closeAllOverlays()" class="flex-1 py-2.5 border border-border rounded-button text-body font-medium text-textSecondary hover:bg-slate-50 transition-custom">Hủy</button>
+            <button onclick="submitNameDialog()" class="flex-1 py-2.5 bg-primary text-surface rounded-button text-body font-medium hover:bg-opacity-90 transition-custom shadow-sm">Xác nhận</button>
+        </div>
+    </div>
+
+    <div id="service-dialog" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-sm bg-surface rounded-modal p-5 z-50 shadow-lg space-y-4 transition-custom scale-95 opacity-0 pointer-events-none hidden">
+        <h3 class="text-h3 text-textPrimary" id="service-dialog-title">Thêm dịch vụ</h3>
+        
+        <div class="space-y-3">
+            <div class="space-y-1">
+                <label class="text-small font-medium text-textSecondary">Tên dịch vụ</label>
+                <input type="text" id="service-input-name" class="w-full border border-border rounded-input px-3 py-2 text-body focus:outline-none focus:border-primary transition-custom" placeholder="Ví dụ: Tiền Điện, Internet...">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                <div class="space-y-1">
+                    <label class="text-small font-medium text-textSecondary">Giá dịch vụ</label>
+                    <input type="number" id="service-input-price" class="w-full border border-border rounded-input px-3 py-2 text-body focus:outline-none focus:border-primary transition-custom" placeholder="0">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-small font-medium text-textSecondary">Đơn vị tính</label>
+                    <input type="text" id="service-input-unit" class="w-full border border-border rounded-input px-3 py-2 text-body focus:outline-none focus:border-primary transition-custom" placeholder="Kwh, Phòng, Tháng...">
+                </div>
+            </div>
+            <div class="space-y-1">
+                <label class="text-small font-medium text-textSecondary">Chu kỳ thanh toán</label>
+                <select id="service-input-period" class="w-full border border-border rounded-input px-3 py-2 bg-surface text-body focus:outline-none focus:border-primary transition-custom">
+                    <option value="Ngày">Ngày</option>
+                    <option value="Tuần">Tuần</option>
+                    <option value="Tháng" selected>Tháng</option>
+                    <option value="Quý">Quý</option>
+                    <option value="Năm">Năm</option>
+                </select>
+            </div>
+            <div class="space-y-1">
+                <label class="text-small font-medium text-textSecondary">Loại hình tính phí</label>
+                <select id="service-input-type" onchange="toggleServiceUsageField()" class="w-full border border-border rounded-input px-3 py-2 bg-surface text-body focus:outline-none focus:border-primary transition-custom">
+                    <option value="Cố định">Cố định</option>
+                    <option value="Theo lượng">Theo lượng</option>
+                </select>
+            </div>
+            <div class="space-y-1 hidden" id="service-usage-initial-wrapper">
+                <label class="text-small font-medium text-textSecondary">Chỉ số ban đầu</label>
+                <input type="number" id="service-input-initial" value="0" class="w-full border border-border rounded-input px-3 py-2 text-body focus:outline-none focus:border-primary transition-custom">
+            </div>
+        </div>
+
+        <div class="flex space-x-2 pt-2">
+            <button onclick="closeAllOverlays()" class="flex-1 py-2.5 border border-border rounded-button text-body font-medium text-textSecondary hover:bg-slate-50 transition-custom">Hủy</button>
+            <button onclick="submitServiceDialog()" class="flex-1 py-2.5 bg-primary text-surface rounded-button text-body font-medium hover:bg-opacity-90 transition-custom shadow-sm">Xác nhận</button>
+        </div>
+    </div>
+
+    <div id="bottom-sheet-tao-tinh" class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-surface rounded-t-modal p-5 z-50 shadow-lg space-y-4 transition-custom translate-y-full hidden">
+        <div class="w-12 h-1 bg-border rounded-full mx-auto mb-1"></div>
+        <h3 class="text-h3 text-textPrimary">Tạo tỉnh / thành mới</h3>
+        <div class="space-y-3">
+            <div class="space-y-1">
+                <label class="text-small font-medium text-textSecondary">Mã hành chính</label>
+                <input type="text" id="province-code" class="w-full border border-border rounded-input px-3 py-2 font-mono text-body" placeholder="Ví dụ: 79, 01...">
+            </div>
+            <div class="space-y-1">
+                <label class="text-small font-medium text-textSecondary">Tên tỉnh / thành phố</label>
+                <input type="text" id="province-name" class="w-full border border-border rounded-input px-3 py-2 text-body" placeholder="Nhập tên tỉnh/thành...">
+            </div>
+        </div>
+        <div class="flex space-x-2 pt-2">
+            <button onclick="closeAllOverlays()" class="flex-1 py-2.5 border border-border rounded-button text-body font-medium text-textSecondary">Hủy</button>
+            <button onclick="submitCreateProvince()" class="flex-1 py-2.5 bg-primary text-surface rounded-button text-body font-medium shadow-sm">Lưu</button>
+        </div>
+    </div>
+
+    <div id="bottom-sheet-them-cap-con" class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-surface rounded-t-modal p-5 z-50 shadow-lg space-y-4 transition-custom translate-y-full hidden">
+        <div class="w-12 h-1 bg-border rounded-full mx-auto mb-1"></div>
+        <h3 class="text-h3 text-textPrimary">Thêm cấp con địa giới</h3>
+        <div class="space-y-3">
+            <div>
+                <span class="text-small text-textSecondary block">Trực thuộc cấp</span>
+                <span class="font-semibold text-textPrimary text-body" id="sub-parent-label">Hồ Chí Minh</span>
+            </div>
+            <div class="space-y-1">
+                <label class="text-small font-medium text-textSecondary">Loại địa giới</label>
+                <select id="sub-geo-type" class="w-full border border-border rounded-input px-3 py-2 bg-surface text-body">
+                    </select>
+            </div>
+            <div class="space-y-1">
+                <label class="text-small font-medium text-textSecondary">Mã hành chính</label>
+                <input type="text" id="sub-geo-code" class="w-full border border-border rounded-input px-3 py-2 font-mono text-body" placeholder="Mã số">
+            </div>
+            <div class="space-y-1">
+                <label class="text-small font-medium text-textSecondary">Tên cấp con</label>
+                <input type="text" id="sub-geo-name" class="w-full border border-border rounded-input px-3 py-2 text-body" placeholder="Nhập tên...">
+            </div>
+        </div>
+        <div class="flex space-x-2 pt-2">
+            <button onclick="closeAllOverlays()" class="flex-1 py-2.5 border border-border rounded-button text-body font-medium text-textSecondary">Hủy</button>
+            <button onclick="submitCreateChildGeo()" class="flex-1 py-2.5 bg-primary text-surface rounded-button text-body font-medium shadow-sm">Lưu</button>
+        </div>
+    </div>
+
+    <div id="bottom-sheet-sua-dia-gioi" class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-surface rounded-t-modal p-5 z-50 shadow-lg space-y-4 transition-custom translate-y-full hidden">
+        <div class="w-12 h-1 bg-border rounded-full mx-auto mb-1"></div>
+        <h3 class="text-h3 text-textPrimary">Sửa địa giới hành chính</h3>
+        <div class="space-y-3">
+            <div class="space-y-1">
+                <label class="text-small font-medium text-textSecondary">Mã hành chính</label>
+                <input type="text" id="edit-geo-code" class="w-full border border-border rounded-input px-3 py-2 font-mono text-body">
+            </div>
+            <div class="space-y-1">
+                <label class="text-small font-medium text-textSecondary">Tên hiển thị</label>
+                <input type="text" id="edit-geo-name" class="w-full border border-border rounded-input px-3 py-2 text-body">
+            </div>
+            <div class="space-y-1">
+                <label class="text-small font-medium text-textSecondary">Loại địa giới</label>
+                <select id="edit-geo-type" class="w-full border border-border rounded-input px-3 py-2 bg-surface text-body">
+                    <option value="Tỉnh">Tỉnh</option>
+                    <option value="Thành phố">Thành phố</option>
+                    <option value="Quận/huyện">Quận/huyện</option>
+                    <option value="Phường/xã">Phường/xã</option>
+                </select>
+            </div>
+            <div class="space-y-1">
+                <label class="text-small font-medium text-textSecondary">Trạng thái địa giới</label>
+                <select id="edit-geo-status" class="w-full border border-border rounded-input px-3 py-2 bg-surface text-body">
+                    <option value="Hoạt động">Hoạt động</option>
+                    <option value="Tạm khóa">Tạm khóa</option>
+                </select>
+            </div>
+        </div>
+        <div class="flex space-x-2 pt-2">
+            <button onclick="closeAllOverlays()" class="flex-1 py-2.5 border border-border rounded-button text-body font-medium text-textSecondary">Hủy</button>
+            <button onclick="submitUpdateGeo()" class="flex-1 py-2.5 bg-primary text-surface rounded-button text-body font-medium shadow-sm">Lưu</button>
+        </div>
+    </div>
+
+    <div id="bottom-sheet-xoa-dia-gioi" class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-surface rounded-t-modal p-5 z-50 shadow-lg space-y-4 transition-custom translate-y-full hidden">
+        <div class="w-12 h-1 bg-border rounded-full mx-auto mb-1"></div>
+        <h3 class="text-h3 text-error">Xóa địa giới hành chính?</h3>
+        <p class="text-body text-textSecondary" id="delete-geo-desc">Hành động này sẽ xóa hoàn toàn mốc địa giới này khỏi hệ thống. Bạn có chắc chắn muốn tiếp tục?</p>
+        
+        <div id="delete-geo-error" class="hidden bg-red-50 border border-red-200 text-error p-3 rounded-input text-small flex items-start space-x-2">
+            <i data-lucide="alert-triangle" class="w-4 h-4 mt-0.5 shrink-0"></i>
+            <span>Không thể xóa địa giới này do đang tồn tại các cấp con phụ thuộc bên dưới. Vui lòng xóa cấp con trước.</span>
+        </div>
+
+        <div class="flex space-x-2 pt-2">
+            <button onclick="closeAllOverlays()" class="flex-1 py-2.5 border border-border rounded-button text-body font-medium text-textSecondary">Hủy</button>
+            <button id="delete-geo-confirm-btn" onclick="submitDeleteGeo()" class="flex-1 py-2.5 bg-error text-surface rounded-button text-body font-medium shadow-sm">Xác nhận</button>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. MOCK DATA RÀNG BUỘC CHẶT CHẼ ---
+        let geoData = [
+            {
+                id: "vn-79", name: "Hồ Chí Minh", code: "79", type: "Thành phố", status: "Hoạt động", parentName: "Việt Nam", path: "Việt Nam > Hồ Chí Minh", expanded: true,
+                children: [
+                    {
+                        id: "vn-79-td", name: "TP Thủ Đức", code: "791", type: "Quận/huyện", status: "Hoạt động", parentName: "Hồ Chí Minh", path: "Việt Nam > Hồ Chí Minh > TP Thủ Đức", expanded: true,
+                        children: [
+                            { id: "vn-79-td-lt", name: "Linh Trung", code: "26815", type: "Phường/xã", status: "Hoạt động", parentName: "TP Thủ Đức", path: "Việt Nam > Hồ Chí Minh > TP Thủ Đức > Linh Trung", children: [] },
+                            { id: "vn-79-td-lto", name: "Linh Tây", code: "26816", type: "Phường/xã", status: "Hoạt động", parentName: "TP Thủ Đức", path: "Việt Nam > Hồ Chí Minh > TP Thủ Đức > Linh Tây", children: [] }
+                        ]
+                    },
+                    {
+                        id: "vn-79-q1", name: "Quận 1", code: "760", type: "Quận/huyện", status: "Hoạt động", parentName: "Hồ Chí Minh", path: "Việt Nam > Hồ Chí Minh > Quận 1", expanded: false,
+                        children: [
+                            { id: "vn-79-q1-bng", name: "Bến Nghé", code: "26734", type: "Phường/xã", status: "Hoạt động", parentName: "Quận 1", path: "Việt Nam > Hồ Chí Minh > Quận 1 > Bến Nghé", children: [] }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "vn-01", name: "Hà Nội", code: "01", type: "Thành phố", status: "Hoạt động", parentName: "Việt Nam", path: "Việt Nam > Hà Nội", expanded: false,
+                children: [
+                    {
+                        id: "vn-01-hk", name: "Quận Hoàn Kiếm", code: "001", type: "Quận/huyện", status: "Hoạt động", parentName: "Hà Nội", path: "Việt Nam > Hà Nội > Quận Hoàn Kiếm", children: []
+                    }
+                ]
+            },
+            {
+                id: "vn-47", name: "Gia Lai", code: "47", type: "Tỉnh", status: "Tạm khóa", parentName: "Việt Nam", path: "Việt Nam > Gia Lai", expanded: false,
+                children: []
+            }
+        ];
+
+        let roomTypes = ["Phòng đơn", "Phòng đôi", "Căn hộ Studio", "Phòng Duplex", "Kí túc xá (Sleeppod)"];
+        
+        let furnitureData = [
+            { id: "fn-g1", groupName: "Phòng ngủ", items: ["Giường nệm", "Tủ quần áo", "Bàn trang điểm"] },
+            { id: "fn-g2", groupName: "Phòng khách / Bếp", items: ["Sofa cao cấp", "Tủ lạnh Inverter", "Bếp từ đôi"] }
+        ];
+
+        let amenityData = [
+            { id: "am-g1", groupName: "An ninh & Tiện ích chung", items: ["Khóa vân tay", "Camera an ninh", "Thang máy tốc độ cao"] },
+            { id: "am-g2", groupName: "Dịch vụ phòng", items: ["Giặt sấy tự động", "Dọn phòng định kỳ", "Chỗ đậu xe ô tô"] }
+        ];
+
+        let servicesData = [
+            { id: "srv-1", name: "Tiền Điện sinh hoạt", type: "Theo lượng", price: 3500, unit: "Kwh", period: "Tháng", initial: 120 },
+            { id: "srv-2", name: "Nước sạch", type: "Cố định", price: 100000, unit: "Người", period: "Tháng" },
+            { id: "srv-3", name: "Phí Quản lý & Vận hành", type: "Cố định", price: 150000, unit: "Phòng", period: "Tháng" },
+            { id: "srv-4", name: "Internet Cáp quang", type: "Cố định", price: 50000, unit: "Phòng", period: "Tháng" }
+        ];
+
+        // Biến trạng thái UI đang can thiệp
+        let activeTab = 'dia-gioi';
+        let selectedGeoNode = null; 
+        let allNodesExpanded = false;
+        let currentMenuContext = { type: '', groupId: '', itemName: '', index: -1 };
+        let currentServiceEditId = null;
+
+        // --- 2. HÀM QUẢN LÝ TABS ---
+        function switchTab(tabName) {
+            activeTab = tabName;
+            const diaGioiTab = document.getElementById('tab-dia-gioi');
+            const danhMucKhacTab = document.getElementById('tab-danh-muc-khac');
+            const diaGioiBtn = document.getElementById('tab-dia-gioi-btn');
+            const danhMucKhacBtn = document.getElementById('tab-danh-muc-khac-btn');
+            const indicator = document.getElementById('tab-indicator');
+
+            if (tabName === 'dia-gioi') {
+                diaGioiTab.classList.remove('hidden');
+                danhMucKhacTab.classList.add('hidden');
+                indicator.style.transform = 'translateX(0)';
+                diaGioiBtn.className = "flex-1 py-3 text-small font-medium text-center transition-custom text-primary";
+                danhMucKhacBtn.className = "flex-1 py-3 text-small font-medium text-center transition-custom text-textSecondary hover:text-textPrimary";
+            } else {
+                diaGioiTab.classList.add('hidden');
+                danhMucKhacTab.classList.remove('hidden');
+                indicator.style.transform = 'translateX(100%)';
+                danhMucKhacBtn.className = "flex-1 py-3 text-small font-medium text-center transition-custom text-primary";
+                diaGioiBtn.className = "flex-1 py-3 text-small font-medium text-center transition-custom text-textSecondary hover:text-textPrimary";
+                renderOtherCategories();
+            }
+        }
+
+        // --- 3. TOAST NOTIFICATION ---
+        function showNotification(msg) {
+            const toast = document.getElementById('notification-toast');
+            document.getElementById('notification-msg').innerText = msg;
+            toast.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
+            toast.classList.add('opacity-100', 'scale-100');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'scale-100');
+                toast.classList.add('opacity-0', 'pointer-events-none', 'scale-95');
+            }, 2000);
+        }
+
+        // --- 4. OVERLAY MANAGEMENT ---
+        function closeAllOverlays() {
+            document.getElementById('modal-backdrop').classList.add('opacity-0', 'hidden');
+            
+            // Ẩn popups / sheets
+            const sheets = [
+                'action-menu-popup', 'name-dialog', 'service-dialog',
+                'bottom-sheet-tao-tinh', 'bottom-sheet-them-cap-con',
+                'bottom-sheet-sua-dia-gioi', 'bottom-sheet-xoa-dia-gioi'
+            ];
+            sheets.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) {
+                    el.classList.add('hidden');
+                    if(id.includes('bottom-sheet') || id.includes('popup')) {
+                        el.classList.add('translate-y-full');
+                    } else {
+                        el.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
+                    }
+                }
+            });
+        }
+
+        function openBottomSheet(id) {
+            closeAllOverlays();
+            
+            // Setup data riêng trước khi mở cho từng form đặc thù
+            if (id === 'them-cap-con' && selectedGeoNode) {
+                document.getElementById('sub-parent-label').innerText = selectedGeoNode.name;
+                const subSelect = document.getElementById('sub-geo-type');
+                subSelect.innerHTML = '';
+                if(selectedGeoNode.type === 'Thành phố' || selectedGeoNode.type === 'Tỉnh') {
+                    subSelect.innerHTML = `<option value="Quận/huyện">Quận/huyện</option>`;
+                } else if(selectedGeoNode.type === 'Quận/huyện') {
+                    subSelect.innerHTML = `<option value="Phường/xã">Phường/xã</option>`;
+                }
+                document.getElementById('sub-geo-code').value = '';
+                document.getElementById('sub-geo-name').value = '';
+            }
+            if (id === 'sua-dia-gioi' && selectedGeoNode) {
+                document.getElementById('edit-geo-code').value = selectedGeoNode.code;
+                document.getElementById('edit-geo-name').value = selectedGeoNode.name;
+                document.getElementById('edit-geo-type').value = selectedGeoNode.type;
+                document.getElementById('edit-geo-status').value = selectedGeoNode.status;
+            }
+            if (id === 'xoa-dia-gioi' && selectedGeoNode) {
+                document.getElementById('delete-geo-desc').innerText = `Hành động này sẽ xóa hoàn toàn ${selectedGeoNode.type} "${selectedGeoNode.name}" khỏi hệ thống. Bạn có chắc chắn muốn tiếp tục?`;
+                const hasChildren = selectedGeoNode.children && selectedGeoNode.children.length > 0;
+                if(hasChildren) {
+                    document.getElementById('delete-geo-error').classList.remove('hidden');
+                    document.getElementById('delete-geo-confirm-btn').disabled = true;
+                    document.getElementById('delete-geo-confirm-btn').classList.add('opacity-50');
+                } else {
+                    document.getElementById('delete-geo-error').classList.add('hidden');
+                    document.getElementById('delete-geo-confirm-btn').disabled = false;
+                    document.getElementById('delete-geo-confirm-btn').classList.remove('opacity-50');
+                }
+            }
+
+            const backdrop = document.getElementById('modal-backdrop');
+            backdrop.classList.remove('hidden');
+            setTimeout(() => backdrop.classList.add('opacity-100'), 10);
+
+            const el = document.getElementById(`bottom-sheet-${id}`);
+            if(el) {
+                el.classList.remove('hidden');
+                setTimeout(() => el.classList.remove('translate-y-full'), 10);
+            }
+        }
+
+        // --- 5. ĐỊA GIỚI HÀNH CHÍNH - XỬ LÝ CÂY DỮ LIỆU ---
+        function findNodeById(nodes, id) {
+            for (let n of nodes) {
+                if (n.id === id) return n;
+                if (n.children) {
+                    let res = findNodeById(n.children, id);
+                    if (res) return res;
+                }
+            }
+            return null;
+        }
+
+        function deleteNodeById(nodes, id) {
+            for (let i = 0; i < nodes.length; i++) {
+                if (nodes[i].id === id) {
+                    nodes.splice(i, 1);
+                    return true;
+                }
+                if (nodes[i].children) {
+                    let found = deleteNodeById(nodes[i].children, id);
+                    if (found) return true;
+                }
+            }
+            return false;
+        }
+
+        function toggleNodeExpand(id, event) {
+            if(event) event.stopPropagation();
+            const node = findNodeById(geoData, id);
+            if (node) {
+                node.expanded = !node.expanded;
+                renderGeoTree();
+            }
+        }
+
+        function selectGeoNode(id) {
+            const node = findNodeById(geoData, id);
+            if (node) {
+                selectedGeoNode = node;
+                renderGeoDetail();
+            }
+        }
+
+        function toggleAllTreeNodes() {
+            allNodesExpanded = !allNodesExpanded;
+            function setExpand(nodes) {
+                nodes.forEach(n => {
+                    if(n.children && n.children.length > 0) {
+                        n.expanded = allNodesExpanded;
+                        setExpand(n.children);
+                    }
+                });
+            }
+            setExpand(geoData);
+            renderGeoTree();
+            const icon = document.getElementById('toggle-tree-icon');
+            icon.setAttribute('data-lucide', allNodesExpanded ? 'chevrons-up' : 'chevrons-up-down');
+            lucide.createIcons();
+            showNotification(allNodesExpanded ? "Đã mở rộng toàn bộ" : "Đã thu gọn toàn bộ");
+        }
+
+        function handleGeoSearch() {
+            const query = document.getElementById('geo-search').value.toLowerCase().trim();
+            renderGeoTree(query);
+        }
+
+        // Hàm render đệ quy cây địa giới
+        function buildTreeHTML(nodes, level = 0, query = '') {
+            let html = '';
+            nodes.forEach(node => {
+                const hasChildren = node.children && node.children.length > 0;
+                const matchesSearch = query === '' || node.name.toLowerCase().includes(query) || node.code.includes(query);
+                
+                // Thuật toán lọc tìm kiếm đơn giản: Hiển thị nếu con match hoặc chính nó match
+                let childHTML = '';
+                if (hasChildren) {
+                    childHTML = buildTreeHTML(node.children, level + 1, query);
+                }
+
+                if (query !== '' && !matchesSearch && childHTML === '') {
+                    return; // Không khớp và không có con khớp thì bỏ qua
+                }
+
+                const paddingLeft = level * 16;
+                const isSelected = selectedGeoNode && selectedGeoNode.id === node.id;
+                
+                html += `
+                    <div class="space-y-1">
+                        <div onclick="selectGeoNode('${node.id}')" class="flex items-center justify-between p-2 rounded-input transition-custom cursor-pointer ${isSelected ? 'bg-blue-50 text-primary font-medium' : 'hover:bg-background text-textPrimary'}">
+                            <div class="flex items-center flex-1 min-w-0" style="padding-left: ${paddingLeft}px">
+                                <button onclick="toggleNodeExpand('${node.id}', event)" class="p-1 rounded-md text-textSecondary hover:bg-slate-200 transition-custom mr-1 shrink-0 ${!hasChildren ? 'opacity-20 pointer-events-none' : ''}">
+                                    <i data-lucide="${node.expanded ? 'chevron-down' : 'chevron-right'}" class="w-4 h-4"></i>
+                                </button>
+                                <i data-lucide="${level === 0 ? 'map-pin' : level === 1 ? 'milestone' : 'flag'}" class="w-4 h-4 mr-2 shrink-0 ${isSelected ? 'text-primary' : 'text-textSecondary'}"></i>
+                                <span class="truncate text-body">${node.name}</span>
+                            </div>
+                            <button class="p-1 text-textSecondary hover:text-primary transition-custom shrink-0">
+                                <i data-lucide="eye" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        ${hasChildren && (node.expanded || query !== '') ? `<div class="tree-children">${childHTML}</div>` : ''}
+                    </div>
+                `;
+            });
+            return html;
+        }
+
+        function renderGeoTree(query = '') {
+            const container = document.getElementById('geo-tree-container');
+            const treeHTML = buildTreeHTML(geoData, 0, query);
+            container.innerHTML = treeHTML || `<div class="text-small text-textSecondary text-center py-4">Không tìm thấy địa giới hành chính</div>`;
+            lucide.createIcons();
+        }
+
+        function renderGeoDetail() {
+            const box = document.getElementById('geo-detail-box');
+            if (!selectedGeoNode) {
+                box.classList.add('hidden');
+                return;
+            }
+            box.classList.remove('hidden');
+
+            document.getElementById('geo-detail-name').innerText = selectedGeoNode.name;
+            document.getElementById('geo-detail-code').innerText = selectedGeoNode.code;
+            document.getElementById('geo-detail-type').innerText = selectedGeoNode.type;
+            document.getElementById('geo-detail-parent').innerText = selectedGeoNode.parentName || 'Trung ương';
+            document.getElementById('geo-detail-status').innerText = selectedGeoNode.status;
+            
+            const statusWrapper = document.getElementById('geo-detail-status-wrapper');
+            if (selectedGeoNode.status === 'Hoạt động') {
+                statusWrapper.className = "inline-flex items-center space-x-1 text-small font-medium text-success";
+                statusWrapper.firstElementChild.className = "w-1.5 h-1.5 rounded-full bg-success";
+            } else {
+                statusWrapper.className = "inline-flex items-center space-x-1 text-small font-medium text-warning";
+                statusWrapper.firstElementChild.className = "w-1.5 h-1.5 rounded-full bg-warning";
+            }
+
+            // Breadcrumb render
+            const breadcrumbContainer = document.getElementById('geo-detail-breadcrumb');
+            const breadcrumbParts = (selectedGeoNode.path || selectedGeoNode.name).split(' > ').filter(p => p !== 'Việt Nam');
+            let bcHTML = '';
+            breadcrumbParts.forEach((part, idx) => {
+                bcHTML += `<span>${part}</span>`;
+                if(idx < breadcrumbParts.length - 1) {
+                    bcHTML += `<i data-lucide="chevron-right" class="w-3 h-3 mx-0.5 shrink-0"></i>`;
+                }
+            });
+            breadcrumbContainer.innerHTML = bcHTML;
+            lucide.createIcons();
+            
+            // Tự động cuộn xuống xem chi tiết mượt mà trên mobile
+            box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // --- 6. CÁC HÀM XỬ LÝ SUBMIT ĐỊA GIỚI ---
+        function submitCreateProvince() {
+            const code = document.getElementById('province-code').value.trim();
+            const name = document.getElementById('province-name').value.trim();
+            if(!code || !name) return alert('Vui lòng điền đủ thông tin');
+            
+            const newProv = {
+                id: `vn-${code}-${Date.now()}`,
+                name: name,
+                code: code,
+                type: name.includes('Thành phố') ? 'Thành phố' : 'Tỉnh',
+                status: 'Hoạt động',
+                parentName: 'Việt Nam',
+                path: `Việt Nam > ${name}`,
+                children: [],
+                expanded: false
+            };
+            geoData.push(newProv);
+            closeAllOverlays();
+            renderGeoTree();
+            showNotification(`Đã tạo tỉnh/thành phố ${name} mới thành công`);
+        }
+
+        function submitCreateChildGeo() {
+            const name = document.getElementById('sub-geo-name').value.trim();
+            const code = document.getElementById('sub-geo-code').value.trim();
+            const type = document.getElementById('sub-geo-type').value;
+            if(!name || !code) return alert('Vui lòng điền đủ mã và tên');
+
+            const newChild = {
+                id: `geo-${code}-${Date.now()}`,
+                name: name,
+                code: code,
+                type: type,
+                status: 'Hoạt động',
+                parentName: selectedGeoNode.name,
+                path: `${selectedGeoNode.path} > ${name}`,
+                children: []
+            };
+
+            if(!selectedGeoNode.children) selectedGeoNode.children = [];
+            selectedGeoNode.children.push(newChild);
+            selectedGeoNode.expanded = true; // Expand parent node
+
+            closeAllOverlays();
+            renderGeoTree();
+            renderGeoDetail();
+            showNotification(`Đã thêm cấp con "${name}" trực thuộc ${selectedGeoNode.name}`);
+        }
+
+        function submitUpdateGeo() {
+            const name = document.getElementById('edit-geo-name').value.trim();
+            const code = document.getElementById('edit-geo-code').value.trim();
+            const type = document.getElementById('edit-geo-type').value;
+            const status = document.getElementById('edit-geo-status').value;
+
+            if(!name || !code) return alert('Thông tin điền không hợp lệ');
+
+            selectedGeoNode.name = name;
+            selectedGeoNode.code = code;
+            selectedGeoNode.type = type;
+            selectedGeoNode.status = status;
+
+            closeAllOverlays();
+            renderGeoTree();
+            renderGeoDetail();
+            showNotification('Cập nhật thông tin địa giới thành công');
+        }
+
+        function submitDeleteGeo() {
+            if(!selectedGeoNode) return;
+            const deletedName = selectedGeoNode.name;
+            const success = deleteNodeById(geoData, selectedGeoNode.id);
+            if(success) {
+                selectedGeoNode = null;
+                closeAllOverlays();
+                renderGeoTree();
+                renderGeoDetail();
+                showNotification(`Đã xóa địa giới hành chính ${deletedName}`);
+            }
+        }
+
+        // --- 7. TAB: DANH MỤC KHÁC - LOGIC HOẠT ĐỘNG ---
+        function openActionMenu(type, title, itemName, groupId = '', index = -1) {
+            currentMenuContext = { type, title, itemName, groupId, index };
+            document.getElementById('menu-target-title').innerText = `${title}: ${itemName}`;
+            
+            const backdrop = document.getElementById('modal-backdrop');
+            backdrop.classList.remove('hidden');
+            setTimeout(() => backdrop.classList.add('opacity-100'), 10);
+
+            const menu = document.getElementById('action-menu-popup');
+            menu.classList.remove('hidden');
+            setTimeout(() => menu.classList.remove('translate-y-full'), 10);
+        }
+
+        function handleMenuAction(action) {
+            const ctx = currentMenuContext;
+            closeAllOverlays();
+
+            if (action === 'edit') {
+                // Mở đặt tên dialog để chỉnh sửa tên cũ
+                setTimeout(() => {
+                    openNameDialog(`edit-${ctx.type}`, ctx.title, ctx.itemName);
+                }, 200);
+            } else if (action === 'delete') {
+                if(ctx.type === 'room-type') {
+                    roomTypes.splice(ctx.index, 1);
+                } else if(ctx.type === 'furniture-item') {
+                    const group = furnitureData.find(g => g.id === ctx.groupId);
+                    if(group) group.items = group.items.filter(i => i !== ctx.itemName);
+                } else if(ctx.type === 'amenity-item') {
+                    const group = amenityData.find(g => g.id === ctx.groupId);
+                    if(group) group.items = group.items.filter(i => i !== ctx.itemName);
+                }
+                renderOtherCategories();
+                showNotification(`Đã xóa "${ctx.itemName}" khỏi danh mục.`);
+            }
+        }
+
+        function openNameDialog(mode, typeTitle, preFillValue = '') {
+            closeAllOverlays();
+            const dialog = document.getElementById('name-dialog');
+            document.getElementById('name-dialog-title').innerText = preFillValue ? `Sửa ${typeTitle}` : `Thêm ${typeTitle}`;
+            document.getElementById('name-dialog-desc').innerText = `Thiết lập cấu hình tên hiển thị chuẩn hóa cho dữ liệu ${typeTitle.toLowerCase()}.`;
+            
+            const input = document.getElementById('name-dialog-input');
+            input.value = preFillValue;
+            input.dataset.mode = mode; // Lưu trữ mode để xác nhận xử lý
+            
+            const backdrop = document.getElementById('modal-backdrop');
+            backdrop.classList.remove('hidden');
+            setTimeout(() => backdrop.classList.add('opacity-100'), 10);
+
+            dialog.classList.remove('hidden');
+            setTimeout(() => dialog.classList.remove('scale-95', 'opacity-0', 'pointer-events-none'), 10);
+            setTimeout(() => input.focus(), 150);
+        }
+
+        function submitNameDialog() {
+            const input = document.getElementById('name-dialog-input');
+            const val = input.value.trim();
+            const mode = input.dataset.mode;
+            if(!val) return;
+
+            if (mode === 'them-loai-phong') {
+                roomTypes.push(val);
+            } else if (mode === 'edit-room-type') {
+                roomTypes[currentMenuContext.index] = val;
+            } else if (mode === 'them-nhom-noi-that') {
+                furnitureData.push({ id: `fn-${Date.now()}`, groupName: val, items: [] });
+            } else if (mode === 'edit-furniture-item') {
+                const group = furnitureData.find(g => g.id === currentMenuContext.groupId);
+                if(group) {
+                    const idx = group.items.indexOf(currentMenuContext.itemName);
+                    if(idx !== -1) group.items[idx] = val;
+                }
+            } else if (mode === 'them-nhom-tien-ich') {
+                amenityData.push({ id: `am-${Date.now()}`, groupName: val, items: [] });
+            } else if (mode === 'edit-amenity-item') {
+                const group = amenityData.find(g => g.id === currentMenuContext.groupId);
+                if(group) {
+                    const idx = group.items.indexOf(currentMenuContext.itemName);
+                    if(idx !== -1) group.items[idx] = val;
+                }
+            } else if (mode.startsWith('add-item-fn-')) {
+                const gId = mode.replace('add-item-fn-', '');
+                const group = furnitureData.find(g => g.id === gId);
+                if(group) group.items.push(val);
+            } else if (mode.startsWith('add-item-am-')) {
+                const gId = mode.replace('add-item-am-', '');
+                const group = amenityData.find(g => g.id === gId);
+                if(group) group.items.push(val);
+            } else if (mode.startsWith('edit-group-title-fn-')) {
+                const gId = mode.replace('edit-group-title-fn-', '');
+                const group = furnitureData.find(g => g.id === gId);
+                if(group) group.groupName = val;
+            } else if (mode.startsWith('edit-group-title-am-')) {
+                const gId = mode.replace('edit-group-title-am-', '');
+                const group = amenityData.find(g => g.id === gId);
+                if(group) group.groupName = val;
+            }
+
+            closeAllOverlays();
+            renderOtherCategories();
+            showNotification("Đã lưu thông tin thay đổi vào danh mục cấu hình");
+        }
+
+        // --- 8. DỊCH VỤ DIALOG LOGIC ---
+        function toggleServiceUsageField() {
+            const type = document.getElementById('service-input-type').value;
+            const field = document.getElementById('service-usage-initial-wrapper');
+            if(type === 'Theo lượng') {
+                field.classList.remove('hidden');
+            } else {
+                field.classList.add('hidden');
+            }
+        }
+
+        function openServiceDialog(isCreate = true, srvId = null) {
+            closeAllOverlays();
+            currentServiceEditId = srvId;
+            const dialog = document.getElementById('service-dialog');
+            
+            if(isCreate) {
+                document.getElementById('service-dialog-title').innerText = "Thêm dịch vụ";
+                document.getElementById('service-input-name').value = '';
+                document.getElementById('service-input-price').value = '';
+                document.getElementById('service-input-unit').value = '';
+                document.getElementById('service-input-period').value = 'Tháng';
+                document.getElementById('service-input-type').value = 'Cố định';
+                document.getElementById('service-input-initial').value = 0;
+            } else {
+                const srv = servicesData.find(s => s.id === srvId);
+                if(!srv) return;
+                document.getElementById('service-dialog-title').innerText = "Sửa cấu hình dịch vụ";
+                document.getElementById('service-input-name').value = srv.name;
+                document.getElementById('service-input-price').value = srv.price;
+                document.getElementById('service-input-unit').value = srv.unit;
+                document.getElementById('service-input-period').value = srv.period;
+                document.getElementById('service-input-type').value = srv.type;
+                document.getElementById('service-input-initial').value = srv.initial || 0;
+            }
+            
+            toggleServiceUsageField();
+
+            const backdrop = document.getElementById('modal-backdrop');
+            backdrop.classList.remove('hidden');
+            setTimeout(() => backdrop.classList.add('opacity-100'), 10);
+
+            dialog.classList.remove('hidden');
+            setTimeout(() => dialog.classList.remove('scale-95', 'opacity-0', 'pointer-events-none'), 10);
+        }
+
+        function submitServiceDialog() {
+            const name = document.getElementById('service-input-name').value.trim();
+            const price = parseFloat(document.getElementById('service-input-price').value) || 0;
+            const unit = document.getElementById('service-input-unit').value.trim();
+            const period = document.getElementById('service-input-period').value;
+            const type = document.getElementById('service-input-type').value;
+            const initial = parseFloat(document.getElementById('service-input-initial').value) || 0;
+
+            if(!name || !unit) return alert('Vui lòng điền đủ thông tin bắt buộc');
+
+            if (currentServiceEditId) {
+                // Cập nhật dịch vụ cũ
+                const srv = servicesData.find(s => s.id === currentServiceEditId);
+                if(srv) {
+                    srv.name = name;
+                    srv.price = price;
+                    srv.unit = unit;
+                    srv.period = period;
+                    srv.type = type;
+                    if(type === 'Theo lượng') srv.initial = initial;
+                }
+            } else {
+                // Tạo mới hoàn toàn
+                servicesData.push({
+                    id: `srv-${Date.now()}`,
+                    name, type, price, unit, period,
+                    ...(type === 'Theo lượng' && { initial })
+                });
+            }
+
+            closeAllOverlays();
+            renderOtherCategories();
+            showNotification("Đã lưu thông tin cấu hình biểu giá dịch vụ.");
+        }
+
+        // --- 9. RENDER TOÀN BỘ TAB DANH MỤC KHÁC ---
+        function renderOtherCategories() {
+            // Render Loại Phòng
+            const rtContainer = document.getElementById('room-types-container');
+            rtContainer.innerHTML = roomTypes.map((t, idx) => `
+                <div onclick="openActionMenu('room-type','Loại phòng','${t}','', ${idx})" class="px-3 py-1.5 bg-background border border-border text-small rounded-full text-textPrimary hover:border-primary hover:text-primary transition-custom cursor-pointer flex items-center space-x-1 shadow-sm">
+                    <span>${t}</span>
+                    <i data-lucide="more-vertical" class="w-3.5 h-3.5 text-textSecondary"></i>
+                </div>
+            `).join('');
+
+            // Render Khối Nội thất nhóm
+            const fnContainer = document.getElementById('furniture-groups-container');
+            fnContainer.innerHTML = furnitureData.map(group => `
+                <div class="border border-border rounded-input p-3 bg-background space-y-2">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-body font-medium text-textPrimary">${group.groupName}</span>
+                            <button onclick="openNameDialog('edit-group-title-fn-${group.id}', 'Tên nhóm nội thất', '${group.groupName}')" class="p-1 text-textSecondary hover:text-warning transition-custom">
+                                <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                        <button onclick="openNameDialog('add-item-fn-${group.id}', 'vật dụng nội thất mới')" class="p-1 text-primary hover:bg-surface rounded-md transition-custom flex items-center text-small font-medium space-x-0.5">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                            <span>Thêm</span>
+                        </button>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5">
+                        ${group.items.length === 0 ? `<span class="text-small text-textSecondary italic">Chưa có vật dụng</span>` : group.items.map(item => `
+                            <div onclick="openActionMenu('furniture-item','Nội thất','${item}','${group.id}')" class="px-2.5 py-1 bg-surface border border-border text-small rounded-input text-textPrimary hover:border-primary transition-custom cursor-pointer flex items-center space-x-1">
+                                <span>${item}</span>
+                                <i data-lucide="chevron-down" class="w-3 h-3 text-textSecondary"></i>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Khối Tiện ích nhóm
+            const amContainer = document.getElementById('amenity-groups-container');
+            amContainer.innerHTML = amenityData.map(group => `
+                <div class="border border-border rounded-input p-3 bg-background space-y-2">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-body font-medium text-textPrimary">${group.groupName}</span>
+                            <button onclick="openNameDialog('edit-group-title-am-${group.id}', 'Tên nhóm tiện ích', '${group.groupName}')" class="p-1 text-textSecondary hover:text-warning transition-custom">
+                                <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                        <button onclick="openNameDialog('add-item-am-${group.id}', 'tiện ích mới')" class="p-1 text-primary hover:bg-surface rounded-md transition-custom flex items-center text-small font-medium space-x-0.5">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                            <span>Thêm</span>
+                        </button>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5">
+                        ${group.items.length === 0 ? `<span class="text-small text-textSecondary italic">Chưa có tiện ích</span>` : group.items.map(item => `
+                            <div onclick="openActionMenu('amenity-item','Tiện ích','${item}','${group.id}')" class="px-2.5 py-1 bg-surface border border-border text-small rounded-input text-textPrimary hover:border-primary transition-custom cursor-pointer flex items-center space-x-1">
+                                <span>${item}</span>
+                                <i data-lucide="chevron-down" class="w-3 h-3 text-textSecondary"></i>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Biểu Giá Dịch Vụ dạng Grid Cards gọn gàng năng suất cao
+            const srvContainer = document.getElementById('services-container');
+            srvContainer.innerHTML = servicesData.map(srv => `
+                <div onclick="openServiceDialog(false, '${srv.id}')" class="bg-surface border border-border rounded-card p-3 shadow-sm hover:border-primary transition-custom cursor-pointer space-y-1.5">
+                    <div class="font-medium text-body text-textPrimary leading-tight">${srv.name}</div>
+                    <span class="inline-block px-1.5 py-0.5 text-small font-medium rounded bg-slate-100 text-textSecondary">${srv.type}</span>
+                    <div class="text-body font-medium text-primary">${srv.price.toLocaleString('vi-VN')}đ</div>
+                    <div class="text-small text-textSecondary">${srv.unit} / ${srv.period}</div>
+                    ${srv.type === 'Theo lượng' ? `<div class="text-small text-textSecondary">Chỉ số đầu: <span class="font-mono text-textPrimary font-medium">${srv.initial}</span></div>` : ''}
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        // --- Khởi chạy ban đầu ---
+        window.addEventListener('DOMContentLoaded', () => {
+            renderGeoTree();
+            // Mặc định chọn node đầu tiên để hiển thị trực quan mockup form chi tiết
+            if(geoData.length > 0) {
+                selectGeoNode(geoData[0].id);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Địa Giới Hành Chính</title>
+    <!-- Inter Font family -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#2563EB',
+                        background: '#F8FAFC',
+                        surface: '#FFFFFF',
+                        border: '#E2E8F0',
+                        textPrimary: '#0F172A',
+                        textSecondary: '#64748B',
+                        success: '#16A34A',
+                        warning: '#F59E0B',
+                        error: '#DC2626',
+                    },
+                    borderRadius: {
+                        'card': '16px',
+                        'button': '12px',
+                        'input': '10px',
+                        'modal': '20px',
+                    },
+                    boxShadow: {
+                        'soft': '0 2px 12px -1px rgba(15, 23, 42, 0.04), 0 4px 20px -2px rgba(15, 23, 42, 0.03)',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8FAFC;
+            color: #0F172A;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .text-h1 { font-size: 32px; font-weight: 600; line-height: 1.25; }
+        .text-h2 { font-size: 24px; font-weight: 600; line-height: 1.3; }
+        .text-h3 { font-size: 20px; font-weight: 500; line-height: 1.35; }
+        .text-body { font-size: 14px; font-weight: 400; line-height: 1.5; }
+        .text-small { font-size: 12px; font-weight: 400; line-height: 1.5; }
+        
+        /* Smooth transitions */
+        .transition-all-subtle {
+            transition: all 180ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Custom scrollbar minimalism */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #E2E8F0;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-blue-100">
+
+    <!-- Top Sticky Header Area -->
+    <header class="sticky top-0 z-30 bg-surface border-b border-border px-4 py-3 flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-3">
+            <button class="p-1 text-textPrimary hover:bg-background rounded-button transition-all-subtle">
+                <i data-lucide="chevron-left" class="w-5 h-5"></i>
+            </button>
+            <div>
+                <span class="text-small text-textSecondary uppercase tracking-wider font-medium">Quản lý danh mục</span>
+                <h2 class="text-body font-semibold text-textPrimary">Địa giới hành chính</h2>
+            </div>
+        </div>
+        <div class="flex items-center gap-1">
+            <button onclick="openImportModal()" class="p-2 text-textSecondary hover:text-primary hover:bg-background rounded-button transition-all-subtle" title="Import dữ liệu">
+                <i data-lucide="upload-cloud" class="w-5 h-5"></i>
+            </button>
+            <button onclick="triggerExport()" class="p-2 text-textSecondary hover:text-primary hover:bg-background rounded-button transition-all-subtle" title="Export dữ liệu">
+                <i data-lucide="download" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Dynamic Container Grid / Stack for productivity apps -->
+    <main class="flex-1 p-4 max-w-xl mx-auto w-full flex flex-col gap-4 pb-24">
+        
+        <!-- Global Notification Banner Container (Hidden by default) -->
+        <div id="toastNotification" class="hidden transform translate-y-2 opacity-0 transition-all-subtle bg-surface border-l-4 border-success p-3 rounded-card shadow-soft flex items-start gap-3">
+            <div class="text-success p-0.5"><i data-lucide="check-circle" class="w-5 h-5"></i></div>
+            <div class="flex-1">
+                <p id="toastMessage" class="text-body font-medium text-textPrimary">Thao tác thành công</p>
+            </div>
+            <button onclick="hideToast()" class="text-textSecondary hover:text-textPrimary"><i data-lucide="x" class="w-4 h-4"></i></button>
+        </div>
+
+        <!-- Search input box -->
+        <div class="relative bg-surface rounded-input border border-border shadow-soft focus-within:border-primary transition-all-subtle">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-textSecondary">
+                <i data-lucide="search" class="w-4 h-4"></i>
+            </span>
+            <input 
+                type="text" 
+                id="searchTree" 
+                oninput="handleSearch(this.value)"
+                placeholder="Tìm kiếm địa giới hành chính..." 
+                class="w-full pl-9 pr-8 py-2.5 bg-transparent rounded-input text-body text-textPrimary placeholder:text-textSecondary focus:outline-none"
+            >
+            <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute inset-y-0 right-0 flex items-center pr-3 text-textSecondary hover:text-textPrimary">
+                <i data-lucide="x-circle" class="w-4 h-4"></i>
+            </button>
+        </div>
+
+        <!-- Tree Operations / Actions Toolbar -->
+        <div class="flex items-center justify-between bg-surface px-3 py-2 rounded-card border border-border shadow-soft">
+            <div class="flex gap-1">
+                <button onclick="expandAll()" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-button text-small font-medium text-textSecondary hover:text-primary hover:bg-background transition-all-subtle">
+                    <i data-lucide="folder-open" class="w-4 h-4"></i>
+                    Mở rộng
+                </button>
+                <button onclick="collapseAll()" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-button text-small font-medium text-textSecondary hover:text-primary hover:bg-background transition-all-subtle">
+                    <i data-lucide="folder-closed" class="w-4 h-4"></i>
+                    Thu gọn
+                </button>
+            </div>
+            <button onclick="openAddProvModal()" class="flex items-center gap-1 px-3 py-1.5 bg-primary text-white rounded-button text-small font-medium hover:bg-blue-700 transition-all-subtle shadow-sm">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                Thêm Tỉnh
+            </button>
+        </div>
+
+        <!-- Section Hierarchy: The Interactive Explorer Tree -->
+        <div class="bg-surface p-4 rounded-card border border-border shadow-soft flex flex-col gap-1">
+            <h3 class="text-small font-semibold text-textSecondary uppercase tracking-wider mb-2 px-1">Cấu trúc địa giới</h3>
+            <div id="treeContainer" class="flex flex-col gap-0.5 overflow-hidden">
+                <!-- Javascript populates the recursive interactive tree template elements here dynamically -->
+            </div>
+        </div>
+
+        <!-- Floating Context Specific Active Node Details Visual Component -->
+        <div id="detailSection" class="hidden bg-surface rounded-card border border-border shadow-soft overflow-hidden transition-all-subtle">
+            <!-- Breadcrumbs track indicators -->
+            <div class="bg-background px-4 py-2.5 border-b border-border flex items-center gap-1 overflow-x-auto whitespace-nowrap text-small text-textSecondary">
+                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-primary flex-shrink-0"></i>
+                <div id="breadcrumbTrack" class="flex items-center gap-1">
+                    <!-- Tracks render target parents -->
+                </div>
+            </div>
+
+            <!-- Detail stats wrapper summary -->
+            <div class="p-4 flex flex-col gap-3">
+                <div class="flex items-start justify-between gap-2">
+                    <div>
+                        <span id="detailBadgeType" class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-blue-50 text-primary border border-blue-100">
+                            Tỉnh / Thành Phố
+                        </span>
+                        <h3 id="detailTitleName" class="text-h3 font-semibold text-textPrimary mt-1">Hồ Chí Minh</h3>
+                    </div>
+                    <span id="detailBadgeStatus" class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-green-50 text-success border border-green-100">
+                        Hoạt động
+                    </span>
+                </div>
+
+                <!-- Fields visual standard representation grid layout -->
+                <div class="grid grid-cols-2 gap-3 pt-1 border-t border-dashed border-border text-body">
+                    <div>
+                        <p class="text-small text-textSecondary">Mã định danh</p>
+                        <p id="detailCodeValue" class="font-medium text-textPrimary mt-0.5">VN-79</p>
+                    </div>
+                    <div>
+                        <p class="text-small text-textSecondary">Trực thuộc cấp</p>
+                        <p id="detailParentName" class="font-medium text-textPrimary mt-0.5">Việt Nam</p>
+                    </div>
+                </div>
+
+                <!-- Dynamic Action management utilities specifically assigned onto node selected -->
+                <div class="grid grid-cols-3 gap-2 mt-2 pt-2 border-t border-border">
+                    <button onclick="triggerAddChildNode()" class="flex flex-col items-center justify-center py-2 px-1 rounded-button bg-background hover:bg-blue-50 text-primary hover:text-blue-700 transition-all-subtle border border-transparent hover:border-blue-100">
+                        <i data-lucide="plus-circle" class="w-4 h-4 mb-1"></i>
+                        <span class="text-small font-medium">Thêm cấp con</span>
+                    </button>
+                    <button onclick="triggerEditNode()" class="flex flex-col items-center justify-center py-2 px-1 rounded-button bg-background hover:bg-amber-50 text-warning hover:text-amber-700 transition-all-subtle border border-transparent hover:border-amber-100">
+                        <i data-lucide="edit" class="w-4 h-4 mb-1"></i>
+                        <span class="text-small font-medium">Sửa thông tin</span>
+                    </button>
+                    <button onclick="triggerDeleteNode()" class="flex flex-col items-center justify-center py-2 px-1 rounded-button bg-background hover:bg-rose-50 text-error hover:text-rose-700 transition-all-subtle border border-transparent hover:border-rose-100">
+                        <i data-lucide="trash-2" class="w-4 h-4 mb-1"></i>
+                        <span class="text-small font-medium">Xóa đơn vị</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ---------------- MODALS / DIALOG SYSTEMS ---------------- -->
+    
+    <!-- Modal Backdrop Blur Base Structure Overlay -->
+    <div id="modalOverlay" class="hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all-subtle opacity-0">
+        
+        <!-- 1. Form Modal Content Shell (Create Province) -->
+        <div id="addProvinceModal" class="hidden bg-surface w-full sm:max-w-md rounded-t-modal sm:rounded-modal shadow-xl transform translate-y-10 transition-all-subtle p-5 flex flex-col gap-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between">
+                <h3 class="text-h3 font-semibold text-textPrimary">Thêm tỉnh/thành</h3>
+                <button onclick="closeActiveModal()" class="p-1 rounded-full text-textSecondary hover:bg-background"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <form id="formAddProvince" onsubmit="saveNewProvince(event)" class="flex flex-col gap-4">
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-small font-medium text-textPrimary">Tên tỉnh/thành phố <span class="text-error">*</span></label>
+                    <input type="text" id="addProvName" required placeholder="Nhập tên tỉnh/thành (vd: Hà Nội)" class="w-full px-3 py-2 border border-border rounded-input text-body text-textPrimary focus:outline-none focus:border-primary transition-all-subtle">
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-small font-medium text-textPrimary">Mã tỉnh/thành <span class="text-error">*</span></label>
+                    <input type="text" id="addProvCode" required placeholder="Nhập mã định danh (vd: VN-01)" class="w-full px-3 py-2 border border-border rounded-input text-body text-textPrimary focus:outline-none focus:border-primary transition-all-subtle">
+                </div>
+                <div class="flex gap-3 justify-end pt-2">
+                    <button type="button" onclick="closeActiveModal()" class="px-4 py-2 border border-border text-textSecondary text-body font-medium rounded-button hover:bg-background transition-all-subtle">Hủy</button>
+                    <button type="submit" class="px-5 py-2 bg-primary text-white text-body font-medium rounded-button hover:bg-blue-700 shadow-sm transition-all-subtle">Lưu cấu trúc</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- 2. Form Modal Content Shell (Create Subordinate child node item) -->
+        <div id="addChildModal" class="hidden bg-surface w-full sm:max-w-md rounded-t-modal sm:rounded-modal shadow-xl transform translate-y-10 transition-all-subtle p-5 flex flex-col gap-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between">
+                <h3 class="text-h3 font-semibold text-textPrimary">Thêm cấp con</h3>
+                <button onclick="closeActiveModal()" class="p-1 rounded-full text-textSecondary hover:bg-background"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <form id="formAddChild" onsubmit="saveNewChild(event)" class="flex flex-col gap-4">
+                <div class="flex flex-col gap-1">
+                    <span class="text-small text-textSecondary">Đơn vị cha trực thuộc</span>
+                    <p id="addChildParentLabel" class="text-body font-semibold text-textPrimary bg-background px-3 py-2 rounded-input border border-border">Hồ Chí Minh</p>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-small font-medium text-textPrimary">Loại địa giới hành chính</label>
+                    <select id="addChildTypeSelect" class="w-full px-3 py-2 border border-border rounded-input bg-surface text-body text-textPrimary focus:outline-none focus:border-primary transition-all-subtle">
+                        <!-- Filled by target type choices dynamically matching valid standard paths rules -->
+                    </select>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-small font-medium text-textPrimary">Tên đơn vị hành chính <span class="text-error">*</span></label>
+                    <input type="text" id="addChildName" required placeholder="Nhập tên gọi chính thức" class="w-full px-3 py-2 border border-border rounded-input text-body text-textPrimary focus:outline-none focus:border-primary transition-all-subtle">
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-small font-medium text-textPrimary">Mã đơn vị hành chính <span class="text-error">*</span></label>
+                    <input type="text" id="addChildCode" required placeholder="Nhập mã đơn vị phân định" class="w-full px-3 py-2 border border-border rounded-input text-body text-textPrimary focus:outline-none focus:border-primary transition-all-subtle">
+                </div>
+                <div class="flex gap-3 justify-end pt-2">
+                    <button type="button" onclick="closeActiveModal()" class="px-4 py-2 border border-border text-textSecondary text-body font-medium rounded-button hover:bg-background transition-all-subtle">Hủy</button>
+                    <button type="submit" class="px-5 py-2 bg-primary text-white text-body font-medium rounded-button hover:bg-blue-700 shadow-sm transition-all-subtle">Lưu</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- 3. Form Modal Content Shell (Modify Edit configuration parameters) -->
+        <div id="editNodeModal" class="hidden bg-surface w-full sm:max-w-md rounded-t-modal sm:rounded-modal shadow-xl transform translate-y-10 transition-all-subtle p-5 flex flex-col gap-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between">
+                <h3 class="text-h3 font-semibold text-textPrimary">Sửa địa giới</h3>
+                <button onclick="closeActiveModal()" class="p-1 rounded-full text-textSecondary hover:bg-background"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <form id="formEditNode" onsubmit="saveEditNode(event)" class="flex flex-col gap-4">
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-small font-medium text-textPrimary">Tên đơn vị <span class="text-error">*</span></label>
+                    <input type="text" id="editNodeName" required class="w-full px-3 py-2 border border-border rounded-input text-body text-textPrimary focus:outline-none focus:border-primary transition-all-subtle">
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-small font-medium text-textPrimary">Mã đơn vị <span class="text-error">*</span></label>
+                    <input type="text" id="editNodeCode" required class="w-full px-3 py-2 border border-border rounded-input text-body text-textPrimary focus:outline-none focus:border-primary transition-all-subtle">
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-small font-medium text-textPrimary">Phân loại đơn vị</label>
+                    <input type="text" id="editNodeTypeLabel" disabled class="w-full px-3 py-2 bg-background border border-border rounded-input text-body text-textSecondary cursor-not-allowed">
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-small font-medium text-textPrimary">Trạng thái hoạt động</label>
+                    <div class="flex gap-4 mt-1">
+                        <label class="flex items-center gap-2 text-body text-textPrimary cursor-pointer">
+                            <input type="radio" name="editNodeStatus" value="active" id="statusActive" class="w-4 h-4 text-primary focus:ring-primary border-border">
+                            Hoạt động
+                        </label>
+                        <label class="flex items-center gap-2 text-body text-textPrimary cursor-pointer">
+                            <input type="radio" name="editNodeStatus" value="inactive" id="statusInactive" class="w-4 h-4 text-primary focus:ring-primary border-border">
+                            Tạm khóa
+                        </label>
+                    </div>
+                </div>
+                <div class="flex gap-3 justify-end pt-2">
+                    <button type="button" onclick="closeActiveModal()" class="px-4 py-2 border border-border text-textSecondary text-body font-medium rounded-button hover:bg-background transition-all-subtle">Hủy</button>
+                    <button type="submit" class="px-5 py-2 bg-primary text-white text-body font-medium rounded-button hover:bg-blue-700 shadow-sm transition-all-subtle">Cập nhật</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- 4. Danger Alert Dialog Box Modal Component (Delete Node validation workflow safeguard) -->
+        <div id="deleteConfirmModal" class="hidden bg-surface w-full sm:max-w-sm rounded-t-modal sm:rounded-modal shadow-xl transform translate-y-10 transition-all-subtle p-5 flex flex-col gap-4">
+            <div class="flex items-center gap-3 text-error">
+                <div class="p-2 bg-rose-50 rounded-full"><i data-lucide="alert-triangle" class="w-6 h-6"></i></div>
+                <h3 class="text-h3 font-semibold">Xác nhận xóa?</h3>
+            </div>
+            
+            <p id="deleteMessageText" class="text-body text-textSecondary">
+                Bạn có chắc chắn muốn xóa đơn vị hành chính này khỏi hệ thống dữ liệu?
+            </p>
+
+            <!-- Failure Dependency Alert Error Callout (Toggled programmatically if data child exists) -->
+            <div id="deleteDependencyError" class="hidden p-3 bg-rose-50 border border-rose-100 rounded-card flex items-start gap-2 text-error">
+                <i data-lucide="x-circle" class="w-4 h-4 mt-0.5 flex-shrink-0"></i>
+                <span class="text-small font-medium">Không thể xóa! Đơn vị địa giới đang tồn tại các đơn vị con trực thuộc phụ thuộc bên dưới.</span>
+            </div>
+
+            <div class="flex gap-3 justify-end mt-2">
+                <button type="button" onclick="closeActiveModal()" class="px-4 py-2 border border-border text-textSecondary text-body font-medium rounded-button hover:bg-background transition-all-subtle">Đóng</button>
+                <button id="confirmDeleteBtn" type="button" onclick="executeDeletionWorkflow()" class="px-4 py-2 bg-error text-white text-body font-medium rounded-button hover:bg-red-700 shadow-sm transition-all-subtle">Xác nhận xóa</button>
+            </div>
+        </div>
+
+        <!-- 5. Upload File Import Utility Modal Dashboard Container -->
+        <div id="importModal" class="hidden bg-surface w-full sm:max-w-md rounded-t-modal sm:rounded-modal shadow-xl transform translate-y-10 transition-all-subtle p-5 flex flex-col gap-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-h3 font-semibold text-textPrimary">Import dữ liệu hành chính</h3>
+                <button onclick="closeActiveModal()" class="p-1 rounded-full text-textSecondary hover:bg-background"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            
+            <div class="flex flex-col gap-3">
+                <p class="text-body text-textSecondary">Tải lên danh sách hệ thống địa giới hành chính cấu trúc chuẩn hóa theo tệp tin biểu mẫu Excel (.xlsx / .csv).</p>
+                
+                <a href="#" onclick="showToast('Đang tải tệp tin biểu mẫu cấu trúc...')" class="inline-flex items-center gap-2 text-small font-medium text-primary hover:underline self-start">
+                    <i data-lucide="download-cloud" class="w-4 h-4"></i>
+                    Tải file cấu trúc dữ liệu mẫu (.xlsx)
+                </a>
+
+                <!-- Drag area container visual simulator -->
+                <div class="border-2 border-dashed border-border rounded-card p-6 flex flex-col items-center justify-center bg-background cursor-pointer hover:border-primary transition-all-subtle group">
+                    <i data-lucide="file-text" class="w-10 h-10 text-textSecondary group-hover:text-primary transition-all-subtle mb-2"></i>
+                    <span class="text-body font-medium text-textPrimary">Chọn hoặc Kéo Thả File</span>
+                    <span class="text-small text-textSecondary mt-0.5">Hỗ trợ XLS, XLSX, CSV lên tới 5MB</span>
+                </div>
+            </div>
+
+            <div class="flex gap-3 justify-end pt-2">
+                <button type="button" onclick="closeActiveModal()" class="px-4 py-2 border border-border text-textSecondary text-body font-medium rounded-button hover:bg-background transition-all-subtle">Hủy bỏ</button>
+                <button type="button" onclick="executeImportSimulated()" class="px-5 py-2 bg-primary text-white text-body font-medium rounded-button hover:bg-blue-700 shadow-sm transition-all-subtle">Bắt đầu Import</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ---------------- APP APPLICATION LOGIC DRIVER ---------------- -->
+    <script>
+        // Real-world accurate structured mock data collection adhering strictly to constraints
+        let geoData = [
+                    {
+                        id: "VN-79",
+                        name: "Hồ Chí Minh",
+                        code: "VN-79",
+                        type: "Tỉnh/Thành",
+                        parentId: "VN",
+                        status: "active",
+                        expanded: true,
+                        children: [
+                            {
+                                id: "VN-79-TD",
+                                name: "TP Thủ Đức",
+                                code: "VN-79-TD",
+                                type: "Quận/Huyện",
+                                parentId: "VN-79",
+                                status: "active",
+                                expanded: true,
+                                children: [
+                                    { id: "VN-79-TD-LT", name: "Linh Trung", code: "LT-12", type: "Phường/Xã", parentId: "VN-79-TD", status: "active", children: [] },
+                                    { id: "VN-79-TD-LC", name: "Linh Chiểu", code: "LC-14", type: "Phường/Xã", parentId: "VN-79-TD", status: "active", children: [] },
+                                    { id: "VN-79-TD-TP", name: "Tăng Nhơn Phú A", code: "TN-02", type: "Phường/Xã", parentId: "VN-79-TD", status: "active", children: [] }
+                                ]
+                            },
+                            {
+                                id: "VN-79-Q1",
+                                name: "Quận 1",
+                                code: "VN-79-Q1",
+                                type: "Quận/Huyện",
+                                parentId: "VN-79",
+                                status: "active",
+                                expanded: false,
+                                children: [
+                                    { id: "VN-79-Q1-BN", name: "Bến Nghé", code: "BN-01", type: "Phường/Xã", parentId: "VN-79-Q1", status: "active", children: [] },
+                                    { id: "VN-79-Q1-BT", name: "Bến Thành", code: "BT-03", type: "Phường/Xã", parentId: "VN-79-Q1", status: "active", children: [] }
+                                ]
+                            },
+                            {
+                                id: "VN-79-Q7",
+                                name: "Quận 7",
+                                code: "VN-79-Q7",
+                                type: "Quận/Huyện",
+                                parentId: "VN-79",
+                                status: "inactive",
+                                expanded: false,
+                                children: [
+                                    { id: "VN-79-Q7-TH", name: "Tân Phú", code: "TP-07", type: "Phường/Xã", parentId: "VN-79-Q7", status: "active", children: [] }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: "VN-01",
+                        name: "Hà Nội",
+                        code: "VN-01",
+                        type: "Tỉnh/Thành",
+                        parentId: "VN",
+                        status: "active",
+                        expanded: false,
+                        children: [
+                            {
+                                id: "VN-01-HK",
+                                name: "Quận Hoàn Kiếm",
+                                code: "VN-01-HK",
+                                type: "Quận/Huyện",
+                                parentId: "VN-01",
+                                status: "active",
+                                expanded: false,
+                                children: [
+                                    { id: "VN-01-HK-HD", name: "Hàng Đào", code: "HD-09", type: "Phường/Xã", parentId: "VN-01-HK", status: "active", children: [] }
+                                ]
+                            },
+                            { id: "VN-01-CG", name: "Quận Cầu Giấy", code: "VN-01-CG", type: "Quận/Huyện", parentId: "VN-01", status: "active", children: [] }
+                        ]
+                    },
+                    {
+                        id: "VN-48",
+                        name: "Đà Nẵng",
+                        code: "VN-48",
+                        type: "Tỉnh/Thành",
+                        parentId: "VN",
+                        status: "active",
+                        expanded: false,
+                        children: [
+                            { id: "VN-48-HC", name: "Quận Hải Châu", code: "VN-48-HC", type: "Quận/Huyện", parentId: "VN-48", status: "active", children: [] }
+                        ]
+                    }
+                ];
+
+        // Runtime Global Selected Target State Monitoring variables
+        let selectedNodeId = "VN-79-TD-LT"; // Default selection on initial paint
+        let searchKeyword = "";
+        let currentActiveModalId = null;
+
+        // Initialize Application Context Lifecycle
+        window.addEventListener('DOMContentLoaded', () => {
+            renderAdministrativeTree();
+            updateDetailSection(selectedNodeId);
+            lucide.createIcons();
+        });
+
+        // Search Engine Filter handler logic mutation
+        function handleSearch(val) {
+            searchKeyword = val.trim().toLowerCase();
+            const clearBtn = document.getElementById('clearSearchBtn');
+            if (searchKeyword.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+            renderAdministrativeTree();
+        }
+
+        function clearSearch() {
+            document.getElementById('searchTree').value = "";
+            searchKeyword = "";
+            document.getElementById('clearSearchBtn').classList.add('hidden');
+            renderAdministrativeTree();
+        }
+
+        // Tree Traversal Utility Functions helpers
+        function findNodeById(nodes, id) {
+            for (let node of nodes) {
+                if (node.id === id) return node;
+                if (node.children && node.children.length > 0) {
+                    let found = findNodeById(node.children, id);
+                    if (found) return found;
+                }
+            }
+            return null;
+        }
+
+        function buildBreadcrumbLineage(nodes, targetId, path = []) {
+            for (let node of nodes) {
+                const currentPath = [...path, node];
+                if (node.id === targetId) return currentPath;
+                if (node.children && node.children.length > 0) {
+                    let result = buildBreadcrumbLineage(node.children, targetId, currentPath);
+                    if (result) return result;
+                }
+            }
+            return null;
+        }
+
+        function setExpansionStateAll(nodes, state) {
+            nodes.forEach(n => {
+                if(n.children && n.children.length > 0) {
+                    n.expanded = state;
+                    setExpansionStateAll(n.children, state);
+                }
+            });
+        }
+
+        function expandAll() {
+            setExpansionStateAll(geoData, true);
+            renderAdministrativeTree();
+            showToast("Đã mở rộng toàn bộ danh mục cây");
+        }
+
+        function collapseAll() {
+            setExpansionStateAll(geoData, false);
+            renderAdministrativeTree();
+            showToast("Đã thu gọn tất cả các cấp");
+        }
+
+        // Toggle Expand/Collapse Node via click indicator UI event
+        function toggleNodeExpand(id, event) {
+            event.stopPropagation();
+            let node = findNodeById(geoData, id);
+            if (node) {
+                node.expanded = !node.expanded;
+                renderAdministrativeTree();
+            }
+        }
+
+        // Target Specific selection update sequence execution
+        function selectAdministrativeNode(id) {
+            selectedNodeId = id;
+            renderAdministrativeTree();
+            updateDetailSection(id);
+        }
+
+        // Recursive Dynamic Generation Tree Core UI View Assembler
+        function renderAdministrativeTree() {
+            const container = document.getElementById('treeContainer');
+            container.innerHTML = "";
+            
+            function generateNodeHTML(node, depth = 0) {
+                // Match search filter conditions lookup rules
+                const matchesSearch = node.name.toLowerCase().includes(searchKeyword) || node.code.toLowerCase().includes(searchKeyword);
+                
+                // Track child rendering eligibility checks
+                let hasChildren = node.children && node.children.length > 0;
+                let shouldRenderChildren = node.expanded && hasChildren;
+                
+                // Build visual structural elements padding indent matching design scale specs 
+                const indentPadding = depth * 12; // 12px incremental matching scale values
+                
+                // Highlights node context matches
+                const isSelected = node.id === selectedNodeId;
+                const isInactive = node.status === 'inactive';
+                
+                // Hide if search is active and neither this node nor any descendant match filter criteria
+                if (searchKeyword && !checkNodeMatchOrDescendant(node, searchKeyword)) {
+                    return '';
+                }
+
+                let arrowIcon = 'chevron-right';
+                if (node.expanded) arrowIcon = 'chevron-down';
+                
+                let folderIcon = 'map';
+                if (node.type === 'Quốc gia') folderIcon = 'globe';
+                if (node.type === 'Tỉnh/Thành') folderIcon = 'building-2';
+                if (node.type === 'Quận/Huyện') folderIcon = 'milestone';
+                if (node.type === 'Phường/Xã') folderIcon = 'home';
+
+                let nodeClass = `flex items-center gap-2 py-2 px-2.5 rounded-input cursor-pointer transition-all-subtle group ${isSelected ? 'bg-blue-50 text-primary font-medium border-l-4 border-primary rounded-l-none' : 'hover:bg-background text-textPrimary'}`;
+                if (isInactive) nodeClass += ' opacity-60';
+
+                let html = `
+                    <div class="flex flex-col">
+                        <div class="${nodeClass}" style="padding-left: ${indentPadding + 8}px" onclick="selectAdministrativeNode('${node.id}')">
+                            <button onclick="toggleNodeExpand('${node.id}', event)" class="p-0.5 rounded hover:bg-slate-200/60 text-textSecondary flex-shrink-0 ${!hasChildren ? 'invisible' : ''}">
+                                <i data-lucide="${arrowIcon}" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <i data-lucide="${folderIcon}" class="w-4 h-4 text-textSecondary ${isSelected ? 'text-primary' : ''} flex-shrink-0"></i>
+                            <span class="text-body flex-1 truncate">${node.name}</span>
+                            <span class="text-small font-mono text-textSecondary group-hover:text-textPrimary bg-slate-100 px-1.5 py-0.5 rounded text-right">${node.code}</span>
+                        </div>
+                `;
+
+                if (shouldRenderChildren) {
+                    html += `<div class="flex flex-col">`;
+                    node.children.forEach(child => {
+                        html += generateNodeHTML(child, depth + 1);
+                    });
+                    html += `</div>`;
+                }
+
+                html += `</div>`;
+                return html;
+            }
+
+            let finalTreeHTML = "";
+            geoData.forEach(rootNode => {
+                finalTreeHTML += generateNodeHTML(rootNode, 0);
+            });
+            
+            container.innerHTML = finalTreeHTML || `<p class="text-body text-textSecondary text-center py-4">Không tìm thấy địa giới phù hợp.</p>`;
+            lucide.createIcons();
+        }
+
+        function checkNodeMatchOrDescendant(node, keyword) {
+            if (node.name.toLowerCase().includes(keyword) || node.code.toLowerCase().includes(keyword)) {
+                return true;
+            }
+            if (node.children) {
+                return node.children.some(child => checkNodeMatchOrDescendant(child, keyword));
+            }
+            return false;
+        }
+
+        // Screen State Update UI Detail Rendering Component Sequence 
+        function updateDetailSection(id) {
+            const node = findNodeById(geoData, id);
+            const section = document.getElementById('detailSection');
+            
+            if (!node) {
+                section.classList.add('hidden');
+                return;
+            }
+            
+            section.classList.remove('hidden');
+            
+            // Set fields references info layout updates
+            document.getElementById('detailTitleName').innerText = node.name;
+            document.getElementById('detailCodeValue').innerText = node.code;
+            document.getElementById('detailBadgeType').innerText = node.type;
+            
+            const badgeStatus = document.getElementById('detailBadgeStatus');
+            if (node.status === 'active') {
+                badgeStatus.innerText = "Hoạt động";
+                badgeStatus.className = "inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-green-50 text-success border border-green-100";
+            } else {
+                badgeStatus.innerText = "Tạm khóa";
+                badgeStatus.className = "inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-slate-100 text-textSecondary border border-border";
+            }
+
+            // Trace parent identifier string data lookup logic 
+            let parentNode = null;
+            if (node.parentId) {
+                parentNode = findNodeById(geoData, node.parentId);
+            }
+            document.getElementById('detailParentName').innerText = parentNode ? parentNode.name : "Không có (Cấp Cao Nhất)";
+
+            // Build breadcrumbs track arrays components
+            const lineage = buildBreadcrumbLineage(geoData, id);
+            const breadcrumbTrack = document.getElementById('breadcrumbTrack');
+            breadcrumbTrack.innerHTML = "";
+            
+            if (lineage) {
+                lineage.forEach((item, index) => {
+                    const isLast = index === lineage.length - 1;
+                    let elem = `<span class="${isLast ? 'text-textPrimary font-medium' : 'hover:underline cursor-pointer'}" onclick="selectAdministrativeNode('${item.id}')">${item.name}</span>`;
+                    if (!isLast) {
+                        elem += `<i data-lucide="chevron-right" class="w-3 h-3 text-textSecondary mx-0.5"></i>`;
+                    }
+                    breadcrumbTrack.innerHTML += elem;
+                });
+            }
+            lucide.createIcons();
+        }
+
+        // ----------- DIALOGS AND ACTIONS CONTROLLERS INTERACTIVE BACKEND UTILS -----------
+        
+        function openModalContainer(modalId) {
+            const overlay = document.getElementById('modalOverlay');
+            overlay.classList.remove('hidden');
+            // Force redraw transition flow timing sequence
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                const targetModal = document.getElementById(modalId);
+                targetModal.classList.remove('hidden');
+                setTimeout(() => targetModal.classList.remove('translate-y-10'), 20);
+                currentActiveModalId = modalId;
+            }, 10);
+        }
+
+        function closeActiveModal() {
+            if (!currentActiveModalId) return;
+            const targetModal = document.getElementById(currentActiveModalId);
+            const overlay = document.getElementById('modalOverlay');
+            
+            targetModal.classList.add('translate-y-10');
+            overlay.classList.add('opacity-0');
+            
+            setTimeout(() => {
+                targetModal.classList.add('hidden');
+                overlay.classList.add('hidden');
+                currentActiveModalId = null;
+                // reset form fields errors
+                document.getElementById('deleteDependencyError').classList.add('hidden');
+            }, 180);
+        }
+
+        // Trigger dynamic additions workflows modal windows
+        function openAddProvModal() {
+            document.getElementById('formAddProvince').reset();
+            openModalContainer('addProvinceModal');
+        }
+
+        function saveNewProvince(event) {
+            event.preventDefault();
+            const name = document.getElementById('addProvName').value.trim();
+            const code = document.getElementById('addProvCode').value.trim();
+            
+            if(!name || !code) return;
+
+            // Generate structural element entity item entry
+            const newId = "VN-" + Math.floor(Math.random() * 90 + 10);
+            const newProvince = {
+                id: newId,
+                name: name,
+                code: code,
+                type: "Tỉnh/Thành",
+                parentId: "VN",
+                status: "active",
+                expanded: false,
+                children: []
+            };
+
+            // Push into top-level node children structure data index array list safely
+            geoData[0].children.push(newProvince);
+            geoData[0].expanded = true; // Ensure expanded to review additions
+            
+            closeActiveModal();
+            renderAdministrativeTree();
+            selectAdministrativeNode(newId);
+            showToast(`Thêm mới thành công tỉnh/thành phố: ${name}`);
+        }
+
+        function triggerAddChildNode() {
+            const parentNode = findNodeById(geoData, selectedNodeId);
+            if (!parentNode) return;
+            
+            if (parentNode.type === "Phường/Xã") {
+                showToast("Cấp Phường/Xã là cấp đơn vị hành chính cuối cùng, không thể tạo cấp con phụ thuộc thêm nữa!", true);
+                return;
+            }
+
+            document.getElementById('formAddChild').reset();
+            document.getElementById('addChildParentLabel').innerText = parentNode.name;
+            
+            // Build configuration options based on chosen parent data layers targets rules
+            const typeSelect = document.getElementById('addChildTypeSelect');
+            typeSelect.innerHTML = "";
+            
+            let targetType = "";
+            if (parentNode.type === "Quốc gia") targetType = "Tỉnh/Thành";
+            else if (parentNode.type === "Tỉnh/Thành") targetType = "Quận/Huyện";
+            else if (parentNode.type === "Quận/Huyện") targetType = "Phường/Xã";
+
+            typeSelect.innerHTML = `<option value="${targetType}">${targetType}</option>`;
+            openModalContainer('addChildModal');
+        }
+
+        function saveNewChild(event) {
+            event.preventDefault();
+            const parentNode = findNodeById(geoData, selectedNodeId);
+            const name = document.getElementById('addChildName').value.trim();
+            const code = document.getElementById('addChildCode').value.trim();
+            const type = document.getElementById('addChildTypeSelect').value;
+
+            if(!name || !code || !parentNode) return;
+
+            const newId = parentNode.id + "-" + Math.floor(Math.random() * 800 + 100);
+            const newChildNode = {
+                id: newId,
+                name: name,
+                code: code,
+                type: type,
+                parentId: parentNode.id,
+                status: "active",
+                children: []
+            };
+
+            if(!parentNode.children) parentNode.children = [];
+            parentNode.children.push(newChildNode);
+            parentNode.expanded = true; // Auto expand view rule match item configurations
+
+            closeActiveModal();
+            renderAdministrativeTree();
+            selectAdministrativeNode(newId);
+            showToast(`Đã thêm ${type} ${name} vào cấu trúc ${parentNode.name}`);
+        }
+
+        function triggerEditNode() {
+            const node = findNodeById(geoData, selectedNodeId);
+            if (!node) return;
+
+            document.getElementById('editNodeName').value = node.name;
+            document.getElementById('editNodeCode').value = node.code;
+            document.getElementById('editNodeTypeLabel').value = node.type;
+            
+            if(node.status === 'active') {
+                document.getElementById('statusActive').checked = true;
+            } else {
+                document.getElementById('statusInactive').checked = true;
+            }
+
+            openModalContainer('editNodeModal');
+        }
+
+        function saveEditNode(event) {
+            event.preventDefault();
+            const node = findNodeById(geoData, selectedNodeId);
+            if (!node) return;
+
+            const name = document.getElementById('editNodeName').value.trim();
+            const code = document.getElementById('editNodeCode').value.trim();
+            const status = document.querySelector('input[name="editNodeStatus"]:checked').value;
+
+            if(!name || !code) return;
+
+            node.name = name;
+            node.code = code;
+            node.status = status;
+
+            closeActiveModal();
+            renderAdministrativeTree();
+            updateDetailSection(selectedNodeId);
+            showToast(`Cập nhật thông tin đơn vị ${name} thành công`);
+        }
+
+        function triggerDeleteNode() {
+            const node = findNodeById(geoData, selectedNodeId);
+            if (!node) return;
+
+            document.getElementById('deleteMessageText').innerText = `Bạn có chắc chắn muốn thực hiện thao tác xóa đơn vị "${node.name}" (${node.code})? Hành động này sẽ loại bỏ hoàn toàn đơn vị khỏi dữ liệu sơ đồ hệ thống cây.`;
+            document.getElementById('deleteDependencyError').classList.add('hidden');
+            
+            openModalContainer('deleteConfirmModal');
+        }
+
+        // Handles workflow verification safety validations rules
+        function executeDeletionWorkflow() {
+            const node = findNodeById(geoData, selectedNodeId);
+            if (!node) return;
+
+            // Rule check condition lookup: block deletion if structural children records exist inside entity
+            if (node.children && node.children.length > 0) {
+                const errBox = document.getElementById('deleteDependencyError');
+                errBox.classList.remove('hidden');
+                lucide.createIcons();
+                return;
+            }
+
+            // Perform dynamic data array split element updates mapping logic
+            function removeNodeFromStructure(nodes, targetId) {
+                for (let i = 0; i < nodes.length; i++) {
+                    if (nodes[i].id === targetId) {
+                        const deletedName = nodes[i].name;
+                        const parentIdBackup = nodes[i].parentId;
+                        nodes.splice(i, 1);
+                        return { name: deletedName, parentId: parentIdBackup };
+                    }
+                    if (nodes[i].children && nodes[i].children.length > 0) {
+                        let result = removeNodeFromStructure(nodes[i].children, targetId);
+                        if (result) return result;
+                    }
+                }
+                return null;
+            }
+
+            const parentNodeBackupId = node.parentId;
+            const metadata = removeNodeFromStructure(geoData, selectedNodeId);
+            
+            closeActiveModal();
+            
+            // Re-route focal visual navigation point towards root or backup parent elements indicators
+            if (parentNodeBackupId) {
+                selectedNodeId = parentNodeBackupId;
+            } else {
+                selectedNodeId = geoData[0] ? geoData[0].id : null;
+            }
+
+            renderAdministrativeTree();
+            if (selectedNodeId) {
+                updateDetailSection(selectedNodeId);
+            } else {
+                document.getElementById('detailSection').classList.add('hidden');
+            }
+
+            showToast(`Đã xóa thành công đơn vị hành chính: ${metadata ? metadata.name : ''}`);
+        }
+
+        function openImportModal() {
+            openModalContainer('importModal');
+        }
+
+        function executeImportSimulated() {
+            closeActiveModal();
+            showToast("Bắt đầu xử lý tải tài liệu dữ liệu lớn...");
+            setTimeout(() => {
+                showToast("Đã nhập thành công 64 bản ghi địa giới mới vào cây cấu trúc");
+            }, 1000);
+        }
+
+        function triggerExport() {
+            showToast("Đang chuẩn bị trích xuất dữ liệu cấu trúc hệ thống... ");
+            setTimeout(() => {
+                showToast("Đã tải xuống tệp Excel địa giới hành chính thành công!");
+            }, 800);
+        }
+
+        // Global Custom Visual UI Notification Dynamic Alert Systems component handlers
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toastNotification');
+            const messageText = document.getElementById('toastMessage');
+            
+            messageText.innerText = msg;
+            if (isError) {
+                toast.className = "transform translate-y-0 opacity-100 transition-all-subtle bg-surface border-l-4 border-error p-3 rounded-card shadow-soft flex items-start gap-3";
+            } else {
+                toast.className = "transform translate-y-0 opacity-100 transition-all-subtle bg-surface border-l-4 border-success p-3 rounded-card shadow-soft flex items-start gap-3";
+            }
+            
+            toast.classList.remove('hidden');
+            
+            // Auto hide duration intervals sequence parameters
+            clearTimeout(window.toastTimer);
+            window.toastTimer = setTimeout(() => {
+                hideToast();
+            }, 4000);
+        }
+
+        function hideToast() {
+            const toast = document.getElementById('toastNotification');
+            toast.classList.add('opacity-0');
+            toast.classList.add('translate-y-2');
+            setTimeout(() => toast.classList.add('hidden'), 200);
+        }
+    </script>
+</body>
+</html>

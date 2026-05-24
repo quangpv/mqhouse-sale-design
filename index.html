@@ -106,11 +106,20 @@
                         <button onclick="switchScreen('profile')" id="btn-profile" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
                             <i data-lucide="user" class="w-4 h-4"></i> Hồ sơ cá nhân
                         </button>
+                        <button onclick="switchScreen('map')" id="btn-map" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
+                            <i data-lucide="map-pin" class="w-4 h-4"></i> Bản đồ
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="px-3 text-small font-bold text-textSecondary/70 uppercase tracking-wider block mb-2">Quản lý</span>
+                    <div class="space-y-1">
                         <button onclick="switchScreen('members')" id="btn-members" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
                             <i data-lucide="users" class="w-4 h-4"></i> Thành viên
                         </button>
-                        <button onclick="switchScreen('map')" id="btn-map" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
-                            <i data-lucide="map-pin" class="w-4 h-4"></i> Bản đồ
+                        <button onclick="switchScreen('catalog')" id="btn-catalog" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
+                            <i data-lucide="layout-grid" class="w-4 h-4"></i> Danh mục
                         </button>
                     </div>
                 </div>
@@ -158,28 +167,42 @@
             <div id="phone-screen-viewport" class="flex-1 bg-background overflow-y-auto no-scrollbar pt-7">
                 </div>
 
-            <nav id="mobile-tab-bar" class="absolute bottom-0 left-0 right-0 bg-surface/90 backdrop-blur-md border-t border-border px-6 py-3.5 flex items-center gap-6 overflow-x-auto no-scrollbar z-40">
-                <button onclick="switchScreen('home')" id="tab-home" class="mobile-tab-btn flex flex-col items-center gap-0.5 text-textSecondary transition-colors duration-150 shrink-0">
-                    <i data-lucide="home" class="w-5 h-5"></i>
-                    <span class="text-small font-medium">Trang chủ</span>
-                </button>
-                <button onclick="switchScreen('search')" id="tab-search" class="mobile-tab-btn flex flex-col items-center gap-0.5 text-textSecondary transition-colors duration-150 shrink-0">
-                    <i data-lucide="search" class="w-5 h-5"></i>
-                    <span class="text-small font-medium">Tìm kiếm</span>
-                </button>
-                <button onclick="switchScreen('notifications')" id="tab-notifications" class="mobile-tab-btn flex flex-col items-center gap-0.5 text-textSecondary relative transition-colors duration-150 shrink-0">
-                    <i data-lucide="bell" class="w-5 h-5"></i>
-                    <span class="absolute top-0 right-1.5 w-1.5 h-1.5 bg-error rounded-full"></span>
-                    <span class="text-small font-medium">Thông báo</span>
-                </button>
-                <button onclick="switchScreen('members')" id="tab-members" class="mobile-tab-btn flex flex-col items-center gap-0.5 text-textSecondary transition-colors duration-150 shrink-0">
-                    <i data-lucide="users" class="w-5 h-5"></i>
-                    <span class="text-small font-medium">Thành viên</span>
-                </button>
-                <button onclick="switchScreen('profile')" id="tab-profile" class="mobile-tab-btn flex flex-col items-center gap-0.5 text-textSecondary transition-colors duration-150 shrink-0">
-                    <i data-lucide="user" class="w-5 h-5"></i>
-                    <span class="text-small font-medium">Hồ sơ</span>
-                </button>
+            <nav id="mobile-tab-bar" class="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-border z-40">
+                <div class="relative">
+                    <div id="scroll-left-overlay" class="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-white via-white/80 to-transparent flex items-center pl-1.5 z-10 hidden cursor-pointer">
+                        <i data-lucide="chevron-left" class="w-5 h-5 text-textSecondary/60"></i>
+                    </div>
+                    <div id="tab-scroll-container" class="flex items-center gap-6 overflow-x-auto no-scrollbar px-6 py-3.5">
+                        <button onclick="switchScreen('home')" id="tab-home" class="mobile-tab-btn flex flex-col items-center gap-0.5 text-textSecondary transition-colors duration-150 shrink-0">
+                            <i data-lucide="home" class="w-5 h-5"></i>
+                            <span class="text-small font-medium">Trang chủ</span>
+                        </button>
+                        <button onclick="switchScreen('search')" id="tab-search" class="mobile-tab-btn flex flex-col items-center gap-0.5 text-textSecondary transition-colors duration-150 shrink-0">
+                            <i data-lucide="search" class="w-5 h-5"></i>
+                            <span class="text-small font-medium">Tìm kiếm</span>
+                        </button>
+                        <button onclick="switchScreen('notifications')" id="tab-notifications" class="mobile-tab-btn flex flex-col items-center gap-0.5 text-textSecondary relative transition-colors duration-150 shrink-0">
+                            <i data-lucide="bell" class="w-5 h-5"></i>
+                            <span class="absolute top-0 right-1.5 w-1.5 h-1.5 bg-error rounded-full"></span>
+                            <span class="text-small font-medium">Thông báo</span>
+                        </button>
+                        <button onclick="switchScreen('catalog')" id="tab-catalog" class="mobile-tab-btn flex flex-col items-center gap-0.5 text-textSecondary transition-colors duration-150 shrink-0">
+                            <i data-lucide="layout-grid" class="w-5 h-5"></i>
+                            <span class="text-small font-medium">Danh mục</span>
+                        </button>
+                        <button onclick="switchScreen('members')" id="tab-members" class="mobile-tab-btn flex flex-col items-center gap-0.5 text-textSecondary transition-colors duration-150 shrink-0">
+                            <i data-lucide="users" class="w-5 h-5"></i>
+                            <span class="text-small font-medium">Thành viên</span>
+                        </button>
+                        <button onclick="switchScreen('profile')" id="tab-profile" class="mobile-tab-btn flex flex-col items-center gap-0.5 text-textSecondary transition-colors duration-150 shrink-0">
+                            <i data-lucide="user" class="w-5 h-5"></i>
+                            <span class="text-small font-medium">Hồ sơ</span>
+                        </button>
+                    </div>
+                    <div id="scroll-right-overlay" class="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white via-white/80 to-transparent flex items-center justify-end pr-1.5 z-10 cursor-pointer">
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-textSecondary/60"></i>
+                    </div>
+                </div>
             </nav>
         </div>
     </main>
@@ -201,12 +224,13 @@
             myProperties: 'my-properties.html',
             propertyDetails: 'property-detail.html',
             roomDetails: 'room-detail.html',
+            catalog: 'catalog.html',
         };
 
         function switchScreen(screenKey) {
             const viewport = document.getElementById('phone-screen-viewport');
             const file = externalPages[screenKey];
-            const isTabScreen = ['home', 'search', 'notifications', 'profile', 'members'].includes(screenKey);
+            const isTabScreen = ['home', 'search', 'notifications', 'catalog', 'members', 'profile'].includes(screenKey);
             const tabContainer = document.getElementById('mobile-tab-bar');
 
             fetch(file, { method: 'HEAD' })
@@ -232,6 +256,7 @@
                     activeTab.classList.remove('text-textSecondary');
                     activeTab.classList.add('text-primary');
                 }
+                setTimeout(updateScrollButtons, 50);
             }
 
             document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -243,6 +268,17 @@
                 targetSideBtn.classList.remove('text-textSecondary', 'hover:text-textPrimary', 'hover:bg-background');
                 targetSideBtn.classList.add('bg-primary', 'text-white');
             }
+        }
+
+        function updateScrollButtons() {
+            const container = document.getElementById('tab-scroll-container');
+            if (!container) return;
+            const leftOverlay = document.getElementById('scroll-left-overlay');
+            const rightOverlay = document.getElementById('scroll-right-overlay');
+            const atLeft = container.scrollLeft <= 4;
+            const atRight = container.scrollLeft + container.clientWidth >= container.scrollWidth - 4;
+            leftOverlay.classList.toggle('hidden', atLeft);
+            rightOverlay.classList.toggle('hidden', atRight);
         }
 
         function showNotImplemented(viewport) {
@@ -258,6 +294,18 @@
         document.addEventListener("DOMContentLoaded", () => {
             lucide.createIcons();
             switchScreen('home');
+
+            const scrollContainer = document.getElementById('tab-scroll-container');
+            if (scrollContainer) {
+                scrollContainer.addEventListener('scroll', updateScrollButtons);
+                document.getElementById('scroll-left-overlay')?.addEventListener('click', () => {
+                    scrollContainer.scrollBy({ left: -200, behavior: 'smooth' });
+                });
+                document.getElementById('scroll-right-overlay')?.addEventListener('click', () => {
+                    scrollContainer.scrollBy({ left: 200, behavior: 'smooth' });
+                });
+                setTimeout(updateScrollButtons, 100);
+            }
         });
     </script>
 </body>
