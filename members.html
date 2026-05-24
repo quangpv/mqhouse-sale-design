@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thành viên</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        primary: '#2563EB',
+                        background: '#F8FAFC',
+                        surface: '#FFFFFF',
+                        border: '#E2E8F0',
+                        textPrimary: '#0F172A',
+                        textSecondary: '#64748B',
+                    },
+                    borderRadius: { card: '16px', button: '12px', input: '10px' },
+                    boxShadow: { soft: '0 2px 8px -1px rgba(15, 23, 42, 0.05)' }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-textPrimary min-h-screen flex justify-center antialiased">
+    <div class="w-full max-w-md bg-background min-h-screen flex flex-col">
+        <header class="bg-surface px-4 pt-6 pb-4 border-b border-border">
+            <h1 class="text-h2 font-semibold text-textPrimary">Thành viên</h1>
+        </header>
+        <main class="flex-1 p-4">
+            <div class="bg-surface rounded-card border border-border p-8 text-center flex flex-col items-center space-y-4 shadow-soft">
+                <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-primary">
+                    <i data-lucide="users" class="w-6 h-6"></i>
+                </div>
+                <p class="text-body text-textSecondary">Danh sách thành viên đang được cập nhật</p>
+            </div>
+        </main>
+    </div>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script>lucide.createIcons()</script>
+</body>
+</html>

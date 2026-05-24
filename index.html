@@ -106,8 +106,11 @@
                         <button onclick="switchScreen('profile')" id="btn-profile" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
                             <i data-lucide="user" class="w-4 h-4"></i> Hồ sơ cá nhân
                         </button>
+                        <button onclick="switchScreen('members')" id="btn-members" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
+                            <i data-lucide="users" class="w-4 h-4"></i> Thành viên
+                        </button>
                         <button onclick="switchScreen('map')" id="btn-map" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
-                            <i data-lucide="user" class="w-4 h-4"></i> Bản đồ
+                            <i data-lucide="map-pin" class="w-4 h-4"></i> Bản đồ
                         </button>
                     </div>
                 </div>
@@ -155,21 +158,25 @@
             <div id="phone-screen-viewport" class="flex-1 bg-background overflow-y-auto no-scrollbar pt-7">
                 </div>
 
-            <nav id="mobile-tab-bar" class="absolute bottom-0 left-0 right-0 bg-surface/90 backdrop-blur-md border-t border-border px-6 py-3.5 flex items-center justify-between z-40">
-                <button onclick="switchScreen('home')" id="tab-home" class="mobile-tab-btn flex flex-col items-center gap-0.5 text-textSecondary transition-colors duration-150">
+            <nav id="mobile-tab-bar" class="absolute bottom-0 left-0 right-0 bg-surface/90 backdrop-blur-md border-t border-border px-6 py-3.5 flex items-center gap-6 overflow-x-auto no-scrollbar z-40">
+                <button onclick="switchScreen('home')" id="tab-home" class="mobile-tab-btn flex flex-col items-center gap-0.5 text-textSecondary transition-colors duration-150 shrink-0">
                     <i data-lucide="home" class="w-5 h-5"></i>
                     <span class="text-small font-medium">Trang chủ</span>
                 </button>
-                <button onclick="switchScreen('search')" id="tab-search" class="mobile-tab-btn flex flex-col items-center gap-0.5 text-textSecondary transition-colors duration-150">
+                <button onclick="switchScreen('search')" id="tab-search" class="mobile-tab-btn flex flex-col items-center gap-0.5 text-textSecondary transition-colors duration-150 shrink-0">
                     <i data-lucide="search" class="w-5 h-5"></i>
                     <span class="text-small font-medium">Tìm kiếm</span>
                 </button>
-                <button onclick="switchScreen('notifications')" id="tab-notifications" class="mobile-tab-btn flex flex-col items-center gap-0.5 text-textSecondary relative transition-colors duration-150">
+                <button onclick="switchScreen('notifications')" id="tab-notifications" class="mobile-tab-btn flex flex-col items-center gap-0.5 text-textSecondary relative transition-colors duration-150 shrink-0">
                     <i data-lucide="bell" class="w-5 h-5"></i>
                     <span class="absolute top-0 right-1.5 w-1.5 h-1.5 bg-error rounded-full"></span>
                     <span class="text-small font-medium">Thông báo</span>
                 </button>
-                <button onclick="switchScreen('profile')" id="tab-profile" class="mobile-tab-btn flex flex-col items-center gap-0.5 text-textSecondary transition-colors duration-150">
+                <button onclick="switchScreen('members')" id="tab-members" class="mobile-tab-btn flex flex-col items-center gap-0.5 text-textSecondary transition-colors duration-150 shrink-0">
+                    <i data-lucide="users" class="w-5 h-5"></i>
+                    <span class="text-small font-medium">Thành viên</span>
+                </button>
+                <button onclick="switchScreen('profile')" id="tab-profile" class="mobile-tab-btn flex flex-col items-center gap-0.5 text-textSecondary transition-colors duration-150 shrink-0">
                     <i data-lucide="user" class="w-5 h-5"></i>
                     <span class="text-small font-medium">Hồ sơ</span>
                 </button>
@@ -185,6 +192,7 @@
             otp: 'otp.html',
             search: 'search.html',
             notifications: 'notifications.html',
+            members: 'members.html',
             profile: 'profile.html',
             forgotPassword: 'forgot-password.html',
             resetPassword: 'reset-password.html',
@@ -198,7 +206,7 @@
         function switchScreen(screenKey) {
             const viewport = document.getElementById('phone-screen-viewport');
             const file = externalPages[screenKey];
-            const isTabScreen = ['home', 'search', 'notifications', 'profile'].includes(screenKey);
+            const isTabScreen = ['home', 'search', 'notifications', 'profile', 'members'].includes(screenKey);
             const tabContainer = document.getElementById('mobile-tab-bar');
 
             fetch(file, { method: 'HEAD' })
