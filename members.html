@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thành viên</title>
+    <title>Quản lý thành viên Mobile App</title>
+    <!-- Google Fonts Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- TailwindCSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -20,29 +22,827 @@
                         border: '#E2E8F0',
                         textPrimary: '#0F172A',
                         textSecondary: '#64748B',
+                        success: '#16A34A',
+                        warning: '#F59E0B',
+                        error: '#DC2626',
                     },
-                    borderRadius: { card: '16px', button: '12px', input: '10px' },
-                    boxShadow: { soft: '0 2px 8px -1px rgba(15, 23, 42, 0.05)' }
+                    boxShadow: {
+                        soft: '0 2px 12px -1px rgba(15, 23, 42, 0.04), 0 4px 6px -2px rgba(15, 23, 42, 0.02)',
+                    },
+                    borderRadius: {
+                        card: '16px',
+                        button: '12px',
+                        input: '10px',
+                        modal: '20px',
+                    }
                 }
             }
         }
     </script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; color: #0F172A; }
+        .text-h1 { font-size: 32px; font-weight: 600; line-height: 40px; }
+        .text-h2 { font-size: 24px; font-weight: 600; line-height: 32px; }
+        .text-h3 { font-size: 20px; font-weight: 500; line-height: 28px; }
+        .text-body { font-size: 14px; font-weight: 400; line-height: 20px; }
+        .text-small { font-size: 12px; font-weight: 400; line-height: 16px; }
+        ::-webkit-scrollbar { display: none; }
+    </style>
 </head>
-<body class="bg-background text-textPrimary min-h-screen flex justify-center antialiased">
-    <div class="w-full max-w-md bg-background min-h-screen flex flex-col">
-        <header class="bg-surface px-4 pt-6 pb-4 border-b border-border">
-            <h1 class="text-h2 font-semibold text-textPrimary">Thành viên</h1>
-        </header>
-        <main class="flex-1 p-4">
-            <div class="bg-surface rounded-card border border-border p-8 text-center flex flex-col items-center space-y-4 shadow-soft">
-                <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-primary">
-                    <i data-lucide="users" class="w-6 h-6"></i>
-                </div>
-                <p class="text-body text-textSecondary">Danh sách thành viên đang được cập nhật</p>
+<body class="bg-background min-h-screen text-body antialiased flex justify-center">
+
+    <!-- [Quản lý thành viên] Container Screen Frame -->
+    <div id="appContainer" class="w-full max-w-md bg-surface min-h-screen shadow-soft relative flex flex-col">
+        
+        <!-- Topbar -->
+        <header class="p-4 border-b border-border sticky top-0 bg-surface/95 backdrop-blur-md z-30 flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+                <h1 class="text-h2 text-textPrimary">Quản lý thành viên</h1>
+                <button onclick="openAddUserDialog()" class="w-10 h-10 bg-primary hover:bg-primary/90 text-surface flex items-center justify-center rounded-button transition-colors duration-150 shadow-sm">
+                    <i data-lucide="plus" class="w-5 h-5"></i>
+                </button>
             </div>
+            
+            <!-- Tìm kiếm thành viên search-input -->
+            <div class="relative flex items-center">
+                <i data-lucide="search" class="w-4 h-4 text-textSecondary absolute left-3.5 pointer-events-none"></i>
+                <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Tìm kiếm thành viên..." class="w-full pl-10 pr-4 py-2 bg-background border border-border rounded-input text-body placeholder:text-textSecondary focus:outline-none focus:border-primary transition-colors duration-150">
+            </div>
+        </header>
+
+        <!-- Danh sách list -->
+        <main class="flex-1 p-4 flex flex-col gap-3" id="userListContainer">
+            <!-- Đổ dữ liệu mẫu bằng JS -->
         </main>
     </div>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <script>lucide.createIcons()</script>
+
+    <!-- => Notification Toast -->
+    <div id="notificationToast" class="fixed top-4 z-50 bg-textPrimary text-surface px-4 py-3 rounded-card text-body shadow-lg transform -translate-y-24 opacity-0 transition-all duration-200 pointer-events-none flex items-center gap-2">
+        <i data-lucide="check-circle" class="w-4 h-4 text-success" id="toastIcon"></i>
+        <span id="toastMessage">Thông báo</span>
+    </div>
+
+    <!-- ~[User action Menu Popup] -->
+    <div id="actionMenuPopup" class="fixed inset-0 z-40 hidden" onclick="closeActionMenu()">
+        <div class="absolute bg-surface border border-border shadow-soft rounded-card w-48 py-1.5 flex flex-col text-body" id="popupContent" onclick="event.stopPropagation()">
+            <button onclick="triggerEditUser()" class="w-full px-4 py-2 text-left hover:bg-background transition-colors duration-150 flex items-center gap-2 text-textPrimary">
+                <i data-lucide="edit-2" class="w-4 h-4 text-textSecondary"></i> Sửa thành viên
+            </button>
+            <button onclick="triggerToggleLockUser()" class="w-full px-4 py-2 text-left hover:bg-background transition-colors duration-150 flex items-center gap-2 text-textPrimary">
+                <i data-lucide="lock" class="w-4 h-4 text-textSecondary" id="lockMenuIcon"></i> <span id="lockMenuText">Vô hiệu hóa</span>
+            </button>
+            <div class="h-[1px] bg-border my-1"></div>
+            <button onclick="triggerDeleteUser()" class="w-full px-4 py-2 text-left hover:bg-background transition-colors duration-150 flex items-center gap-2 text-error font-medium">
+                <i data-lucide="trash-2" class="w-4 h-4 text-error"></i> Xóa thành viên
+            </button>
+        </div>
+    </div>
+
+    <!-- ~[Vai trò / Trạng thái Menu Popup Generic] -->
+    <div id="genericDropdownPopup" class="fixed inset-0 z-50 hidden" onclick="closeGenericDropdown()">
+        <div class="absolute bg-surface border border-border shadow-lg rounded-card w-56 py-1.5 flex flex-col text-body max-h-60 overflow-y-auto" id="genericDropdownContent" onclick="event.stopPropagation()">
+            <!-- Các item row được sinh tự động bao gồm icon + tên text -->
+        </div>
+    </div>
+
+    <!-- ~[Thêm / Sửa thành viên] và +[Form thành viên] -->
+    <div id="formDialog" class="fixed inset-0 z-40 hidden bg-textPrimary/20 backdrop-blur-sm flex items-end justify-center transition-opacity duration-200">
+        <div class="bg-surface w-full max-w-md rounded-t-modal max-h-[92vh] flex flex-col shadow-lg transform translate-y-full transition-transform duration-200" id="formDialogBody">
+            
+            <!-- Fixed Header Dialog -->
+            <div class="flex items-center justify-between p-6 pb-0 flex-shrink-0">
+                <h2 class="text-h3 text-textPrimary" id="dialogTitle">Thêm thành viên</h2>
+                <button onclick="closeFormDialog()" class="text-textSecondary hover:text-textPrimary transition-colors duration-150">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <!-- Scrollable Form content -->
+            <form id="userForm" class="flex flex-col gap-4 overflow-y-auto p-6 pt-4 flex-1 min-h-0" onsubmit="handleFormSubmit(event)">
+                
+                <!-- Avatar image + Upload icon-button -->
+                <div class="flex items-center gap-4 bg-background p-3 rounded-card border border-border">
+                    <div class="relative w-14 h-14 rounded-full overflow-hidden bg-border border border-border flex-shrink-0">
+                        <img id="formAvatarPreview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Avatar" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <span class="text-small text-textSecondary font-medium">Ảnh đại diện</span>
+                        <button type="button" onclick="randomizeAvatar()" class="px-3 py-1.5 bg-surface border border-border text-small text-textPrimary rounded-button hover:bg-background transition-colors duration-150 flex items-center gap-1.5 font-medium">
+                            <i data-lucide="upload" class="w-3.5 h-3.5 text-textSecondary"></i> Thay ảnh ngẫu nhiên
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tên input -->
+                <div class="flex flex-col gap-1">
+                    <label class="text-small font-medium text-textSecondary">Tên thành viên</label>
+                    <input type="text" id="formName" required placeholder="Nhập họ và tên..." class="w-full px-3 py-2 bg-surface border border-border rounded-input text-body focus:outline-none focus:border-primary transition-colors duration-150">
+                </div>
+
+                <!-- Số điện thoại input -->
+                <div class="flex flex-col gap-1">
+                    <label class="text-small font-medium text-textSecondary">Số điện thoại</label>
+                    <input type="tel" id="formPhone" required placeholder="Nhập số điện thoại..." class="w-full px-3 py-2 bg-surface border border-border rounded-input text-body focus:outline-none focus:border-primary transition-colors duration-150">
+                </div>
+
+                <!-- Tài khoản input -->
+                <div class="flex flex-col gap-1">
+                    <label class="text-small font-medium text-textSecondary">Tài khoản</label>
+                    <input type="text" id="formUsername" required placeholder="Nhập tên tài khoản..." class="w-full px-3 py-2 bg-surface border border-border rounded-input text-body focus:outline-none focus:border-primary transition-colors duration-150">
+                </div>
+
+                <!-- Mật khẩu readonly-input -->
+                <div class="flex flex-col gap-1">
+                    <label class="text-small font-medium text-textSecondary">Mật khẩu (Tự động tạo)</label>
+                    <div class="relative flex items-center">
+                        <input type="password" id="formPassword" readonly class="w-full pl-3 pr-10 py-2 bg-background border border-border rounded-input text-body text-textSecondary focus:outline-none font-mono">
+                        <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 text-textSecondary hover:text-textPrimary transition-colors duration-150">
+                            <i data-lucide="eye" class="w-4 h-4" id="passwordEyeIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Vai trò dropdown -->
+                <div class="flex flex-col gap-1 relative">
+                    <label class="text-small font-medium text-textSecondary">Vai trò</label>
+                    <button type="button" id="roleDropdownBtn" onclick="openRoleMenuPopup(event)" class="w-full px-3 py-2 bg-surface border border-border rounded-input text-body flex items-center justify-between focus:outline-none focus:border-primary transition-colors duration-150">
+                        <span id="roleDropdownValue">Chọn vai trò...</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-textSecondary"></i>
+                    </button>
+                </div>
+
+                <!-- Trạng thái tài khoản (Chỉ hiển thị ở trạng thái Sửa) -->
+                <div class="flex flex-col gap-1 relative hidden" id="formStatusContainer">
+                    <label class="text-small font-medium text-textSecondary">Trạng thái tài khoản</label>
+                    <button type="button" id="statusDropdownBtn" onclick="openStatusMenuPopup(event)" class="w-full px-3 py-2 bg-surface border border-border rounded-input text-body flex items-center justify-between focus:outline-none focus:border-primary transition-colors duration-150">
+                        <span id="statusDropdownValue">Đang hoạt động</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-textSecondary"></i>
+                    </button>
+                </div>
+
+                <!-- Khu vực hoạt động -->
+                <div class="border-t border-border pt-4 mt-1 flex flex-col gap-3">
+                    <span class="text-body font-semibold text-textPrimary">Khu vực hoạt động</span>
+                    
+                    <!-- tỉnh/thành + thành phố grid: 2 columns -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <!-- tỉnh/thành single-combobox -->
+                        <div class="flex flex-col gap-1 relative">
+                            <label class="text-small font-medium text-textSecondary">Tỉnh/thành phố</label>
+                            <div class="relative">
+                                <input type="text" id="provinceInput" autocomplete="off" placeholder="Gõ tìm kiếm..." onfocus="showComboboxDropdown('province')" oninput="filterComboboxData('province', this.value)" class="w-full px-3 py-2 bg-surface border border-border rounded-input text-body focus:outline-none focus:border-primary transition-colors duration-150">
+                                <i data-lucide="chevrons-up-down" class="w-3.5 h-3.5 text-textSecondary absolute right-3 top-3 pointer-events-none"></i>
+                            </div>
+                            <div id="provinceList" class="absolute left-0 right-0 top-[64px] bg-surface border border-border rounded-input shadow-lg max-h-40 overflow-y-auto hidden z-50 py-1"></div>
+                        </div>
+                        <!-- thành phố single-combobox -->
+                        <div class="flex flex-col gap-1 relative">
+                            <label class="text-small font-medium text-textSecondary">Thành phố/Thị xã</label>
+                            <div class="relative">
+                                <input type="text" id="cityInput" autocomplete="off" placeholder="Gõ tìm kiếm..." onfocus="showComboboxDropdown('city')" oninput="filterComboboxData('city', this.value)" class="w-full px-3 py-2 bg-surface border border-border rounded-input text-body focus:outline-none focus:border-primary transition-colors duration-150">
+                                <i data-lucide="chevrons-up-down" class="w-3.5 h-3.5 text-textSecondary absolute right-3 top-3 pointer-events-none"></i>
+                            </div>
+                            <div id="cityList" class="absolute left-0 right-0 top-[64px] bg-surface border border-border rounded-input shadow-lg max-h-40 overflow-y-auto hidden z-50 py-1"></div>
+                        </div>
+                    </div>
+
+                    <!-- quận/huyện + phường/xã grid: 2 columns -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <!-- quận/huyện multiple-combobox (optional) -->
+                        <div class="flex flex-col gap-1 relative">
+                            <label class="text-small font-medium text-textSecondary">Quận/Huyện</label>
+                            <div class="relative">
+                                <input type="text" id="districtInput" autocomplete="off" placeholder="Chọn nhiều..." onfocus="showComboboxDropdown('district')" oninput="filterComboboxData('district', this.value)" class="w-full px-3 py-2 bg-surface border border-border rounded-input text-body focus:outline-none focus:border-primary transition-colors duration-150">
+                                <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-textSecondary absolute right-3 top-3 pointer-events-none"></i>
+                            </div>
+                            <div id="districtList" class="absolute left-0 right-0 top-[64px] bg-surface border border-border rounded-input shadow-lg max-h-40 overflow-y-auto hidden z-50 py-1"></div>
+                            <div id="districtChips" class="flex flex-wrap gap-1 mt-1"></div>
+                        </div>
+                        <!-- phường/xã multiple-combobox (optional) -->
+                        <div class="flex flex-col gap-1 relative">
+                            <label class="text-small font-medium text-textSecondary">Phường/Xã</label>
+                            <div class="relative">
+                                <input type="text" id="wardInput" autocomplete="off" placeholder="Chọn nhiều..." onfocus="showComboboxDropdown('ward')" oninput="filterComboboxData('ward', this.value)" class="w-full px-3 py-2 bg-surface border border-border rounded-input text-body focus:outline-none focus:border-primary transition-colors duration-150">
+                                <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-textSecondary absolute right-3 top-3 pointer-events-none"></i>
+                            </div>
+                            <div id="wardList" class="absolute left-0 right-0 top-[64px] bg-surface border border-border rounded-input shadow-lg max-h-40 overflow-y-auto hidden z-50 py-1"></div>
+                            <div id="wardChips" class="flex flex-wrap gap-1 mt-1"></div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Fixed Xác nhận button Footer -->
+            <div class="p-6 pt-0 flex-shrink-0">
+                <button type="submit" form="userForm" class="w-full py-3 bg-primary hover:bg-primary/90 text-surface font-semibold rounded-button shadow-sm transition-colors duration-150 text-body text-center">
+                    Xác nhận
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ~[Xác nhận] Dialog -->
+    <div id="confirmDialog" class="fixed inset-0 z-50 hidden bg-textPrimary/20 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-surface w-full max-w-sm rounded-modal p-5 flex flex-col gap-4 shadow-lg transform scale-95 opacity-0 transition-all duration-150" id="confirmDialogBody">
+            <div class="flex items-start gap-3">
+                <div class="p-2 bg-warning/10 text-warning rounded-full flex-shrink-0" id="confirmIconBox">
+                    <i data-lucide="alert-circle" class="w-5 h-5"></i>
+                </div>
+                <div class="flex flex-col gap-1">
+                    <h3 class="text-body font-semibold text-textPrimary" id="confirmTitle">Xác nhận</h3>
+                    <p class="text-small text-textSecondary" id="confirmDescription">Bạn có chắc chắn muốn thực hiện hành động này?</p>
+                </div>
+            </div>
+            <div class="flex items-center justify-end gap-2 mt-2">
+                <button onclick="closeConfirmDialog()" class="px-4 py-2 bg-background hover:bg-border text-textPrimary text-small font-medium rounded-button transition-colors duration-150">Hủy</button>
+                <button id="confirmExecuteBtn" class="px-4 py-2 bg-primary text-surface text-small font-medium rounded-button transition-colors duration-150">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOCK DATA & REGIONAL SOURCE -->
+    <script>
+        const MOCK_REGIONS = {
+            provinces: ["Hà Nội", "Thành phố Hồ Chí Minh", "Đà Nẵng"],
+            cities: {
+                "Hà Nội": ["Quận Hoàn Kiếm", "Quận Ba Đình", "Thị xã Sơn Tây"],
+                "Thành phố Hồ Chí Minh": ["Thành phố Thủ Đức", "Quận 1", "Quận Bình Thạnh"],
+                "Đà Nẵng": ["Quận Hải Châu", "Quận Cẩm Lệ", "Huyện Hòa Vang"]
+            },
+            districts: {
+                "Hà Nội": ["Hoàn Kiếm", "Ba Đình", "Đống Đa", "Cầu Giấy"],
+                "Thành phố Hồ Chí Minh": ["Quận 1", "Bình Thạnh", "Gò Vấp", "Thủ Đức"],
+                "Đà Nẵng": ["Hải Châu", "Thanh Khê", "Sơn Trà", "Ngũ Hành Sơn"]
+            },
+            wards: {
+                "Hoàn Kiếm": ["Hàng Bạc", "Hàng Bồ", "Tràng Tiền", "Lý Thái Tổ"],
+                "Ba Đình": ["Đội Cấn", "Giảng Võ", "Kim Mã", "Liễu Giai"],
+                "Quận 1": ["Bến Nghé", "Bến Thành", "Đa Kao", "Tân Định"],
+                "Bình Thạnh": ["Phường 15", "Phường 22", "Phường 25"],
+                "Hải Châu": ["Bình Hiên", "Bình Thuận", "Phước Ninh", "Thạch Thang"]
+            }
+        };
+
+        const AVATAR_POOL = [
+            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
+            "https://images.unsplash.com/photo-1628157582853-a796fa650a6a?w=150",
+            "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150"
+        ];
+    </script>
+
+    <!-- APPLICATION SCRIPTS / CORE ENGINE -->
+    <script>
+        // Trạng Thái dữ liệu ứng dụng
+        let users = [
+            { id: 1, name: "Nguyễn Trung Kiên", phone: "0912345678", username: "kien.nt", role: "Admin", status: "Đang hoạt động", province: "Hà Nội", city: "Quận Hoàn Kiếm", districts: ["Hoàn Kiếm"], wards: ["Hàng Bạc", "Tràng Tiền"], avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" },
+            { id: 2, name: "Lê Thị Hồng Nhung", phone: "0987654321", username: "nhung.le", role: "Chủ nhà", status: "Đang hoạt động", province: "Thành phố Hồ Chí Minh", city: "Quận 1", districts: ["Quận 1"], wards: ["Bến Nghé"], avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150" },
+            { id: 3, name: "Trần Hoàng Bách", phone: "0905112233", username: "bach.th", role: "Quản lý khu vực", status: "Đang hoạt động", province: "Đà Nẵng", city: "Quận Hải Châu", districts: ["Hải Châu"], wards: ["Bình Hiên", "Phước Ninh"], avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150" },
+            { id: 4, name: "Phạm Minh Hoàng", phone: "0934889900", username: "hoang.pm", role: "Sale", status: "Đang khóa", province: "Hà Nội", city: "Quận Ba Đình", districts: ["Ba Đình"], wards: ["Đội Cấn"], avatar: "https://images.unsplash.com/photo-1778034342784-e97de7ed1b5e?w=150" },
+            { id: 5, name: "Vũ Phương Thảo", phone: "0977445566", username: "thao.vp", role: "Sale", status: "Đang hoạt động", province: "Thành phố Hồ Chí Minh", city: "Quận Bình Thạnh", districts: ["Bình Thạnh"], wards: ["Phường 15"], avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" }
+        ];
+
+        let selectedUserId = null;
+        let searchQuery = "";
+        
+        // State Form Khu vực tạm thời
+        let currentProvince = "";
+        let currentCity = "";
+        let currentDistricts = [];
+        let currentWards = [];
+        
+        let selectedRole = "";
+        let selectedStatus = "Đang hoạt động";
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderUserList();
+            setupDropdownClickInterceptor();
+            lucide.createIcons();
+        });
+
+        // hiển thị => notification toast
+        function showNotification(message, type = 'success') {
+            const toast = document.getElementById('notificationToast');
+            const msg = document.getElementById('toastMessage');
+            const icon = document.getElementById('toastIcon');
+            
+            msg.innerText = message;
+            if(type === 'success') {
+                icon.className = "w-4 h-4 text-success";
+                icon.setAttribute('data-lucide', 'check-circle');
+            } else {
+                icon.className = "w-4 h-4 text-error";
+                icon.setAttribute('data-lucide', 'alert-circle');
+            }
+            lucide.createIcons();
+            
+            toast.classList.remove('-translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('-translate-y-24', 'opacity-0');
+            }, 2000);
+        }
+
+        // Tải danh sách thành viên [Quản lý thành viên]
+        function renderUserList() {
+            const container = document.getElementById('userListContainer');
+            container.innerHTML = "";
+
+            const filtered = users.filter(u => 
+                u.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                u.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                u.phone.includes(searchQuery)
+            );
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-16 text-textSecondary gap-2">
+                        <i data-lucide="users" class="w-8 h-8 opacity-30"></i>
+                        <span class="text-small">Không tìm thấy thành viên nào</span>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            filtered.forEach(user => {
+                const statusColor = user.status === 'Đang hoạt động' ? 'bg-success/10 text-success border-success/20' : 'bg-error/10 text-error border-error/20';
+                
+                // Trộn chip quận/huyện + phường xã kèm icon riêng biệt
+                const districtChips = (user.districts || []).map(d => `
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-primary/5 border border-primary/10 text-textSecondary rounded-md text-[11px]">
+                        <i data-lucide="map" class="w-2.5 h-2.5 text-primary"></i>${d}
+                    </span>
+                `).join('');
+
+                const wardChips = (user.wards || []).map(w => `
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-success/5 border border-success/10 text-textSecondary rounded-md text-[11px]">
+                        <i data-lucide="layers" class="w-2.5 h-2.5 text-success"></i>${w}
+                    </span>
+                `).join('');
+
+                const card = document.createElement('div');
+                card.className = "p-4 bg-surface border border-border rounded-card shadow-soft flex flex-col gap-3 relative transition-all duration-150 hover:border-primary/20";
+                card.innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-center gap-3">
+                            <img src="${user.avatar}" alt="${user.name}" class="w-12 h-12 rounded-full object-cover border border-border flex-shrink-0">
+                            <div class="flex flex-col">
+                                <span class="font-semibold text-textPrimary text-body leading-tight">${user.name}</span>
+                                <span class="text-small text-textSecondary mt-0.5">${user.phone} · @${user.username}</span>
+                            </div>
+                        </div>
+                        <button onclick="openActionContextPopup(event, ${user.id})" class="p-1.5 hover:bg-background text-textSecondary hover:text-textPrimary rounded-button transition-colors duration-150">
+                            <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="flex flex-wrap items-center gap-1.5">
+                        <span class="px-2 py-0.5 rounded-full text-[11px] font-medium border ${statusColor}">
+                            ${user.status}
+                        </span>
+                        <span class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                            ${user.role}
+                        </span>
+                    </div>
+
+                    <div class="h-[1px] bg-border/60 my-0.5"></div>
+
+                    <div class="flex flex-col gap-1.5 text-small">
+                        <div class="flex items-center gap-1.5 text-textPrimary">
+                            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-textSecondary flex-shrink-0"></i>
+                            <span class="font-medium truncate">${user.city || ''}, ${user.province || ''}</span>
+                        </div>
+                        
+                        ${districtChips ? `<div class="flex flex-wrap gap-1">${districtChips}</div>` : ''}
+                        ${wardChips ? `<div class="flex flex-wrap gap-1">${wardChips}</div>` : ''}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function handleSearch(val) {
+            searchQuery = val;
+            renderUserList();
+        }
+
+        // ~[User action Menu Popup] Triggers
+        function openActionContextPopup(e, userId) {
+            e.stopPropagation();
+            selectedUserId = userId;
+            const user = users.find(u => u.id === userId);
+            
+            const popup = document.getElementById('actionMenuPopup');
+            const content = document.getElementById('popupContent');
+            const lockText = document.getElementById('lockMenuText');
+            const lockIcon = document.getElementById('lockMenuIcon');
+
+            if(user.status === 'Đang hoạt động') {
+                lockText.innerText = "Vô hiệu hóa";
+                lockIcon.setAttribute('data-lucide', 'lock');
+            } else {
+                lockText.innerText = "Kích hoạt";
+                lockIcon.setAttribute('data-lucide', 'lock-open');
+            }
+            lucide.createIcons();
+
+            const btnRect = e.currentTarget.getBoundingClientRect();
+            popup.classList.remove('hidden');
+
+            requestAnimationFrame(() => {
+                const pw = content.offsetWidth;
+                const ph = content.offsetHeight;
+
+                let left = btnRect.right - pw;
+                let top = btnRect.bottom + 4;
+
+                if (left < 8) left = 8;
+                if (top + ph > window.innerHeight - 8) {
+                    top = Math.max(8, btnRect.top - ph - 4);
+                }
+
+                content.style.left = `${left}px`;
+                content.style.top = `${top}px`;
+            });
+        }
+
+        function closeActionMenu() {
+            document.getElementById('actionMenuPopup').classList.add('hidden');
+        }
+
+        // ~[<<Name>> Menu popup] Custom implementation for Dropdowns
+        function openRoleMenuPopup(e) {
+            e.stopPropagation();
+            const roles = [
+                { name: "Sale", icon: "user" },
+                { name: "Chủ nhà", icon: "home" },
+                { name: "Quản lý khu vực", icon: "globe" },
+                { name: "Admin", icon: "shield" }
+            ];
+            setupGenericDropdownItems(roles, 'role', (val) => {
+                selectedRole = val;
+                document.getElementById('roleDropdownValue').innerText = val;
+            });
+            showGenericDropdownPopup(e.currentTarget);
+        }
+
+        function openStatusMenuPopup(e) {
+            e.stopPropagation();
+            const statuses = [
+                { name: "Đang hoạt động", icon: "check-circle" },
+                { name: "Đang khóa", icon: "slash" }
+            ];
+            setupGenericDropdownItems(statuses, 'status', (val) => {
+                selectedStatus = val;
+                document.getElementById('statusDropdownValue').innerText = val;
+            });
+            showGenericDropdownPopup(e.currentTarget);
+        }
+
+        function setupGenericDropdownItems(items, type, callback) {
+            const container = document.getElementById('genericDropdownContent');
+            container.innerHTML = "";
+            items.forEach(item => {
+                const btn = document.createElement('button');
+                btn.type = "button";
+                btn.className = "w-full px-4 py-2 text-left hover:bg-background flex items-center gap-2 text-textPrimary transition-colors duration-150 text-body";
+                btn.innerHTML = `<i data-lucide="${item.icon}" class="w-4 h-4 text-textSecondary"></i> <span>${item.name}</span>`;
+                btn.onclick = () => {
+                    callback(item.name);
+                    closeGenericDropdown();
+                };
+                container.appendChild(btn);
+            });
+            lucide.createIcons();
+        }
+
+        function showGenericDropdownPopup(targetEl) {
+            const popup = document.getElementById('genericDropdownPopup');
+            const content = document.getElementById('genericDropdownContent');
+            
+            const rect = targetEl.getBoundingClientRect();
+            content.style.left = `${rect.left}px`;
+            content.style.top = `${rect.bottom + 4}px`;
+            content.style.width = `${rect.width}px`;
+
+            popup.classList.remove('hidden');
+
+            requestAnimationFrame(() => {
+                const ph = content.offsetHeight;
+                let top = rect.bottom + 4;
+                if (top + ph > window.innerHeight - 8) {
+                    top = Math.max(8, rect.top - ph - 4);
+                }
+                content.style.top = `${top}px`;
+            });
+        }
+
+        function closeGenericDropdown() {
+            document.getElementById('genericDropdownPopup').classList.add('hidden');
+        }
+
+        // [[Thêm thành viên]]
+        function openAddUserDialog() {
+            selectedUserId = null;
+            document.getElementById('dialogTitle').innerText = "Thêm thành viên";
+            document.getElementById('formStatusContainer').classList.add('hidden');
+            document.getElementById('userForm').reset();
+            
+            document.getElementById('formAvatarPreview').src = AVATAR_POOL[Math.floor(Math.random() * AVATAR_POOL.length)];
+            generateRandomPassword();
+
+            selectedRole = "";
+            selectedStatus = "Đang hoạt động";
+            document.getElementById('roleDropdownValue').innerText = "Chọn vai trò...";
+            
+            clearLocationFormState();
+            showFormDialog();
+        }
+
+        // [[Sửa thành viên Dialog]]
+        function triggerEditUser() {
+            const user = users.find(u => u.id === selectedUserId);
+            closeActionMenu();
+            if(!user) return;
+
+            document.getElementById('dialogTitle').innerText = "Sửa thành viên Dialog";
+            document.getElementById('formStatusContainer').classList.remove('hidden');
+
+            document.getElementById('formAvatarPreview').src = user.avatar;
+            document.getElementById('formName').value = user.name;
+            document.getElementById('formPhone').value = user.phone;
+            document.getElementById('formUsername').value = user.username;
+            document.getElementById('formPassword').value = "••••••••"; 
+
+            selectedRole = user.role;
+            selectedStatus = user.status;
+            document.getElementById('roleDropdownValue').innerText = user.role;
+            document.getElementById('statusDropdownValue').innerText = user.status;
+
+            currentProvince = user.province || "";
+            currentCity = user.city || "";
+            currentDistricts = [...(user.districts || [])];
+            currentWards = [...(user.wards || [])];
+            
+            syncLocationStateToInputs();
+            showFormDialog();
+        }
+
+        function showFormDialog() {
+            const modal = document.getElementById('formDialog');
+            const body = document.getElementById('formDialogBody');
+            modal.classList.remove('hidden');
+            setTimeout(() => body.classList.remove('translate-y-full'), 50);
+        }
+
+        function closeFormDialog() {
+            const body = document.getElementById('formDialogBody');
+            body.classList.add('translate-y-full');
+            setTimeout(() => {
+                document.getElementById('formDialog').classList.add('hidden');
+                hideAllComboboxLists();
+            }, 150);
+        }
+
+        // ~[Xác nhận] Dialog System
+        function triggerToggleLockUser() {
+            const user = users.find(u => u.id === selectedUserId);
+            closeActionMenu();
+            if(!user) return;
+
+            const isLocking = user.status === 'Đang hoạt động';
+            const title = isLocking ? "Vô hiệu hóa" : "Kích hoạt";
+            const desc = isLocking ? `Xác nhận vô hiệu hóa tài khoản @${user.username}? thành viên sẽ bị chặn truy cập.` : `Xác nhận mở khóa hoạt động lại cho tài khoản @${user.username}?`;
+
+            openConfirmDialog(title, desc, () => {
+                user.status = isLocking ? "Đang khóa" : "Đang hoạt động";
+                showNotification(`${isLocking ? 'Vô hiệu hóa' : 'Kích hoạt'} tài khoản thành công`);
+                renderUserList();
+            });
+        }
+
+        function triggerDeleteUser() {
+            const user = users.find(u => u.id === selectedUserId);
+            closeActionMenu();
+            if(!user) return;
+
+            openConfirmDialog("Xóa thành viên", `Xác nhận xóa tài khoản @${user.username} khỏi hệ thống?`, () => {
+                users = users.filter(u => u.id !== selectedUserId);
+                showNotification("Xóa tài khoản thành công");
+                renderUserList();
+            });
+        }
+
+        function openConfirmDialog(title, description, onConfirm) {
+            document.getElementById('confirmTitle').innerText = title;
+            document.getElementById('confirmDescription').innerText = description;
+            
+            const dialog = document.getElementById('confirmDialog');
+            const body = document.getElementById('confirmDialogBody');
+            
+            dialog.classList.remove('hidden');
+            setTimeout(() => {
+                body.classList.remove('scale-95', 'opacity-0');
+                body.classList.add('scale-100', 'opacity-100');
+            }, 5);
+
+            document.getElementById('confirmExecuteBtn').onclick = () => {
+                onConfirm();
+                closeConfirmDialog();
+            };
+        }
+
+        function closeConfirmDialog() {
+            const body = document.getElementById('confirmDialogBody');
+            body.classList.remove('scale-100', 'opacity-100');
+            body.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => document.getElementById('confirmDialog').classList.add('hidden'), 150);
+        }
+
+        // Logic Auto-completion Combobox
+        function showComboboxDropdown(type) {
+            hideAllComboboxLists();
+            const list = document.getElementById(`${type}List`);
+            list.classList.remove('hidden');
+            filterComboboxData(type, document.getElementById(`${type}Input`).value);
+        }
+
+        function hideAllComboboxLists() {
+            ['province', 'city', 'district', 'ward'].forEach(t => {
+                document.getElementById(`${t}List`).classList.add('hidden');
+            });
+        }
+
+        function filterComboboxData(type, text) {
+            const container = document.getElementById(`${type}List`);
+            container.innerHTML = "";
+            let data = [];
+
+            if(type === 'province') {
+                data = MOCK_REGIONS.provinces;
+            } else if(type === 'city') {
+                data = MOCK_REGIONS.cities[currentProvince] || [];
+            } else if(type === 'district') {
+                data = MOCK_REGIONS.districts[currentProvince] || [];
+            } else if(type === 'ward') {
+                if(currentDistricts.length > 0) {
+                    currentDistricts.forEach(d => { if(MOCK_REGIONS.wards[d]) data.push(...MOCK_REGIONS.wards[d]); });
+                } else {
+                    Object.values(MOCK_REGIONS.wards).forEach(arr => data.push(...arr));
+                }
+                data = [...new Set(data)];
+            }
+
+            const matched = data.filter(item => item.toLowerCase().includes(text.toLowerCase()));
+
+            if(matched.length === 0) {
+                container.innerHTML = `<div class="px-3 py-2 text-textSecondary text-small">Không khớp kết quả</div>`;
+                return;
+            }
+
+            matched.forEach(val => {
+                const row = document.createElement('button');
+                row.type = "button";
+                row.className = "w-full px-3 py-1.5 text-left hover:bg-background text-body text-textPrimary truncate transition-colors duration-150";
+                row.innerText = val;
+                row.onclick = () => chooseComboboxValue(type, val);
+                container.appendChild(row);
+            });
+        }
+
+        function chooseComboboxValue(type, val) {
+            if(type === 'province') {
+                if(currentProvince !== val) {
+                    currentProvince = val;
+                    currentCity = ""; 
+                    currentDistricts = [];
+                    currentWards = [];
+                }
+            } else if(type === 'city') {
+                currentCity = val;
+            } else if(type === 'district') {
+                if(!currentDistricts.includes(val)) currentDistricts.push(val);
+                document.getElementById('districtInput').value = "";
+            } else if(type === 'ward') {
+                if(!currentWards.includes(val)) currentWards.push(val);
+                document.getElementById('wardInput').value = "";
+            }
+
+            syncLocationStateToInputs();
+            hideAllComboboxLists();
+        }
+
+        function removeChipItem(type, idx) {
+            if(type === 'district') currentDistricts.splice(idx, 1);
+            if(type === 'ward') currentWards.splice(idx, 1);
+            syncLocationStateToInputs();
+        }
+
+        function syncLocationStateToInputs() {
+            document.getElementById('provinceInput').value = currentProvince;
+            document.getElementById('cityInput').value = currentCity;
+
+            document.getElementById('districtChips').innerHTML = currentDistricts.map((d, i) => `
+                <span class="inline-flex items-center gap-1 pl-2 pr-1 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-md text-small font-medium">
+                    ${d}
+                    <button type="button" onclick="removeChipItem('district', ${i})" class="hover:bg-primary/20 p-0.5 rounded-sm"><i data-lucide="x" class="w-3 h-3"></i></button>
+                </span>
+            `).join('');
+
+            document.getElementById('wardChips').innerHTML = currentWards.map((w, i) => `
+                <span class="inline-flex items-center gap-1 pl-2 pr-1 py-0.5 bg-success/10 text-success border border-success/20 rounded-md text-small font-medium">
+                    ${w}
+                    <button type="button" onclick="removeChipItem('ward', ${i})" class="hover:bg-success/20 p-0.5 rounded-sm"><i data-lucide="x" class="w-3 h-3"></i></button>
+                </span>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function clearLocationFormState() {
+            currentProvince = ""; currentCity = ""; currentDistricts = []; currentWards = [];
+            syncLocationStateToInputs();
+        }
+
+        // Form Utility & Helpers
+        function randomizeAvatar() {
+            const current = document.getElementById('formAvatarPreview').src;
+            let filtered = AVATAR_POOL.filter(src => src !== current);
+            document.getElementById('formAvatarPreview').src = filtered[Math.floor(Math.random() * filtered.length)];
+        }
+
+        function generateRandomPassword() {
+            const pool = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$";
+            let res = "";
+            for (let i = 0; i < 10; i++) res += pool.charAt(Math.floor(Math.random() * pool.length));
+            document.getElementById('formPassword').value = res;
+        }
+
+        function togglePasswordVisibility() {
+            const inp = document.getElementById('formPassword');
+            const icon = document.getElementById('passwordEyeIcon');
+            if(inp.type === 'password') {
+                inp.type = 'text';
+                icon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                inp.type = 'password';
+                icon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
+        }
+
+        function setupDropdownClickInterceptor() {
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('#provinceInput') && !e.target.closest('#provinceList')) document.getElementById('provinceList').classList.add('hidden');
+                if (!e.target.closest('#cityInput') && !e.target.closest('#cityList')) document.getElementById('cityList').classList.add('hidden');
+                if (!e.target.closest('#districtInput') && !e.target.closest('#districtList')) document.getElementById('districtList').classList.add('hidden');
+                if (!e.target.closest('#wardInput') && !e.target.closest('#wardList')) document.getElementById('wardList').classList.add('hidden');
+            });
+        }
+
+        // Xử lý nộp Form thành viên Dialog ()-> [Quản lý thành viên]
+        function handleFormSubmit(e) {
+            e.preventDefault();
+
+            if(!selectedRole) {
+                showNotification("Vui lòng chọn vai trò thành viên!", "error");
+                return;
+            }
+
+            const dataPayload = {
+                name: document.getElementById('formName').value,
+                phone: document.getElementById('formPhone').value,
+                username: document.getElementById('formUsername').value,
+                role: selectedRole,
+                status: selectedUserId ? selectedStatus : "Đang hoạt động",
+                avatar: document.getElementById('formAvatarPreview').src,
+                province: currentProvince,
+                city: currentCity,
+                districts: [...currentDistricts],
+                wards: [...currentWards]
+            };
+
+            if(selectedUserId) {
+                const targetIdx = users.findIndex(u => u.id === selectedUserId);
+                if(targetIdx !== -1) {
+                    users[targetIdx] = { ...users[targetIdx], ...dataPayload };
+                    showNotification("Cập nhật thông tin thành công");
+                }
+            } else {
+                const generatedId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
+                users.unshift({ id: generatedId, ...dataPayload });
+                showNotification("Thêm thành viên mới thành công");
+            }
+
+            closeFormDialog();
+            renderUserList();
+        }
+    </script>
 </body>
 </html>
