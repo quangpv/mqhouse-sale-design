@@ -64,7 +64,7 @@
 
   <!-- Notification Toast (Hidden by default) -->
   <div id="notification" class="fixed top-4 left-4 right-4 z-50 transform -translate-y-10 opacity-0 pointer-events-none smooth-transition">
-    <div class="bg-surface border border-border rounded-card p-4 shadow-soft flex items-center gap-3">
+    <div class="bg-surface border border-border rounded-card p-4 flex items-center gap-3">
       <div class="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-success flex-shrink-0">
         <i data-lucide="check-circle-2" class="w-5 h-5"></i>
       </div>
@@ -76,24 +76,21 @@
   </div>
 
   <!-- Header / Navigation Bar -->
-  <header class="bg-surface border-b border-border sticky top-0 z-40 px-4 py-4 flex items-center justify-between shadow-soft">
+  <header class="bg-surface border-b border-border sticky top-0 z-40 px-4 py-4 flex items-center justify-between">
     <div class="flex items-center gap-3">
-      <button class="w-10 h-10 flex items-center justify-center rounded-input border border-border text-textPrimary hover:bg-background smooth-transition">
-        <i data-lucide="chevron-left" class="w-5 h-5"></i>
+      <button class="text-textPrimary hover:text-textSecondary smooth-transition">
+        <i data-lucide="chevron-left" class="w-6 h-6"></i>
       </button>
       <h2 class="text-h3 text-textPrimary">Thông tin cá nhân</h2>
     </div>
-    <button class="w-10 h-10 flex items-center justify-center rounded-input border border-border text-textSecondary hover:bg-background smooth-transition">
-      <i data-lucide="more-horizontal" class="w-5 h-5"></i>
-    </button>
   </header>
 
   <!-- Main Content Container -->
-  <main class="flex-1 px-4 py-6 max-w-md mx-auto w-full space-y-6">
+  <main class="flex-1 px-4 py-6 max-w-md mx-auto w-full space-y-6" style="background-color:white;">
     
-    <!-- Profile Card Component -->
-    <div class="bg-surface border border-border rounded-card p-6 shadow-soft flex flex-col items-center text-center space-y-4">
-      <div class="relative group">
+    <!-- Profile Section -->
+    <div class="flex flex-col items-center text-center space-y-4 pt-2">
+      <div class="relative">
         <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop" 
              alt="User Avatar" 
              class="w-24 h-24 rounded-full object-cover border-2 border-border p-0.5">
@@ -113,38 +110,32 @@
       </div>
     </div>
 
-    <!-- Details & Form Section -->
-    <div class="bg-surface border border-border rounded-card p-6 shadow-soft space-y-6">
+    <!-- Phone Input -->
+    <div class="space-y-1.5">
+      <label for="phone" class="text-body font-medium text-textPrimary flex items-center gap-2">
+        <i data-lucide="phone" class="w-4 h-4 text-textSecondary"></i> Số điện thoại
+      </label>
+      <input type="tel" id="phone" value="0912345678" 
+             class="w-full px-3.5 py-2.5 text-body bg-background border border-border rounded-input text-textPrimary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary smooth-transition"
+             placeholder="Nhập số điện thoại">
+    </div>
+
+    <!-- Operating Area Section -->
+    <div class="space-y-4">
+      <h3 class="text-body font-medium text-textPrimary flex items-center gap-2">
+        <i data-lucide="map" class="w-4 h-4 text-textSecondary"></i> Khu vực hoạt động
+      </h3>
       
-      <!-- Phone Input Box -->
-      <div class="space-y-2">
-        <label for="phone" class="text-body font-medium text-textPrimary flex items-center gap-2">
-          <i data-lucide="phone" class="w-4 h-4 text-textSecondary"></i> Số điện thoại
-        </label>
-        <input type="tel" id="phone" value="0912345678" 
-               class="w-full px-3.5 py-2.5 text-body bg-background border border-border rounded-input text-textPrimary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary smooth-transition"
-               placeholder="Nhập số điện thoại">
+      <div class="flex items-center gap-2.5">
+        <i data-lucide="map-pin" class="w-4 h-4 text-primary"></i>
+        <span class="text-small text-textPrimary font-medium">Quận 1, Thành phố Hồ Chí Minh</span>
       </div>
 
-      <div class="border-t border-border pt-6 space-y-4">
-        <h3 class="text-body font-medium text-textPrimary flex items-center gap-2">
-          <i data-lucide="map" class="w-4 h-4 text-textSecondary"></i> Khu vực hoạt động
-        </h3>
-        
-        <!-- City / Province Target -->
-        <div class="flex items-center gap-2.5 bg-background p-3 rounded-input border border-border">
-          <i data-lucide="map-pin" class="w-4 h-4 text-primary"></i>
-          <span class="text-body text-textPrimary font-medium">Quận 1, Thành phố Hồ Chí Minh</span>
+      <div class="space-y-2.5">
+        <p class="text-small font-medium text-textSecondary tracking-wide">Phường/Xã</p>
+        <div id="sub-districts-container" class="flex flex-wrap gap-2">
+          <!-- Dynamic Chips Loaded via Mock Data -->
         </div>
-
-        <!-- Sub-districts Section -->
-        <div class="space-y-2.5">
-          <p class="text-small font-medium text-textSecondary tracking-wide uppercase">Danh sách Phường / Xã quản lý</p>
-          <div id="sub-districts-container" class="flex flex-wrap gap-2">
-            <!-- Dynamic Chips Loaded via Mock Data -->
-          </div>
-        </div>
-
       </div>
     </div>
 
@@ -153,7 +144,7 @@
   <!-- Fixed Bottom Sticky Section -->
   <div class="fixed bottom-0 left-0 right-0 bg-surface border-t border-border p-4 z-40 shadow-[0_-4px_12px_rgba(15,23,42,0.03)]">
     <div class="max-w-md mx-auto">
-      <button onclick="triggerUpdate()" class="w-full bg-primary hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-button text-body flex items-center justify-center gap-2 shadow-soft smooth-transition">
+      <button onclick="triggerUpdate()" class="w-full bg-primary hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-button text-body flex items-center justify-center gap-2 smooth-transition">
         <i data-lucide="save" class="w-4 h-4"></i>
         Cập nhật thông tin
       </button>
@@ -174,8 +165,8 @@
     function renderChips() {
       const container = document.getElementById('sub-districts-container');
       container.innerHTML = mockRegions.map(region => `
-        <div class="inline-flex items-center gap-1.5 bg-background border border-border pl-2.5 pr-3 py-1.5 rounded-full text-body text-textPrimary shadow-sm hover:border-textSecondary smooth-transition cursor-default">
-          <i data-lucide="layers" class="w-3.5 h-3.5 text-textSecondary"></i>
+        <div class="inline-flex items-center gap-1.5 bg-background border border-border pl-2.5 pr-3 py-1 rounded-full text-small text-textPrimary hover:border-textSecondary smooth-transition cursor-default">
+          <i data-lucide="layers" class="w-2 h-2 text-textSecondary"></i>
           <span class="text-small font-medium">${region.name}</span>
         </div>
       `).join('');

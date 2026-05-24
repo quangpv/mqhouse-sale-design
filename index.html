@@ -85,9 +85,6 @@
                         <button onclick="switchScreen('resetPassword')" id="btn-reset-password" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
                             <i data-lucide="user-plus" class="w-4 h-4"></i> Khởi tạo lại mật khẩu
                         </button>
-                        <button onclick="switchScreen('changePassword')" id="btn-changePassword" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
-                            <i data-lucide="lock" class="w-4 h-4"></i> Đổi mật khẩu
-                        </button>
                     </div>
                 </div>
 
@@ -120,6 +117,18 @@
                         </button>
                         <button onclick="switchScreen('catalog')" id="btn-catalog" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
                             <i data-lucide="layout-grid" class="w-4 h-4"></i> Danh mục
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="px-3 text-small font-bold text-textSecondary/70 uppercase tracking-wider block mb-2">Hồ sơ</span>
+                    <div class="space-y-1">
+                        <button onclick="switchScreen('userInfo')" id="btn-userInfo" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
+                            <i data-lucide="file-text" class="w-4 h-4"></i> Thông tin người dùng
+                        </button>
+                        <button onclick="switchScreen('changePassword')" id="btn-changePassword" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
+                            <i data-lucide="lock" class="w-4 h-4"></i> Đổi mật khẩu
                         </button>
                     </div>
                 </div>
@@ -225,6 +234,7 @@
             propertyDetails: 'property-detail.html',
             roomDetails: 'room-detail.html',
             catalog: 'catalog.html',
+            userInfo: 'user-info.html',
         };
 
         function switchScreen(screenKey) {
