@@ -70,7 +70,7 @@
             <div class="flex items-center gap-3">
                 <div class="relative flex-1">
                     <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-textSecondary"></i>
-                    <input type="text" placeholder="Tìm kiếm địa chỉ..." class="w-full pl-9 pr-4 py-2.5 bg-background border border-border rounded-input text-body placeholder:text-textSecondary focus:outline-none focus:border-primary transition-colors duration-150">
+                    <input type="text" id="search-input" placeholder="Tìm kiếm địa chỉ..." onkeydown="if(event.key==='Enter'){parent.switchScreen('search')}" class="w-full pl-9 pr-4 py-2.5 bg-background border border-border rounded-input text-body placeholder:text-textSecondary focus:outline-none focus:border-primary transition-colors duration-150">
                 </div>
                 <button class="w-[42px] h-[42px] flex items-center justify-center bg-primary text-white rounded-button hover:bg-opacity-90 transition-all duration-150 active:scale-95 shadow-soft">
                     <i data-lucide="plus" class="w-5 h-5"></i>
@@ -81,19 +81,19 @@
         <div class="flex-1 overflow-y-auto no-scrollbar pb-4">
             
             <div class="grid grid-cols-3 gap-3 p-4">
-                <button class="flex flex-col items-center justify-center bg-surface border border-border p-4 rounded-card shadow-soft hover:border-primary transition-all duration-150 group">
+                <button onclick="parent.switchScreen('search')" class="flex flex-col items-center justify-center bg-surface border border-border p-4 rounded-card shadow-soft hover:border-primary transition-all duration-150 group">
                     <div class="w-12 h-12 bg-blue-50 text-primary rounded-full flex items-center justify-center mb-2 group-hover:scale-105 transition-transform duration-150">
                         <i data-lucide="building-2" class="w-6 h-6"></i>
                     </div>
                     <span class="text-small font-medium">Căn hộ</span>
                 </button>
-                <button class="flex flex-col items-center justify-center bg-surface border border-border p-4 rounded-card shadow-soft hover:border-primary transition-all duration-150 group">
+                <button onclick="parent.switchScreen('search')" class="flex flex-col items-center justify-center bg-surface border border-border p-4 rounded-card shadow-soft hover:border-primary transition-all duration-150 group">
                     <div class="w-12 h-12 bg-blue-50 text-primary rounded-full flex items-center justify-center mb-2 group-hover:scale-105 transition-transform duration-150">
                         <i data-lucide="building" class="w-6 h-6"></i>
                     </div>
                     <span class="text-small font-medium">Tòa nhà</span>
                 </button>
-                <button class="flex flex-col items-center justify-center bg-surface border border-border p-4 rounded-card shadow-soft hover:border-primary transition-all duration-150 group">
+                <button onclick="parent.switchScreen('search')" class="flex flex-col items-center justify-center bg-surface border border-border p-4 rounded-card shadow-soft hover:border-primary transition-all duration-150 group">
                     <div class="w-12 h-12 bg-blue-50 text-primary rounded-full flex items-center justify-center mb-2 group-hover:scale-105 transition-transform duration-150">
                         <i data-lucide="home" class="w-6 h-6"></i>
                     </div>
@@ -111,19 +111,19 @@
                 </div>
                 
                 <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
-                    <button class="px-4 py-2 bg-primary text-white text-body font-medium rounded-button shadow-soft whitespace-nowrap transition-colors duration-150">Quận 1</button>
-                    <button class="px-4 py-2 bg-surface border border-border text-textPrimary text-body font-medium rounded-button shadow-soft hover:border-border whitespace-nowrap transition-colors duration-150">Quận 2</button>
-                    <button class="px-4 py-2 bg-surface border border-border text-textPrimary text-body font-medium rounded-button shadow-soft hover:border-border whitespace-nowrap transition-colors duration-150">Quận 3</button>
-                    <button class="px-4 py-2 bg-surface border border-border text-textPrimary text-body font-medium rounded-button shadow-soft hover:border-border whitespace-nowrap transition-colors duration-150">Quận 4</button>
-                    <button class="px-4 py-2 bg-surface border border-border text-textPrimary text-body font-medium rounded-button shadow-soft hover:border-border whitespace-nowrap transition-colors duration-150">Quận 7</button>
-                    <button class="px-4 py-2 bg-surface border border-border text-textPrimary text-body font-medium rounded-button shadow-soft hover:border-border whitespace-nowrap transition-colors duration-150">Bình Thạnh</button>
+                    <button onclick="parent.switchScreen('search')" class="px-4 py-2 bg-primary text-white text-body font-medium rounded-button shadow-soft whitespace-nowrap transition-colors duration-150">Quận 1</button>
+                    <button onclick="parent.switchScreen('search')" class="px-4 py-2 bg-surface border border-border text-textPrimary text-body font-medium rounded-button shadow-soft hover:border-border whitespace-nowrap transition-colors duration-150">Quận 2</button>
+                    <button onclick="parent.switchScreen('search')" class="px-4 py-2 bg-surface border border-border text-textPrimary text-body font-medium rounded-button shadow-soft hover:border-border whitespace-nowrap transition-colors duration-150">Quận 3</button>
+                    <button onclick="parent.switchScreen('search')" class="px-4 py-2 bg-surface border border-border text-textPrimary text-body font-medium rounded-button shadow-soft hover:border-border whitespace-nowrap transition-colors duration-150">Quận 4</button>
+                    <button onclick="parent.switchScreen('search')" class="px-4 py-2 bg-surface border border-border text-textPrimary text-body font-medium rounded-button shadow-soft hover:border-border whitespace-nowrap transition-colors duration-150">Quận 7</button>
+                    <button onclick="parent.switchScreen('search')" class="px-4 py-2 bg-surface border border-border text-textPrimary text-body font-medium rounded-button shadow-soft hover:border-border whitespace-nowrap transition-colors duration-150">Bình Thạnh</button>
                 </div>
             </div>
 
             <div class="py-4 space-y-3">
                 <div class="px-4 flex items-center justify-between">
                     <h3 class="text-h3 font-semibold text-textPrimary">Nổi bật</h3>
-                    <a href="#" class="text-body font-medium text-primary hover:underline">Xem tất cả</a>
+                    <a href="#" onclick="parent.switchScreen('search');return false" class="text-body font-medium text-primary hover:underline">Xem tất cả</a>
                 </div>
                 
                 <div id="featured-list" class="flex gap-4 overflow-x-auto no-scrollbar px-4 py-1">
@@ -133,7 +133,7 @@
             <div class="py-4 space-y-3">
                 <div class="px-4 flex items-center justify-between">
                     <h3 class="text-h3 font-semibold text-textPrimary">Mới nhất</h3>
-                    <a href="#" class="text-body font-medium text-primary hover:underline">Xem tất cả</a>
+                    <a href="#" onclick="parent.switchScreen('search');return false" class="text-body font-medium text-primary hover:underline">Xem tất cả</a>
                 </div>
                 
                 <div id="latest-list" class="flex gap-4 overflow-x-auto no-scrollbar px-4 py-1">
