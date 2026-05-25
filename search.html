@@ -59,6 +59,17 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+        input[type="range"]::-webkit-slider-thumb {
+            pointer-events: auto;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #2563EB;
+            border: 2px solid #FFFFFF;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body class="flex justify-center items-center min-h-screen p-0 sm:p-4 text-textPrimary">
@@ -81,7 +92,7 @@
                     <i data-lucide="map" class="w-5 h-5"></i>
                 </button>
                 <!-- Advanced Filter Icon Button -->
-                <button class="w-[44px] h-[44px] flex items-center justify-center bg-surface border border-border rounded-input text-textPrimary hover:bg-slate-50 hover:text-primary transition-colors duration-150 shadow-soft" title="Bộ lọc nâng cao">
+                <button onclick="openFilterSheet()" class="w-[44px] h-[44px] flex items-center justify-center bg-surface border border-border rounded-input text-textPrimary hover:bg-slate-50 hover:text-primary transition-colors duration-150 shadow-soft" title="Bộ lọc nâng cao">
                     <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
                 </button>
             </div>
@@ -116,6 +127,17 @@
                         <option value="studio">Studio</option>
                         <option value="1br">1 Phòng ngủ</option>
                         <option value="2br">2 Phòng ngủ</option>
+                    </select>
+                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-textSecondary pointer-events-none"></i>
+                </div>
+
+                <!-- Loại hình BDS Combobox -->
+                <div class="relative min-w-[115px] flex-shrink-0">
+                    <select id="propertyTypeSelect" onchange="applyPropertyTypeFilter()" class="w-full pl-3 pr-8 py-2 bg-background border border-border rounded-input text-small font-medium appearance-none focus:outline-none focus:border-primary text-textPrimary cursor-pointer">
+                        <option value="">Loại hình BDS</option>
+                        <option value="Căn hộ">Căn hộ</option>
+                        <option value="Tòa nhà">Tòa nhà</option>
+                        <option value="Phòng trọ">Phòng trọ</option>
                     </select>
                     <i data-lucide="chevron-down" class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-textSecondary pointer-events-none"></i>
                 </div>
@@ -246,9 +268,256 @@
 
     </div>
 
+    <!-- Filter Details Bottom Sheet -->
+    <div id="filterSheet" class="hidden absolute inset-0 bg-black/40 z-50 flex flex-col justify-end items-center opacity-0 transition-opacity duration-200">
+      <div class="bg-surface rounded-t-modal max-h-[85%] flex flex-col w-full max-w-lg shadow-2xl transform translate-y-10 transition-transform duration-200">
+        <div class="px-4 py-4 border-b border-border flex justify-between items-center shrink-0">
+          <h2 class="text-[18px] font-semibold text-textPrimary">Lọc chi tiết</h2>
+          <button onclick="closeFilterSheet()" class="p-1 hover:bg-slate-100 rounded-full text-textSecondary">
+            <i data-lucide="x" class="w-6 h-6"></i>
+          </button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-4 space-y-5 no-scrollbar">
+          <!-- Trạng thái -->
+          <div>
+            <h3 class="text-[14px] font-semibold text-textPrimary mb-2">Trạng thái phòng</h3>
+            <div class="flex flex-wrap gap-2" id="filterChipStatus">
+              <button onclick="toggleFilterChip('status', 'Còn hàng')" id="filter-chip-status-Còn hàng" class="px-4 py-2 border rounded-full text-[12px] font-medium transition-colors duration-150">Còn hàng</button>
+              <button onclick="toggleFilterChip('status', 'Hết hàng')" id="filter-chip-status-Hết hàng" class="px-4 py-2 border rounded-full text-[12px] font-medium transition-colors duration-150">Hết hàng</button>
+            </div>
+          </div>
+          <!-- Loại phòng -->
+          <div>
+            <h3 class="text-[14px] font-semibold text-textPrimary mb-2">Loại phòng</h3>
+            <div class="flex flex-wrap gap-2" id="filterChipType">
+              <button onclick="toggleFilterChip('type', 'Studio')" id="filter-chip-type-Studio" class="px-4 py-2 border rounded-full text-[12px] font-medium transition-colors duration-150">Studio</button>
+              <button onclick="toggleFilterChip('type', '1 Phòng ngủ')" id="filter-chip-type-1 Phòng ngủ" class="px-4 py-2 border rounded-full text-[12px] font-medium transition-colors duration-150">1 Phòng ngủ</button>
+              <button onclick="toggleFilterChip('type', '2 Phòng ngủ')" id="filter-chip-type-2 Phòng ngủ" class="px-4 py-2 border rounded-full text-[12px] font-medium transition-colors duration-150">2 Phòng ngủ</button>
+            </div>
+          </div>
+          <!-- Loại hình BDS -->
+          <div>
+            <h3 class="text-[14px] font-semibold text-textPrimary mb-2">Loại hình BDS</h3>
+            <div class="flex flex-wrap gap-2" id="filterChipPropertyType">
+              <button onclick="toggleFilterChip('propertyType', 'Căn hộ')" id="filter-chip-propertyType-Căn hộ" class="px-4 py-2 border rounded-full text-[12px] font-medium transition-colors duration-150">Căn hộ</button>
+              <button onclick="toggleFilterChip('propertyType', 'Tòa nhà')" id="filter-chip-propertyType-Tòa nhà" class="px-4 py-2 border rounded-full text-[12px] font-medium transition-colors duration-150">Tòa nhà</button>
+              <button onclick="toggleFilterChip('propertyType', 'Phòng trọ')" id="filter-chip-propertyType-Phòng trọ" class="px-4 py-2 border rounded-full text-[12px] font-medium transition-colors duration-150">Phòng trọ</button>
+            </div>
+          </div>
+          <!-- Giá thuê -->
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <h3 class="text-[14px] font-semibold text-textPrimary">Giá thuê (triệu/tháng)</h3>
+              <span class="text-[12px] text-primary font-medium" id="filterPriceLabel">0 - 100 Tr</span>
+            </div>
+            <div class="relative w-full h-6 mt-4 mb-2 flex items-center">
+              <div class="absolute left-0 right-0 h-1.5 bg-slate-200 rounded-full"></div>
+              <div id="filterPriceTrack" class="absolute h-1.5 bg-primary rounded-full" style="left: 0%; right: 0%;"></div>
+              <input type="range" id="filterPriceMin" min="0" max="100" value="0" oninput="syncFilterPrice()" class="absolute pointer-events-none appearance-none w-full bg-transparent top-0 h-full z-30">
+              <input type="range" id="filterPriceMax" min="0" max="100" value="100" oninput="syncFilterPrice()" class="absolute pointer-events-none appearance-none w-full bg-transparent top-0 h-full z-30">
+            </div>
+            <div class="flex items-center gap-3 mt-4">
+              <div class="flex-1">
+                <label class="text-[11px] text-textSecondary block mb-1">Từ (Min)</label>
+                <input type="number" id="filterPriceInputMin" value="0" min="0" max="100" oninput="syncFilterPriceInput('min')" class="w-full px-3 py-1.5 border border-border text-[13px] rounded-input focus:outline-none focus:border-primary">
+              </div>
+              <div class="flex-1">
+                <label class="text-[11px] text-textSecondary block mb-1">Đến (Max)</label>
+                <input type="number" id="filterPriceInputMax" value="100" min="0" max="100" oninput="syncFilterPriceInput('max')" class="w-full px-3 py-1.5 border border-border text-[13px] rounded-input focus:outline-none focus:border-primary">
+              </div>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-[14px] font-semibold text-textPrimary mb-2">Tiện ích cơ bản</h3>
+            <div class="flex flex-wrap gap-1.5" id="filterBasicAmenities"></div>
+          </div>
+          <div>
+            <h3 class="text-[14px] font-semibold text-textPrimary mb-2">Nội thất & Kết cấu</h3>
+            <div class="flex flex-wrap gap-1.5" id="filterFurnitureAmenities"></div>
+          </div>
+        </div>
+        <div class="p-4 border-t border-border bg-slate-50 flex items-center gap-3 shrink-0">
+          <button onclick="resetFilterSheet()" class="px-4 py-3 border border-border bg-white text-textPrimary text-[14px] font-medium rounded-button hover:bg-slate-100 flex-1">Xóa lọc</button>
+          <button onclick="applyFilterSheet()" class="px-6 py-3 bg-primary text-white text-[14px] font-medium rounded-button hover:bg-blue-700 flex-[2]">Áp dụng</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Initialize Lucide Icons -->
     <script>
         lucide.createIcons();
+    </script>
+    <script>
+        let filterState = { status: [], type: [], propertyType: [], priceMin: 0, priceMax: 100, amenities: [] };
+
+        const AMENITIES_BASIC = ["Hồ bơi", "Phòng gym", "Bãi đậu xe", "Thang máy", "Bảo vệ", "Lễ tân 24/7", "Balcony", "Cửa sổ", "Dọn phòng", "Nuôi Pet", "Cửa sổ (giếng trời, ngoài trời)"];
+        const AMENITIES_FURNITURE = ["Cửa sổ, ban công(thật, giả)", "Thang bộ/Thang máy"];
+
+        function renderAmenityChips() {
+            ['filterBasicAmenities', 'filterFurnitureAmenities'].forEach(id => {
+                const dom = document.getElementById(id);
+                if (dom) {
+                    const pool = id === 'filterBasicAmenities' ? AMENITIES_BASIC : AMENITIES_FURNITURE;
+                    dom.innerHTML = pool.map(item => `
+                        <button onclick="toggleAmenity('${item}')" id="chip-amenity-${id}-${item}" class="px-3 py-1.5 border border-border bg-surface text-textPrimary text-[12px] rounded-full transition-colors duration-150">
+                            ${item}
+                        </button>
+                    `).join('');
+                }
+            });
+        }
+
+        function openFilterSheet() {
+            const sheet = document.getElementById('filterSheet');
+            sheet.classList.remove('hidden');
+            setTimeout(() => {
+                sheet.classList.remove('opacity-0');
+                sheet.querySelector('div').classList.remove('translate-y-10');
+            }, 5);
+            renderAmenityChips();
+            renderFilterChips();
+            syncFilterPriceUI();
+        }
+
+        function closeFilterSheet() {
+            const sheet = document.getElementById('filterSheet');
+            sheet.classList.add('opacity-0');
+            sheet.querySelector('div').classList.add('translate-y-10');
+            setTimeout(() => sheet.classList.add('hidden'), 200);
+        }
+
+        function toggleFilterChip(field, value) {
+            const idx = filterState[field].indexOf(value);
+            if (idx > -1) filterState[field].splice(idx, 1);
+            else filterState[field].push(value);
+            renderFilterChips();
+        }
+
+        function applyPropertyTypeFilter() {
+            const val = document.getElementById('propertyTypeSelect').value;
+            filterState.propertyType = val ? [val] : [];
+            renderFilterChips();
+        }
+
+        function toggleAmenity(value) {
+            const idx = filterState.amenities.indexOf(value);
+            if (idx > -1) filterState.amenities.splice(idx, 1);
+            else filterState.amenities.push(value);
+            renderFilterChips();
+        }
+
+        function renderFilterChips() {
+            const inactive = 'px-4 py-2 border border-border bg-white text-textPrimary text-[12px] font-medium rounded-full hover:bg-slate-50 transition-colors duration-150';
+            const active = 'px-4 py-2 bg-primary border border-primary text-white text-[12px] font-medium rounded-full shadow-sm transition-colors duration-150';
+            document.querySelectorAll('#filterChipStatus button, #filterChipType button, #filterChipPropertyType button').forEach(btn => {
+                btn.className = inactive;
+            });
+            filterState.status.forEach(v => {
+                const el = document.getElementById(`filter-chip-status-${v}`);
+                if (el) el.className = active;
+            });
+            filterState.type.forEach(v => {
+                const el = document.getElementById(`filter-chip-type-${v}`);
+                if (el) el.className = active;
+            });
+            filterState.propertyType.forEach(v => {
+                const el = document.getElementById(`filter-chip-propertyType-${v}`);
+                if (el) el.className = active;
+            });
+            ['filterBasicAmenities', 'filterFurnitureAmenities'].forEach(id => {
+                const pool = id === 'filterBasicAmenities' ? AMENITIES_BASIC : AMENITIES_FURNITURE;
+                pool.forEach(item => {
+                    const el = document.getElementById(`chip-amenity-${id}-${item}`);
+                    if (el) el.className = filterState.amenities.includes(item)
+                        ? 'px-3 py-1.5 bg-primary border border-primary text-white text-[12px] rounded-full shadow-sm'
+                        : 'px-3 py-1.5 border border-border bg-white text-textPrimary text-[12px] rounded-full hover:bg-slate-50';
+                });
+            });
+        }
+
+        function syncFilterPrice() {
+            const min = parseInt(document.getElementById('filterPriceMin').value);
+            const max = parseInt(document.getElementById('filterPriceMax').value);
+            if (max - min < 0) return;
+            filterState.priceMin = min;
+            filterState.priceMax = max;
+            syncFilterPriceUI();
+        }
+
+        function syncFilterPriceInput(type) {
+            const minInput = document.getElementById('filterPriceInputMin');
+            const maxInput = document.getElementById('filterPriceInputMax');
+            let minVal = parseInt(minInput.value) || 0;
+            let maxVal = parseInt(maxInput.value) || 0;
+            if (minVal < 0) minVal = 0;
+            if (minVal > 100) minVal = 100;
+            if (maxVal < 0) maxVal = 0;
+            if (maxVal > 100) maxVal = 100;
+            if (type === 'min' && minVal > maxVal) minVal = maxVal;
+            if (type === 'max' && maxVal < minVal) maxVal = minVal;
+            filterState.priceMin = minVal;
+            filterState.priceMax = maxVal;
+            syncFilterPriceUI();
+        }
+
+        function syncFilterPriceUI() {
+            document.getElementById('filterPriceMin').value = filterState.priceMin;
+            document.getElementById('filterPriceMax').value = filterState.priceMax;
+            document.getElementById('filterPriceInputMin').value = filterState.priceMin;
+            document.getElementById('filterPriceInputMax').value = filterState.priceMax;
+            document.getElementById('filterPriceLabel').innerText = `${filterState.priceMin} - ${filterState.priceMax} Tr`;
+            const track = document.getElementById('filterPriceTrack');
+            track.style.left = filterState.priceMin + '%';
+            track.style.right = (100 - filterState.priceMax) + '%';
+        }
+
+        function resetFilterSheet() {
+            filterState = { status: [], type: [], propertyType: [], priceMin: 0, priceMax: 100, amenities: [] };
+            document.getElementById('propertyTypeSelect').value = '';
+            renderFilterChips();
+            syncFilterPriceUI();
+        }
+
+        function applyFilterSheet() {
+            // Sync state to quick select fields
+            const statusSelect = document.querySelector('select:nth-of-type(1)');
+            const typeSelect = document.querySelector('select:nth-of-type(3)');
+            const budgetSelect = document.querySelector('select:nth-of-type(5)');
+            const propertyTypeSelect = document.getElementById('propertyTypeSelect');
+
+            if (filterState.status.length === 1) {
+                const v = filterState.status[0] === 'Còn hàng' ? 'available' : 'rented';
+                statusSelect.value = v;
+            } else {
+                statusSelect.value = '';
+            }
+
+            if (filterState.type.length === 1) {
+                const map = { 'Studio': 'studio', '1 Phòng ngủ': '1br', '2 Phòng ngủ': '2br' };
+                typeSelect.value = map[filterState.type[0]] || '';
+            } else {
+                typeSelect.value = '';
+            }
+
+            if (filterState.propertyType.length === 1) {
+                propertyTypeSelect.value = filterState.propertyType[0];
+            } else {
+                propertyTypeSelect.value = '';
+            }
+
+            const priceRange = `${filterState.priceMin}tr - ${filterState.priceMax}tr`;
+            if (filterState.priceMin > 0 || filterState.priceMax < 100) {
+                Array.from(budgetSelect.options).forEach(o => {
+                    if (o.label.includes(priceRange) || (filterState.priceMin === 0 && filterState.priceMax <= 5 && o.value === 'u5') || (filterState.priceMin >= 5 && filterState.priceMax <= 10 && o.value === '5-10')) {
+                        budgetSelect.value = o.value;
+                    }
+                });
+            } else {
+                budgetSelect.value = '';
+            }
+
+            closeFilterSheet();
+        }
     </script>
 </body>
 </html>

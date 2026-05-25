@@ -62,35 +62,47 @@
         ::-webkit-scrollbar {
             display: none;
         }
+        .scrollbar-none {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
 <body class="min-h-screen flex justify-center items-start">
 
-    <div class="w-full max-w-md bg-background h-dvh flex flex-col relative overflow-y-auto pb-12">
+    <div class="w-full max-w-md bg-background h-dvh flex flex-col relative overflow-y-auto">
         
-        <header class="bg-surface border-b border-border sticky top-0 z-30 px-4 pt-6 shadow-sm">
-            <h1 class="text-h3 text-textPrimary">Danh mục</h1>
+        <header class="bg-surface border-b border-border sticky top-0 z-30 shadow-sm">
+            <div class="px-4 pt-6">
+                <h1 class="text-h3 text-textPrimary">Danh mục</h1>
+            </div>
             
             <div class="relative">
-                <div class="flex">
-                    <button onclick="switchTab('dia-gioi')" id="tab-dia-gioi-btn" class="flex-1 py-3 text-small font-medium text-center transition-custom text-primary">
+                <div id="tab-bar" class="flex overflow-x-auto flex-nowrap scrollbar-none">
+                    <button onclick="switchTab('dia-gioi')" id="tab-dia-gioi-btn" class="shrink-0 whitespace-nowrap px-3 py-3 text-small font-medium text-center transition-custom text-primary">
                         <div class="flex items-center justify-center space-x-2">
                             <i data-lucide="map-pin" class="w-4 h-4"></i>
                             <span>Địa giới hành chính</span>
                         </div>
                     </button>
-                    <button onclick="switchTab('danh-muc-khac')" id="tab-danh-muc-khac-btn" class="flex-1 py-3 text-small font-medium text-center transition-custom text-textSecondary hover:text-textPrimary">
+                    <button onclick="switchTab('danh-muc-khac')" id="tab-danh-muc-khac-btn" class="shrink-0 whitespace-nowrap px-3 py-3 text-small font-medium text-center transition-custom text-textSecondary hover:text-textPrimary">
                         <div class="flex items-center justify-center space-x-2">
                             <i data-lucide="grid-3x3" class="w-4 h-4"></i>
-                            <span>Danh mục khác</span>
+                            <span>Bất động sản</span>
+                        </div>
+                    </button>
+                    <button onclick="switchTab('phan-quyen')" id="tab-phan-quyen-btn" class="shrink-0 whitespace-nowrap px-3 py-3 text-small font-medium text-center transition-custom text-textSecondary hover:text-textPrimary">
+                        <div class="flex items-center justify-center space-x-2">
+                            <i data-lucide="shield-check" class="w-4 h-4"></i>
+                            <span>Phân quyền</span>
                         </div>
                     </button>
                 </div>
-                <div id="tab-indicator" class="absolute bottom-0 left-0 w-1/2 h-0.5 bg-primary rounded-full transition-all duration-300 ease-out"></div>
+                <div id="tab-indicator" class="absolute bottom-0 left-0 h-0.5 bg-primary rounded-full transition-[width] duration-300 ease-out" style="width: 0"></div>
             </div>
         </header>
 
-        <main class="flex-1 p-4">
+        <main class="flex-1 p-4 pb-12">
             
             <div id="notification-toast" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 bg-textPrimary text-surface px-4 py-3 rounded-card shadow-soft text-body flex items-center space-x-2 transition-custom opacity-0 pointer-events-none scale-95">
                 <i data-lucide="check-circle-2" class="w-5 h-5 text-success"></i>
@@ -236,7 +248,46 @@
                 </section>
 
             </div>
+
+            <div id="tab-phan-quyen" class="space-y-6 pb-20 hidden">
+
+                <section class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-small font-semibold tracking-wider text-textSecondary uppercase">Vai trò người dùng</h2>
+                        <span id="role-badge" class="px-2.5 py-0.5 rounded-full text-small font-medium bg-blue-50 text-primary border border-blue-100 transition-all whitespace-nowrap">Admin</span>
+                    </div>
+                    <div id="role-tab-bar" class="bg-surface border border-border p-3 rounded-card shadow-soft flex gap-2 overflow-x-auto scrollbar-none">
+                        <button onclick="selectRole('admin')" id="role-tab-admin" class="shrink-0 whitespace-nowrap flex flex-col items-center gap-2 py-3 px-3 rounded-button border text-center transition-all bg-blue-50 border-primary text-primary font-medium">
+                            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary transition-colors">
+                                <i data-lucide="shield-check" class="w-5 h-5 mx-auto"></i>
+                            </div>
+                            <span class="text-small font-medium">Admin</span>
+                        </button>
+                        <button onclick="selectRole('manager')" id="role-tab-manager" class="shrink-0 whitespace-nowrap flex flex-col items-center gap-2 py-3 px-3 rounded-button border text-center transition-all bg-surface border-border text-textSecondary hover:text-textPrimary hover:border-textSecondary">
+                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-textSecondary transition-colors">
+                                <i data-lucide="map-pin" class="w-5 h-5 mx-auto"></i>
+                            </div>
+                            <span class="text-small font-medium">Quản lý khu vực</span>
+                        </button>
+                        <button onclick="selectRole('sale')" id="role-tab-sale" class="shrink-0 whitespace-nowrap flex flex-col items-center gap-2 py-3 px-3 rounded-button border text-center transition-all bg-surface border-border text-textSecondary hover:text-textPrimary hover:border-textSecondary">
+                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-textSecondary transition-colors">
+                                <i data-lucide="badge-dollar-sign" class="w-5 h-5 mx-auto"></i>
+                            </div>
+                            <span class="text-small font-medium">Sale</span>
+                        </button>
+                    </div>
+                </section>
+
+                <section class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-small font-semibold tracking-wider text-textSecondary uppercase">Danh sách đặc quyền</h2>
+                        <button onclick="toggleSelectAll()" id="select-all-btn" class="text-small font-medium text-primary hover:underline transition-all whitespace-nowrap">Bỏ chọn tất cả</button>
+                    </div>
+                    <div id="permission-list" class="bg-surface border border-border rounded-card shadow-soft divide-y divide-border overflow-hidden"></div>
+                </section>
+            </div>
         </main>
+
     </div>
 
     <div id="modal-backdrop" class="fixed inset-0 bg-textPrimary bg-opacity-40 z-40 hidden transition-custom opacity-0" onclick="closeAllOverlays()"></div>
@@ -473,6 +524,118 @@
             { id: "srv-4", name: "Internet Cáp quang", type: "Cố định", price: 50000, unit: "Phòng", period: "Tháng" }
         ];
 
+        // --- PHÂN QUYỀN ---
+        const permissionData = [
+            { id: "perm_approve_bds", name: "Duyệt bất động sản", category: "Duyệt", code: "approve:property" },
+            { id: "perm_approve_room", name: "Duyệt phòng trống", category: "Duyệt", code: "approve:room" },
+            { id: "perm_write_bds", name: "Ghi thông tin bất động sản", category: "Ghi", code: "write:property" },
+            { id: "perm_write_room", name: "Ghi thông tin phòng", category: "Ghi", code: "write:room" },
+            { id: "perm_read_users", name: "Đọc danh sách người dùng", category: "Đọc", code: "read:user" },
+            { id: "perm_write_users", name: "Ghi danh sách người dùng", category: "Ghi", code: "write:user" },
+            { id: "perm_write_geo", name: "Ghi địa giới hành chính", category: "Ghi", code: "write:geo" },
+            { id: "perm_write_furniture", name: "Ghi thông tin nội thất", category: "Ghi", code: "write:furniture" },
+            { id: "perm_write_amenity", name: "Ghi thông tin tiện ích", category: "Ghi", code: "write:amenity" },
+            { id: "perm_write_room_type", name: "Ghi loại phòng", category: "Ghi", code: "write:room_type" },
+            { id: "perm_write_bds_type", name: "Ghi loại bất động sản", category: "Ghi", code: "write:property_type" },
+            { id: "perm_write_service", name: "Ghi danh mục dịch vụ", category: "Ghi", code: "write:service" }
+        ];
+
+        const rolePermissions = {
+            admin: ["perm_approve_bds", "perm_approve_room", "perm_write_bds", "perm_write_room", "perm_read_users", "perm_write_users", "perm_write_geo", "perm_write_furniture", "perm_write_amenity", "perm_write_room_type", "perm_write_bds_type", "perm_write_service"],
+            manager: ["perm_approve_bds", "perm_approve_room", "perm_write_bds", "perm_write_room", "perm_read_users", "perm_write_furniture", "perm_write_amenity"],
+            sale: ["perm_write_bds", "perm_write_room", "perm_read_users"]
+        };
+
+        const roleLabels = {
+            admin: "Admin",
+            manager: "Quản lý khu vực",
+            sale: "Sale"
+        };
+
+        let currentRole = "admin";
+        let activePermissions = [...rolePermissions[currentRole]];
+
+        function renderPermissions() {
+            const listContainer = document.getElementById('permission-list');
+            if (!listContainer) return;
+            listContainer.innerHTML = '';
+
+            permissionData.forEach((perm) => {
+                const isChecked = activePermissions.includes(perm.id);
+                let badgeClass = "bg-slate-100 text-textSecondary";
+                if (perm.category === "Duyệt") badgeClass = "bg-amber-50 text-warning border border-amber-100";
+                if (perm.category === "Ghi") badgeClass = "bg-blue-50 text-primary border border-blue-100";
+                if (perm.category === "Đọc") badgeClass = "bg-emerald-50 text-success border border-emerald-100";
+
+                const row = document.createElement('label');
+                row.className = `flex items-center justify-between p-3.5 cursor-pointer hover:bg-slate-50/50 active:bg-slate-50 transition-colors select-none`;
+                row.setAttribute('for', perm.id);
+
+                row.innerHTML = `
+                    <div class="flex items-center gap-3 min-w-0">
+                        <input type="checkbox" id="${perm.id}" 
+                            class="w-5 h-5 rounded-[6px] border-border text-primary focus:ring-primary focus:ring-offset-0 transition-all cursor-pointer accent-primary shrink-0"
+                            ${isChecked ? 'checked' : ''} 
+                            onchange="handleCheckboxChange('${perm.id}', this.checked)">
+                        <div class="min-w-0">
+                            <span class="text-body font-medium text-textPrimary truncate block">${perm.name}</span>
+                            <span class="text-small text-textSecondary font-mono">${perm.code}</span>
+                        </div>
+                    </div>
+                    <span class="px-2 py-0.5 rounded text-small font-medium ${badgeClass} shrink-0 ml-2 self-start">
+                        ${perm.category}
+                    </span>
+                `;
+                listContainer.appendChild(row);
+            });
+
+            const selectAllBtn = document.getElementById('select-all-btn');
+            if (selectAllBtn) {
+                selectAllBtn.innerText = activePermissions.length === 0 ? "Chọn tất cả" : "Bỏ chọn tất cả";
+            }
+        }
+
+        function selectRole(role) {
+            currentRole = role;
+            activePermissions = [...rolePermissions[role]];
+            const baseBtn = "shrink-0 whitespace-nowrap flex flex-col items-center gap-2 py-3 px-3 rounded-button border text-center transition-all";
+            const activeBtn = `${baseBtn} bg-blue-50 border-primary text-primary font-medium`;
+            const inactiveBtn = `${baseBtn} bg-surface border-border text-textSecondary hover:text-textPrimary hover:border-textSecondary`;
+            ['admin', 'manager', 'sale'].forEach(r => {
+                const tab = document.getElementById(`role-tab-${r}`);
+                if (!tab) return;
+                const iconDiv = tab.querySelector('div');
+                tab.className = r === role ? activeBtn : inactiveBtn;
+                iconDiv.className = r === role
+                    ? "w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary transition-colors"
+                    : "w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-textSecondary transition-colors";
+            });
+            const badge = document.getElementById('role-badge');
+            if (badge) badge.innerText = roleLabels[role];
+            renderPermissions();
+        }
+
+        function handleCheckboxChange(permId, isChecked) {
+            if (isChecked) {
+                if (!activePermissions.includes(permId)) activePermissions.push(permId);
+            } else {
+                activePermissions = activePermissions.filter(id => id !== permId);
+            }
+            const selectAllBtn = document.getElementById('select-all-btn');
+            if (selectAllBtn) {
+                selectAllBtn.innerText = activePermissions.length === 0 ? "Chọn tất cả" : "Bỏ chọn tất cả";
+            }
+        }
+
+        function toggleSelectAll() {
+            if (activePermissions.length === permissionData.length) {
+                activePermissions = [];
+            } else {
+                activePermissions = permissionData.map(p => p.id);
+            }
+            renderPermissions();
+        }
+
         // Biến trạng thái UI đang can thiệp
         let activeTab = 'dia-gioi';
         let selectedGeoNode = null; 
@@ -485,23 +648,46 @@
             activeTab = tabName;
             const diaGioiTab = document.getElementById('tab-dia-gioi');
             const danhMucKhacTab = document.getElementById('tab-danh-muc-khac');
+            const phanQuyenTab = document.getElementById('tab-phan-quyen');
             const diaGioiBtn = document.getElementById('tab-dia-gioi-btn');
             const danhMucKhacBtn = document.getElementById('tab-danh-muc-khac-btn');
-            const indicator = document.getElementById('tab-indicator');
+            const phanQuyenBtn = document.getElementById('tab-phan-quyen-btn');
+
+            diaGioiTab.classList.add('hidden');
+            danhMucKhacTab.classList.add('hidden');
+            phanQuyenTab.classList.add('hidden');
+
+            const baseClass = "shrink-0 whitespace-nowrap px-3 py-3 text-small font-medium text-center transition-custom";
+            diaGioiBtn.className = baseClass + " text-textSecondary hover:text-textPrimary";
+            danhMucKhacBtn.className = baseClass + " text-textSecondary hover:text-textPrimary";
+            phanQuyenBtn.className = baseClass + " text-textSecondary hover:text-textPrimary";
+
+            let activeBtn;
 
             if (tabName === 'dia-gioi') {
                 diaGioiTab.classList.remove('hidden');
-                danhMucKhacTab.classList.add('hidden');
-                indicator.style.transform = 'translateX(0)';
-                diaGioiBtn.className = "flex-1 py-3 text-small font-medium text-center transition-custom text-primary";
-                danhMucKhacBtn.className = "flex-1 py-3 text-small font-medium text-center transition-custom text-textSecondary hover:text-textPrimary";
-            } else {
-                diaGioiTab.classList.add('hidden');
+                diaGioiBtn.className = baseClass + " text-primary";
+                activeBtn = diaGioiBtn;
+            } else if (tabName === 'danh-muc-khac') {
                 danhMucKhacTab.classList.remove('hidden');
-                indicator.style.transform = 'translateX(100%)';
-                danhMucKhacBtn.className = "flex-1 py-3 text-small font-medium text-center transition-custom text-primary";
-                diaGioiBtn.className = "flex-1 py-3 text-small font-medium text-center transition-custom text-textSecondary hover:text-textPrimary";
+                danhMucKhacBtn.className = baseClass + " text-primary";
+                activeBtn = danhMucKhacBtn;
                 renderOtherCategories();
+            } else if (tabName === 'phan-quyen') {
+                phanQuyenTab.classList.remove('hidden');
+                phanQuyenBtn.className = baseClass + " text-primary";
+                activeBtn = phanQuyenBtn;
+                renderPermissions();
+                lucide.createIcons();
+            }
+
+            const indicator = document.getElementById('tab-indicator');
+            const tabBar = document.getElementById('tab-bar');
+            if (activeBtn && indicator) {
+                indicator.style.width = activeBtn.offsetWidth + 'px';
+                const scrollTarget = activeBtn.offsetLeft - (tabBar.offsetWidth - activeBtn.offsetWidth) / 2;
+                tabBar.scrollTo({ left: Math.max(0, scrollTarget) });
+                indicator.style.left = (activeBtn.offsetLeft - tabBar.scrollLeft) + 'px';
             }
         }
 
@@ -1093,9 +1279,15 @@
         // --- Khởi chạy ban đầu ---
         window.addEventListener('DOMContentLoaded', () => {
             renderGeoTree();
-            // Mặc định chọn node đầu tiên để hiển thị trực quan mockup form chi tiết
-            if(geoData.length > 0) {
-                selectGeoNode(geoData[0].id);
+            // if(geoData.length > 0) {
+            //     selectGeoNode(geoData[0].id);
+            // }
+            const activeBtn = document.getElementById('tab-dia-gioi-btn');
+            const indicator = document.getElementById('tab-indicator');
+            const tabBar = document.getElementById('tab-bar');
+            if (activeBtn && indicator && tabBar) {
+                indicator.style.width = activeBtn.offsetWidth + 'px';
+                indicator.style.left = (activeBtn.offsetLeft - tabBar.scrollLeft) + 'px';
             }
         });
     </script>

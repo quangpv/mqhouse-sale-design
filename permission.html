@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân Quyền Hệ Thống</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#2563EB',
+                        background: '#F8FAFC',
+                        surface: '#FFFFFF',
+                        border: '#E2E8F0',
+                        textPrimary: '#0F172A',
+                        textSecondary: '#64748B',
+                        success: '#16A34A',
+                        warning: '#F59E0B',
+                        error: '#DC2626',
+                    },
+                    boxShadow: {
+                        soft: '0 2px 12px -2px rgba(15, 23, 42, 0.04), 0 4px 8px -2px rgba(15, 23, 42, 0.02)',
+                    },
+                    borderRadius: {
+                        'input': '10px',
+                        'button': '12px',
+                        'card': '16px',
+                        'modal': '20px',
+                    },
+                    transitionDuration: {
+                        'DEFAULT': '150ms',
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8FAFC;
+            color: #0F172A;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .text-h1 { font-size: 32px; font-weight: 600; line-height: 40px; }
+        .text-h2 { font-size: 24px; font-weight: 600; line-height: 32px; }
+        .text-h3 { font-size: 20px; font-weight: 500; line-height: 28px; }
+        .text-body { font-size: 14px; font-weight: 400; line-height: 20px; }
+        .text-small { font-size: 12px; font-weight: 400; line-height: 16px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased">
+
+    <header class="sticky top-0 z-40 bg-surface border-b border-border px-4 py-4 flex items-center justify-between transition-colors">
+        <div class="flex items-center gap-3">
+            <button class="p-1 hover:bg-background rounded-button transition-colors text-textPrimary" aria-label="Back">
+                <i data-lucide="arrow-left" class="w-6 h-6"></i>
+            </button>
+            <h1 class="text-h3 text-textPrimary">Phân quyền thành viên</h1>
+        </div>
+        <button id="save-btn" onclick="savePermissions()" class="flex items-center gap-1.5 bg-primary text-white px-4 py-2 rounded-button text-body font-medium shadow-soft hover:bg-blue-700 transition-all active:scale-95">
+            <i data-lucide="save" class="w-4 h-4"></i>
+            <span>Lưu</span>
+        </button>
+    </header>
+
+    <main class="flex-1 w-full max-w-md mx-auto px-4 py-6 space-y-6">
+        
+        <section class="space-y-3">
+            <div class="flex items-center justify-between">
+                <h2 class="text-small font-semibold tracking-wider text-textSecondary uppercase">Vai trò người dùng</h2>
+                <span id="role-badge" class="px-2.5 py-0.5 rounded-full text-small font-medium bg-blue-50 text-primary border border-blue-100 transition-all">
+                    Admin
+                </span>
+            </div>
+            
+            <div class="bg-surface border border-border p-3 rounded-card shadow-soft flex gap-2">
+                <button onclick="selectRole('admin')" id="role-tab-admin" class="flex-1 flex flex-col items-center gap-2 py-3 rounded-button border text-center transition-all bg-blue-50 border-primary text-primary font-medium">
+                    <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-between justify-center text-primary transition-colors">
+                        <i data-lucide="shield-check" class="w-5 h-5 mx-auto"></i>
+                    </div>
+                    <span class="text-body">Admin</span>
+                </button>
+                
+                <button onclick="selectRole('manager')" id="role-tab-manager" class="flex-1 flex flex-col items-center gap-2 py-3 rounded-button border text-center transition-all bg-surface border-border text-textSecondary hover:text-textPrimary hover:border-textSecondary">
+                    <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-between justify-center text-textSecondary transition-colors">
+                        <i data-lucide="map-pin" class="w-5 h-5 mx-auto"></i>
+                    </div>
+                    <span class="text-body">Quản lý khu vực</span>
+                </button>
+                
+                <button onclick="selectRole('sale')" id="role-tab-sale" class="flex-1 flex flex-col items-center gap-2 py-3 rounded-button border text-center transition-all bg-surface border-border text-textSecondary hover:text-textPrimary hover:border-textSecondary">
+                    <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-between justify-center text-textSecondary transition-colors">
+                        <i data-lucide="badge-dollar-sign" class="w-5 h-5 mx-auto"></i>
+                    </div>
+                    <span class="text-body">Sale</span>
+                </button>
+            </div>
+        </section>
+
+        <section class="space-y-3">
+            <div class="flex items-center justify-between">
+                <h2 class="text-small font-semibold tracking-wider text-textSecondary uppercase">Danh sách đặc quyền</h2>
+                <button onclick="toggleSelectAll()" id="select-all-btn" class="text-small font-medium text-primary hover:underline transition-all">
+                    Bỏ chọn tất cả
+                </button>
+            </div>
+
+            <div id="permission-list" class="bg-surface border border-border rounded-card shadow-soft divide-y divide-border overflow-hidden">
+                </div>
+        </section>
+    </main>
+
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-textPrimary text-white px-4 py-3 rounded-button shadow-xl flex items-center gap-2.5 opacity-0 pointer-events-none transition-all duration-200 transform translate-y-2 z-50">
+        <i data-lucide="check-circle-2" class="w-5 h-5 text-success"></i>
+        <span class="text-body font-medium">Cập nhật đặc quyền thành công!</span>
+    </div>
+
+    <script>
+        // Mock Data Definition (12 permission records matching the description context)
+        const permissionData = [
+            { id: "perm_approve_bds", name: "Duyệt bất động sản", category: "Duyệt" },
+            { id: "perm_approve_room", name: "Duyệt phòng trống", category: "Duyệt" },
+            { id: "perm_write_bds", name: "Ghi thông tin bất động sản", category: "Ghi" },
+            { id: "perm_write_room", name: "Ghi thông tin phòng", category: "Ghi" },
+            { id: "perm_read_users", name: "Đọc danh sách người dùng", category: "Đọc" },
+            { id: "perm_write_users", name: "Ghi danh sách người dùng", category: "Ghi" },
+            { id: "perm_write_geo", name: "Ghi địa giới hành chính", category: "Ghi" },
+            { id: "perm_write_furniture", name: "Ghi thông tin nội thất", category: "Ghi" },
+            { id: "perm_write_amenity", name: "Ghi thông tin tiện ích", category: "Ghi" },
+            { id: "perm_write_room_type", name: "Ghi loại phòng", category: "Ghi" },
+            { id: "perm_write_bds_type", name: "Ghi loại bất động sản", category: "Ghi" },
+            { id: "perm_write_service", name: "Ghi danh mục dịch vụ", category: "Ghi" }
+        ];
+
+        // Role mapping config matrix
+        const rolePermissions = {
+            admin: ["perm_approve_bds", "perm_approve_room", "perm_write_bds", "perm_write_room", "perm_read_users", "perm_write_users", "perm_write_geo", "perm_write_furniture", "perm_write_amenity", "perm_write_room_type", "perm_write_bds_type", "perm_write_service"],
+            manager: ["perm_approve_bds", "perm_approve_room", "perm_write_bds", "perm_write_room", "perm_read_users", "perm_write_furniture", "perm_write_amenity"],
+            sale: ["perm_write_bds", "perm_write_room", "perm_read_users"]
+        };
+
+        const roleLabels = {
+            admin: "Admin",
+            manager: "Quản lý khu vực",
+            sale: "Sale"
+        };
+
+        let currentRole = "admin";
+        let activePermissions = [...rolePermissions[currentRole]];
+
+        // Render Permission List view state
+        function renderPermissions() {
+            const listContainer = document.getElementById('permission-list');
+            listContainer.innerHTML = '';
+
+            permissionData.forEach((perm) => {
+                const isChecked = activePermissions.includes(perm.id);
+                
+                // Set color badge based on permission type context
+                let badgeClass = "bg-slate-100 text-textSecondary";
+                if (perm.category === "Duyệt") badgeClass = "bg-amber-50 text-warning border border-amber-100";
+                if (perm.category === "Ghi") badgeClass = "bg-blue-50 text-primary border border-blue-100";
+                if (perm.category === "Đọc") badgeClass = "bg-emerald-50 text-success border border-emerald-100";
+
+                const row = document.createElement('label');
+                row.className = `flex items-center justify-between p-4 cursor-pointer hover:bg-slate-50/50 active:bg-slate-50 transition-colors select-none`;
+                row.setAttribute('for', perm.id);
+
+                row.innerHTML = `
+                    <div class="flex items-center gap-3 pr-2">
+                        <input type="checkbox" id="${perm.id}" 
+                            class="w-5 h-5 rounded-[6px] border-border text-primary focus:ring-primary focus:ring-offset-0 transition-all cursor-pointer accent-primary"
+                            ${isChecked ? 'checked' : ''} 
+                            onchange="handleCheckboxChange('${perm.id}', this.checked)">
+                        <div class="flex flex-col gap-0.5">
+                            <span class="text-body font-medium text-textPrimary">${perm.name}</span>
+                            <span class="text-small text-textSecondary flex items-center gap-1">Mã định danh: <code class="text-slate-500 font-mono text-[11px]">${perm.id}</code></span>
+                        </div>
+                    </div>
+                    <span class="px-2 py-0.5 rounded text-small font-medium ${badgeClass}">
+                        ${perm.category}
+                    </span>
+                `;
+                listContainer.appendChild(row);
+            });
+
+            // Update Select All / Deselect All trigger text state
+            const selectAllBtn = document.getElementById('select-all-btn');
+            if (activePermissions.length === 0) {
+                selectAllBtn.innerText = "Chọn tất cả";
+            } else {
+                selectAllBtn.innerText = "Bỏ chọn tất cả";
+            }
+        }
+
+        // Switch application role context
+        function selectRole(role) {
+            currentRole = role;
+            activePermissions = [...rolePermissions[role]];
+            
+            // UI tabs updates
+            ['admin', 'manager', 'sale'].forEach(r => {
+                const tab = document.getElementById(`role-tab-${r}`);
+                const iconDiv = tab.querySelector('div');
+                if (r === role) {
+                    tab.className = "flex-1 flex flex-col items-center gap-2 py-3 rounded-button border text-center transition-all bg-blue-50 border-primary text-primary font-medium";
+                    iconDiv.className = "w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary transition-colors";
+                } else {
+                    tab.className = "flex-1 flex flex-col items-center gap-2 py-3 rounded-button border text-center transition-all bg-surface border-border text-textSecondary hover:text-textPrimary hover:border-textSecondary";
+                    iconDiv.className = "w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-textSecondary transition-colors";
+                }
+            });
+
+            // Update Header contextual Badge
+            document.getElementById('role-badge').innerText = roleLabels[role];
+            
+            renderPermissions();
+        }
+
+        // Interactive checkbox selection updates
+        function handleCheckboxChange(permId, isChecked) {
+            if (isChecked) {
+                if (!activePermissions.includes(permId)) activePermissions.push(permId);
+            } else {
+                activePermissions = activePermissions.filter(id => id !== permId);
+            }
+            
+            // Dynamic update of selector action text
+            const selectAllBtn = document.getElementById('select-all-btn');
+            selectAllBtn.innerText = activePermissions.length === 0 ? "Chọn tất cả" : "Bỏ chọn tất cả";
+        }
+
+        // Handle quick action toggle select configuration state
+        function toggleSelectAll() {
+            if (activePermissions.length === permissionData.length) {
+                activePermissions = [];
+            } else {
+                activePermissions = permissionData.map(p => p.id);
+            }
+            renderPermissions();
+        }
+
+        // Simulate API Mutation Data Submission
+        function savePermissions() {
+            // Update the master application context state mapping
+            rolePermissions[currentRole] = [...activePermissions];
+            
+            // UI Visual Feedback Trigger via temporary Toast notification alert
+            const toast = document.getElementById('toast');
+            toast.className = toast.className.replace('opacity-0 pointer-events-none translate-y-2', 'opacity-100 pointer-events-auto translate-y-0');
+            
+            const btn = document.getElementById('save-btn');
+            btn.classList.add('bg-success');
+            
+            setTimeout(() => {
+                toast.className = toast.className.replace('opacity-100 pointer-events-auto translate-y-0', 'opacity-0 pointer-events-none translate-y-2');
+                btn.classList.remove('bg-success');
+            }, 2500);
+        }
+
+        // Initialize Icons & UI View Compilation Setup
+        document.addEventListener("DOMContentLoaded", () => {
+            renderPermissions();
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

@@ -79,7 +79,7 @@
             <!-- Hàng 1: Nút Back, Ô tìm kiếm & Button Lọc chi tiết -->
             <div class="flex items-center gap-2 w-full px-4">
                 <!-- Nút Back -->
-                <button onclick="history.back()" class="p-2.5 bg-surface border border-border rounded-input hover:bg-slate-50 transition-colors duration-150 text-textPrimary shadow-sm shrink-0">
+                <button onclick="parent.goBack()" class="p-2.5 bg-surface border border-border rounded-input hover:bg-slate-50 transition-colors duration-150 text-textPrimary shadow-sm shrink-0">
                     <i data-lucide="arrow-left" class="w-5 h-5 text-textPrimary"></i>
                 </button>
                 <div class="relative flex-1">
@@ -116,6 +116,14 @@
                         </button>
                     </div>
 
+                    <!-- Dropdown Loại hình BDS -->
+                    <div class="relative dropdown-wrapper shrink-0">
+                        <button onclick="toggleQuickDropdown('dropPropertyType')" class="flex items-center gap-1 px-3 py-2 bg-surface/90 backdrop-blur-sm border border-border rounded-full text-[12px] font-medium text-textPrimary shadow-sm hover:bg-surface">
+                            <span id="labelPropertyType">Loại hình BDS</span>
+                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-textSecondary"></i>
+                        </button>
+                    </div>
+
                     <!-- Dropdown Giá thuê -->
                     <button onclick="openModal('modalPrice')" class="flex items-center gap-1 px-3 py-2 bg-surface/90 backdrop-blur-sm border border-border rounded-full text-[12px] font-medium text-textPrimary shrink-0 shadow-sm hover:bg-surface">
                         <span>Giá thuê</span>
@@ -135,9 +143,14 @@
                     <button onclick="applyQuickFilter('status', 'Hết hàng')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Hết hàng</button>
                 </div>
                 <div id="dropType" class="hidden absolute left-28 top-full mt-1.5 w-36 bg-surface/95 backdrop-blur-md border border-border rounded-button shadow-xl z-50 py-1">
-                    <button onclick="applyQuickFilter('type', 'Căn hộ')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Căn hộ</button>
-                    <button onclick="applyQuickFilter('type', 'Tòa nhà')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Tòa nhà</button>
-                    <button onclick="applyQuickFilter('type', 'Phòng trọ')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Phòng trọ</button>
+                    <button onclick="applyQuickFilter('type', 'Studio')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Studio</button>
+                    <button onclick="applyQuickFilter('type', '1 Phòng ngủ')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">1 Phòng ngủ</button>
+                    <button onclick="applyQuickFilter('type', '2 Phòng ngủ')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">2 Phòng ngủ</button>
+                </div>
+                <div id="dropPropertyType" class="hidden absolute left-56 top-full mt-1.5 w-36 bg-surface/95 backdrop-blur-md border border-border rounded-button shadow-xl z-50 py-1">
+                    <button onclick="applyQuickFilter('propertyType', 'Căn hộ')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Căn hộ</button>
+                    <button onclick="applyQuickFilter('propertyType', 'Tòa nhà')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Tòa nhà</button>
+                    <button onclick="applyQuickFilter('propertyType', 'Phòng trọ')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Phòng trọ</button>
                 </div>
             </div>
         </div>
@@ -214,9 +227,18 @@
                 <div>
                     <h3 class="text-[14px] font-semibold text-textPrimary mb-2">Loại phòng</h3>
                     <div class="flex flex-wrap gap-2" id="chipGroupType">
-                        <button onclick="toggleChip('type', 'Căn hộ')" id="chip-type-Căn hộ" class="px-4 py-2 border rounded-full text-[12px] font-medium transition-colors duration-150">Căn hộ</button>
-                        <button onclick="toggleChip('type', 'Tòa nhà')" id="chip-type-Tòa nhà" class="px-4 py-2 border rounded-full text-[12px] font-medium transition-colors duration-150">Tòa nhà</button>
-                        <button onclick="toggleChip('type', 'Phòng trọ')" id="chip-type-Phòng trọ" class="px-4 py-2 border rounded-full text-[12px] font-medium transition-colors duration-150">Phòng trọ</button>
+                        <button onclick="toggleChip('type', 'Studio')" id="chip-type-Studio" class="px-4 py-2 border rounded-full text-[12px] font-medium transition-colors duration-150">Studio</button>
+                        <button onclick="toggleChip('type', '1 Phòng ngủ')" id="chip-type-1 Phòng ngủ" class="px-4 py-2 border rounded-full text-[12px] font-medium transition-colors duration-150">1 Phòng ngủ</button>
+                        <button onclick="toggleChip('type', '2 Phòng ngủ')" id="chip-type-2 Phòng ngủ" class="px-4 py-2 border rounded-full text-[12px] font-medium transition-colors duration-150">2 Phòng ngủ</button>
+                    </div>
+                </div>
+                <!-- Loại hình BDS -->
+                <div>
+                    <h3 class="text-[14px] font-semibold text-textPrimary mb-2">Loại hình BDS</h3>
+                    <div class="flex flex-wrap gap-2" id="chipGroupPropertyType">
+                        <button onclick="toggleChip('propertyType', 'Căn hộ')" id="chip-propertyType-Căn hộ" class="px-4 py-2 border rounded-full text-[12px] font-medium transition-colors duration-150">Căn hộ</button>
+                        <button onclick="toggleChip('propertyType', 'Tòa nhà')" id="chip-propertyType-Tòa nhà" class="px-4 py-2 border rounded-full text-[12px] font-medium transition-colors duration-150">Tòa nhà</button>
+                        <button onclick="toggleChip('propertyType', 'Phòng trọ')" id="chip-propertyType-Phòng trọ" class="px-4 py-2 border rounded-full text-[12px] font-medium transition-colors duration-150">Phòng trọ</button>
                     </div>
                 </div>
                 <!-- Giá thuê -->
@@ -317,6 +339,7 @@
                 id: 1,
                 title: "Căn hộ Studio cao cấp Horizon",
                 type: "Căn hộ",
+                roomType: "Studio",
                 status: "Còn hàng",
                 price: 8.5,
                 distance: "0.3 km",
@@ -330,6 +353,7 @@
                 id: 2,
                 title: "Phòng trọ dịch vụ Full nội thất lầu 2",
                 type: "Phòng trọ",
+                roomType: "Studio",
                 status: "Còn hàng",
                 price: 3.8,
                 distance: "0.7 km",
@@ -343,6 +367,7 @@
                 id: 3,
                 title: "Tòa nhà căn hộ dịch vụ Lê Quang Định",
                 type: "Tòa nhà",
+                roomType: "2 Phòng ngủ",
                 status: "Còn hàng",
                 price: 45.0,
                 distance: "1.2 km",
@@ -356,6 +381,7 @@
                 id: 4,
                 title: "Căn hộ Mini ban công thoáng mát",
                 type: "Căn hộ",
+                roomType: "1 Phòng ngủ",
                 status: "Còn hàng",
                 price: 6.2,
                 distance: "0.9 km",
@@ -369,6 +395,7 @@
                 id: 5,
                 title: "Phòng trọ gác lửng giá sinh viên",
                 type: "Phòng trọ",
+                roomType: "Studio",
                 status: "Hết hàng",
                 price: 2.5,
                 distance: "1.5 km",
@@ -382,6 +409,7 @@
                 id: 6,
                 title: "Luxury Penthouse Pearl Plaza view sông",
                 type: "Căn hộ",
+                roomType: "2 Phòng ngủ",
                 status: "Còn hàng",
                 price: 95.0,
                 distance: "1.8 km",
@@ -396,7 +424,7 @@
         const AMENITIES_BASIC = ["Hồ bơi", "Phòng gym", "Bãi đậu xe", "Thang máy", "Bảo vệ", "Lễ tân 24/7", "Balcony", "Cửa sổ", "Dọn phòng", "Nuôi Pet", "Cửa sổ (giếng trời, ngoài trời)"];
         const AMENITIES_FURNITURE = ["Cửa sổ, ban công(thật, giả)", "Thang bộ/Thang máy"];
 
-        let currentFilters = { status: ["Còn hàng"], type: [], priceMin: 0, priceMax: 100, amenities: [] };
+        let currentFilters = { status: ["Còn hàng"], type: [], propertyType: [], priceMin: 0, priceMax: 100, amenities: [] };
         let isSheetOpen = false; let selectedPropertyId = null;
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -405,10 +433,11 @@
             // Đóng menu thả xuống nếu click ra ngoài vùng hiển thị
             document.addEventListener("click", (e) => {
                 const isDropdownWrapper = e.target.closest('.dropdown-wrapper');
-                const isDropdownMenu = e.target.closest('#dropStatus') || e.target.closest('#dropType');
+                const isDropdownMenu = e.target.closest('#dropStatus') || e.target.closest('#dropType') || e.target.closest('#dropPropertyType');
                 if (!isDropdownWrapper && !isDropdownMenu) {
                     document.getElementById("dropStatus").classList.add("hidden");
                     document.getElementById("dropType").classList.add("hidden");
+                    document.getElementById("dropPropertyType").classList.add("hidden");
                 }
             });
         });
@@ -438,6 +467,7 @@
             // Ẩn tất cả dropdown trước
             document.getElementById("dropStatus").classList.add("hidden");
             document.getElementById("dropType").classList.add("hidden");
+            document.getElementById("dropPropertyType").classList.add("hidden");
             
             // Nếu trạng thái trước đó là đang ẩn, giờ mới kích hoạt hiển thị nó lên
             if (isCurrentlyHidden) {
@@ -450,6 +480,7 @@
             document.getElementById(`label${field.charAt(0).toUpperCase() + field.slice(1)}`).innerText = value;
             document.getElementById("dropStatus").classList.add("hidden"); 
             document.getElementById("dropType").classList.add("hidden");
+            document.getElementById("dropPropertyType").classList.add("hidden");
             syncFiltersToUI(); applyFiltersAndRender();
         }
 
@@ -497,9 +528,13 @@
                 const el = document.getElementById(`chip-status-${v}`);
                 el.className = currentFilters.status.includes(v) ? "px-4 py-2 bg-primary border border-primary text-white text-[12px] font-medium rounded-full shadow-sm" : "px-4 py-2 bg-white border border-border text-textPrimary text-[12px] font-medium rounded-full hover:bg-slate-50";
             });
-            ["Căn hộ", "Tòa nhà", "Phòng trọ"].forEach(v => {
+            ["Studio", "1 Phòng ngủ", "2 Phòng ngủ"].forEach(v => {
                 const el = document.getElementById(`chip-type-${v}`);
                 el.className = currentFilters.type.includes(v) ? "px-4 py-2 bg-primary border border-primary text-white text-[12px] font-medium rounded-full shadow-sm" : "px-4 py-2 bg-white border border-border text-textPrimary text-[12px] font-medium rounded-full hover:bg-slate-50";
+            });
+            ["Căn hộ", "Tòa nhà", "Phòng trọ"].forEach(v => {
+                const el = document.getElementById(`chip-propertyType-${v}`);
+                el.className = currentFilters.propertyType.includes(v) ? "px-4 py-2 bg-primary border border-primary text-white text-[12px] font-medium rounded-full shadow-sm" : "px-4 py-2 bg-white border border-border text-textPrimary text-[12px] font-medium rounded-full hover:bg-slate-50";
             });
             ['detail', 'price'].forEach(p => {
                 document.getElementById(`${p}SliderMin`).value = currentFilters.priceMin; document.getElementById(`${p}SliderMax`).value = currentFilters.priceMax;
@@ -518,8 +553,10 @@
         }
 
         function resetFilters() {
-            currentFilters = { status: [], type: [], priceMin: 0, priceMax: 100, amenities: [] };
-            document.getElementById("labelStatus").innerText = "Trạng thái"; document.getElementById("labelType").innerText = "Loại phòng";
+            currentFilters = { status: [], type: [], propertyType: [], priceMin: 0, priceMax: 100, amenities: [] };
+            document.getElementById("labelStatus").innerText = "Trạng thái";
+            document.getElementById("labelType").innerText = "Loại phòng";
+            document.getElementById("labelPropertyType").innerText = "Loại hình BDS";
             syncFiltersToUI();
         }
 
@@ -530,7 +567,8 @@
         function applyFiltersAndRender() {
             const filtered = MOCK_DATA.filter(item => {
                 if (currentFilters.status.length > 0 && !currentFilters.status.includes(item.status)) return false;
-                if (currentFilters.type.length > 0 && !currentFilters.type.includes(item.type)) return false;
+                if (currentFilters.type.length > 0 && !currentFilters.type.includes(item.roomType)) return false;
+                if (currentFilters.propertyType.length > 0 && !currentFilters.propertyType.includes(item.type)) return false;
                 if (item.price < currentFilters.priceMin || item.price > currentFilters.priceMax) return false;
                 if (currentFilters.amenities.length > 0 && !currentFilters.amenities.every(a => item.amenities.includes(a))) return false;
                 return true;
