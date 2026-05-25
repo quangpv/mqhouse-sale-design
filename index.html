@@ -239,13 +239,30 @@
             catalog: 'catalog.html',
             userInfo: 'user-info.html',
             addProperty: 'add-property.html',
+            sharing: 'sharing.html',
         };
+
+        let _pageStack = [];
+        let _skipStack = false;
 
         function switchScreen(screenKey) {
             const viewport = document.getElementById('phone-screen-viewport');
             const file = externalPages[screenKey];
             const isTabScreen = ['home', 'search', 'notifications', 'catalog', 'members', 'profile'].includes(screenKey);
             const tabContainer = document.getElementById('mobile-tab-bar');
+
+            if (!_skipStack && file) {
+                const currentIframe = viewport.querySelector('iframe');
+                if (currentIframe && currentIframe.src) {
+                    for (const [key, value] of Object.entries(externalPages)) {
+                        if (currentIframe.src.endsWith(value)) {
+                            _pageStack.push(key);
+                            break;
+                        }
+                    }
+                }
+            }
+            _skipStack = false;
 
             fetch(file, { method: 'HEAD' })
                 .then(res => {
@@ -293,6 +310,13 @@
             const atRight = container.scrollLeft + container.clientWidth >= container.scrollWidth - 4;
             leftOverlay.classList.toggle('hidden', atLeft);
             rightOverlay.classList.toggle('hidden', atRight);
+        }
+
+        function goBack() {
+            if (_pageStack.length > 0) {
+                _skipStack = true;
+                switchScreen(_pageStack.pop());
+            }
         }
 
         function showNotImplemented(viewport) {

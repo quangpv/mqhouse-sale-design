@@ -243,7 +243,7 @@
 
         function shareItem(title, event) {
             event.stopPropagation();
-            alert(`Đã sao chép liên kết chia sẻ cho:\n${title}`);
+            parent.switchScreen('sharing');
         }
 
         function openBottomSheet() {

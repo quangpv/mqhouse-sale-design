@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chia sẻ thông tin Bất động sản</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#2563EB',
+                        background: '#F8FAFC',
+                        surface: '#FFFFFF',
+                        border: '#E2E8F0',
+                        textPrimary: '#0F172A',
+                        textSecondary: '#64748B',
+                        success: '#16A34A',
+                        warning: '#F59E0B',
+                        error: '#DC2626',
+                    },
+                    borderRadius: {
+                        'input': '10px',
+                        'button': '12px',
+                        'card': '16px',
+                        'modal': '20px',
+                    },
+                    boxShadow: {
+                        'soft': '0 2px 8px -1px rgba(15, 23, 42, 0.05), 0 4px 20px -2px rgba(15, 23, 42, 0.03)',
+                    },
+                    fontSize: {
+                        'small': ['12px', '16px'],
+                        'body': ['14px', '20px'],
+                        'h3': ['20px', '28px'],
+                        'h2': ['24px', '32px'],
+                        'h1': ['32px', '40px'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8FAFC;
+            color: #0F172A;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #E2E8F0;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex justify-center items-start p-0 sm:p-4">
+
+    <main class="w-full max-w-md h-screen sm:h-[840px] bg-surface sm:rounded-card sm:shadow-soft border-0 sm:border border-border flex flex-col overflow-hidden relative">
+        
+        <header class="px-2 pt-4 pb-2 bg-surface border-b border-border flex items-center gap-4 shrink-0">
+            <button onclick="parent.goBack()" class="w-10 h-10 flex items-center justify-center text-textPrimary hover:bg-background transition-colors duration-150" aria-label="Quay lại">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            </button>
+            <h1 class="text-h3 font-semibold text-textPrimary">Chia sẻ</h1>
+        </header>
+
+        <div class="flex-1 overflow-y-auto px-4 py-4 space-y-4 custom-scrollbar">
+            
+            <div id="property-summary" class="p-4 bg-background rounded-card border border-border flex gap-3">
+                <img id="property-thumb" src="" alt="Thumbnail" class="w-16 h-16 rounded-input object-cover bg-border">
+                <div class="flex-1 min-w-0">
+                    <span id="property-badge" class="inline-block px-2 py-0.5 text-small font-medium rounded-full bg-blue-50 text-primary mb-1"></span>
+                    <h2 id="property-title" class="text-body font-semibold text-textPrimary truncate"></h2>
+                    <p id="property-price" class="text-small font-medium text-success mt-0.5"></p>
+                </div>
+            </div>
+
+            <p class="text-body text-textSecondary -mt-2">Chọn các thông tin cần xuất bản và chia sẻ đến khách hàng của bạn.</p>
+
+            <div class="space-y-4">
+                
+                <label class="flex items-start gap-3 p-4 rounded-card border border-border bg-surface shadow-[0_2px_4px_rgba(0,0,0,0.01)] cursor-pointer select-none transition-all duration-150 active:scale-[0.99]" for="chk-address">
+                    <div class="flex items-center h-5 mt-0.5">
+                        <input type="checkbox" id="chk-address" checked class="w-5 h-5 rounded border-border text-primary focus:ring-primary/20 accent-primary cursor-pointer">
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 text-textPrimary font-medium text-body mb-1">
+                            <i data-lucide="map-pin" class="w-4 h-4 text-textSecondary"></i>
+                            Địa chỉ
+                        </div>
+                        <p id="txt-address" class="text-small text-textSecondary pl-6"></p>
+                    </div>
+                </label>
+
+                <label class="flex items-start gap-3 p-4 rounded-card border border-border bg-surface shadow-[0_2px_4px_rgba(0,0,0,0.01)] cursor-pointer select-none transition-all duration-150 active:scale-[0.99]" for="chk-room-type">
+                    <div class="flex items-center h-5 mt-0.5">
+                        <input type="checkbox" id="chk-room-type" checked class="w-5 h-5 rounded border-border text-primary focus:ring-primary/20 accent-primary cursor-pointer">
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 text-textPrimary font-medium text-body mb-1">
+                            <i data-lucide="home" class="w-4 h-4 text-textSecondary"></i>
+                            Loại phòng
+                        </div>
+                        <p id="txt-room-type" class="text-small text-textSecondary pl-6 font-medium text-primary"></p>
+                    </div>
+                </label>
+
+                <div class="p-4 rounded-card border border-border bg-surface shadow-[0_2px_4px_rgba(0,0,0,0.01)]">
+                    <label class="flex items-center gap-3 cursor-pointer select-none mb-3" for="chk-furniture">
+                        <input type="checkbox" id="chk-furniture" checked class="w-5 h-5 rounded border-border text-primary focus:ring-primary/20 accent-primary cursor-pointer">
+                        <div class="flex items-center gap-2 text-textPrimary font-medium text-body">
+                            <i data-lucide="armchair" class="w-4 h-4 text-textSecondary"></i>
+                            Nội thất
+                        </div>
+                    </label>
+                    <div id="container-furniture" class="flex flex-wrap gap-2 pl-8">
+                        </div>
+                </div>
+
+                <div class="p-4 rounded-card border border-border bg-surface shadow-[0_2px_4px_rgba(0,0,0,0.01)]">
+                    <label class="flex items-center gap-3 cursor-pointer select-none mb-3" for="chk-services">
+                        <input type="checkbox" id="chk-services" checked class="w-5 h-5 rounded border-border text-primary focus:ring-primary/20 accent-primary cursor-pointer">
+                        <div class="flex items-center gap-2 text-textPrimary font-medium text-body">
+                            <i data-lucide="file-text" class="w-4 h-4 text-textSecondary"></i>
+                            Dịch vụ
+                        </div>
+                    </label>
+                    <div id="container-services" class="flex flex-wrap gap-2 pl-8">
+                        </div>
+                </div>
+
+                <div class="p-4 rounded-card border border-border bg-surface shadow-[0_2px_4px_rgba(0,0,0,0.01)]">
+                    <label class="flex items-center gap-3 cursor-pointer select-none mb-3" for="chk-amenities">
+                        <input type="checkbox" id="chk-amenities" checked class="w-5 h-5 rounded border-border text-primary focus:ring-primary/20 accent-primary cursor-pointer">
+                        <div class="flex items-center gap-2 text-textPrimary font-medium text-body">
+                            <i data-lucide="sparkles" class="w-4 h-4 text-textSecondary"></i>
+                            Tiện ích
+                        </div>
+                    </label>
+                    <div id="container-amenities" class="flex flex-wrap gap-2 pl-8">
+                        </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <footer class="p-4 bg-surface border-t border-border space-y-4 shrink-0">
+            
+            <div class="flex items-center justify-between gap-3">
+                <span class="text-small font-medium text-textSecondary">Chia sẻ nhanh qua</span>
+                <div class="flex items-center gap-2">
+                    <button id="btn-zalo" class="w-10 h-10 flex items-center justify-center rounded-button border border-border hover:bg-blue-50/50 text-[#0068FF] transition-all duration-150 active:scale-95" title="Chia sẻ qua Zalo">
+                        <span class="font-bold text-body tracking-tighter">Zalo</span>
+                    </button>
+                    <button id="btn-facebook" class="w-10 h-10 flex items-center justify-center rounded-button border border-border hover:bg-blue-50/50 text-[#1877F2] transition-all duration-150 active:scale-95" title="Chia sẻ qua Facebook">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                        </svg>
+                    </button>
+                    <button id="btn-copy" class="w-10 h-10 flex items-center justify-center rounded-button border border-border text-textPrimary hover:bg-background transition-all duration-150 active:scale-95" title="Sao chép văn bản">
+                        <i data-lucide="copy" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <button id="btn-share-image" class="h-12 flex items-center justify-center gap-2 rounded-button border border-border bg-surface text-textPrimary font-medium text-body hover:bg-background transition-all duration-150 active:scale-[0.98]">
+                    <i data-lucide="image" class="w-4 h-4 text-textSecondary"></i>
+                    Chia sẻ ảnh
+                </button>
+                <button id="btn-share-news" class="h-12 flex items-center justify-center gap-2 rounded-button bg-primary text-surface font-medium text-body hover:bg-blue-700 shadow-sm transition-all duration-150 active:scale-[0.98]">
+                    <i data-lucide="share-2" class="w-4 h-4"></i>
+                    Chia sẻ tin
+                </button>
+            </div>
+        </footer>
+
+        <div id="toast" class="absolute bottom-32 left-1/2 -translate-x-1/2 px-4 py-2.5 bg-textPrimary text-surface text-small rounded-input shadow-lg flex items-center gap-2 opacity-0 pointer-events-none transition-opacity duration-200 z-50">
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-success"></i>
+            <span id="toast-msg">Đã sao chép vào bộ nhớ tạm</span>
+        </div>
+    </main>
+
+    <script>
+        // System Context Definitions & Metadata Matchers
+        const ChuKy = ["Ngày", "Tuần", "Tháng", "Quý", "Năm"];
+        const LoaiDichVu = ["Cố định", "Theo mức sử dụng"];
+        const TrangThaiDiaGioi = ["Hoạt động", "Tạm khóa"];
+        const LoaiDiaGioi = ["Tỉnh", "Thành phố", "Quận/huyện", "Phường/xã"];
+        const LoaiBatDongSan = ["Căn hộ", "Phòng trọ", "Tòa nhà"];
+        const TrangThaiPhong = ["Đang trống", "Sắp trống", "Đã cọc", "Đã cho thuê"];
+        const LoaiPhong = ["Duplex", "1 Phòng ngủ", "2 Phòng Ngủ", "Studio", "3 Phòng ngủ"];
+
+        // High-Quality Verified Sample Property Data
+        const propertyData = {
+            id: "PROP-9921",
+            title: "Căn hộ Studio Vinhomes Grand Park - Block S8",
+            type: LoaiBatDongSan[0], // Căn hộ
+            roomType: LoaiPhong[3], // Studio
+            status: TrangThaiPhong[0], // Đang trống
+            price: "5.500.000 đ/tháng",
+            thumbnail: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=300&q=80",
+            address: "Phòng 1402, Tòa S8.01, KĐT Vinhomes Grand Park, Đường Nguyễn Xiển, Phường Long Thạnh Mỹ, TP. Thủ Đức, Thành phố Hồ Chí Minh",
+            furniture: ["Giường nệm cao cấp", "Tủ quần áo kịch trần", "Bàn làm việc thông minh", "Sofa băng", "Kệ bếp tủ trên dưới"],
+            services: [
+                { name: "Điện sinh hoạt", type: LoaiDichVu[1], price: "3.800 đ/kWh" },
+                { name: "Nước sạch", type: LoaiDichVu[1], price: "18.000 đ/m3" },
+                { name: "Phí quản lý vận hành", type: LoaiDichVu[0], price: "150.000 đ/tháng" },
+                { name: "Internet cáp quang", type: LoaiDichVu[0], price: "100.000 đ/tháng" }
+            ],
+            amenities: ["Hồ bơi vô cực tầng 5", "Phòng Gym chuẩn quốc tế", "An ninh 3 lớp 24/7", "Khóa từ vân tay", "Khu nướng BBQ ngoài trời"]
+        };
+
+        // Render UI with dynamic bindings
+        document.addEventListener("DOMContentLoaded", () => {
+            // Populate contextual preview card
+            document.getElementById("property-thumb").src = propertyData.thumbnail;
+            document.getElementById("property-title").innerText = propertyData.title;
+            document.getElementById("property-badge").innerText = `${propertyData.type} • ${propertyData.status}`;
+            document.getElementById("property-price").innerText = propertyData.price;
+
+            // Populate specific fields
+            document.getElementById("txt-address").innerText = propertyData.address;
+            document.getElementById("txt-room-type").innerText = propertyData.roomType;
+
+            // Build Furniture Chips
+            const furnContainer = document.getElementById("container-furniture");
+            propertyData.furniture.forEach(item => {
+                const chip = document.createElement("span");
+                chip.className = "px-3 py-1 bg-background text-textPrimary text-small rounded-full border border-border font-medium transition-colors duration-150";
+                chip.innerText = item;
+                furnContainer.appendChild(chip);
+            });
+
+            // Build Services Chips
+            const servContainer = document.getElementById("container-services");
+            propertyData.services.forEach(item => {
+                const chip = document.createElement("span");
+                chip.className = "px-3 py-1 bg-background text-textPrimary text-small rounded-full border border-border font-medium transition-colors duration-150";
+                chip.innerText = `${item.name} (${item.price})`;
+                servContainer.appendChild(chip);
+            });
+
+            // Build Amenities Chips
+            const amenContainer = document.getElementById("container-amenities");
+            propertyData.amenities.forEach(item => {
+                const chip = document.createElement("span");
+                chip.className = "px-3 py-1 bg-background text-textPrimary text-small rounded-full border border-border font-medium transition-colors duration-150";
+                chip.innerText = item;
+                amenContainer.appendChild(chip);
+            });
+
+            // Initialize Icons
+            lucide.createIcons();
+
+            // Setup Reactive Selection Feedback
+            setupToggleInteraction("chk-furniture", "container-furniture");
+            setupToggleInteraction("chk-services", "container-services");
+            setupToggleInteraction("chk-amenities", "container-amenities");
+
+            // Register Action Handlers
+            document.getElementById("btn-zalo").addEventListener("click", () => triggerAction("Đang mở Zalo để gửi cấu hình chia sẻ..."));
+            document.getElementById("btn-facebook").addEventListener("click", () => triggerAction("Đang mở Facebook để gửi cấu hình chia sẻ..."));
+            document.getElementById("btn-copy").addEventListener("click", () => triggerAction("Đang tạo văn bản & sao chép vào Clipboard!"));
+            document.getElementById("btn-share-image").addEventListener("click", () => triggerAction("Đang kết xuất hình ảnh tổng hợp để chia sẻ..."));
+            document.getElementById("btn-share-news").addEventListener("click", () => triggerAction("Đang đồng bộ hóa dữ liệu lên bảng tin hệ thống!"));
+        });
+
+        // Toggle state styling helper
+        function setupToggleInteraction(checkboxId, containerId) {
+            const cb = document.getElementById(checkboxId);
+            const container = document.getElementById(containerId);
+            
+            cb.addEventListener("change", () => {
+                const chips = container.querySelectorAll("span");
+                if (!cb.checked) {
+                    chips.forEach(c => {
+                        c.classList.add("opacity-40", "bg-slate-50", "text-textSecondary");
+                        c.classList.remove("bg-background", "text-textPrimary");
+                    });
+                } else {
+                    chips.forEach(c => {
+                        c.classList.remove("opacity-40", "bg-slate-50", "text-textSecondary");
+                        c.classList.add("bg-background", "text-textPrimary");
+                    });
+                }
+            });
+        }
+
+        // Lightweight custom notification alert
+        function triggerAction(message) {
+            const toast = document.getElementById("toast");
+            const toastMsg = document.getElementById("toast-msg");
+            
+            toastMsg.innerText = message;
+            toast.classList.remove("opacity-0", "pointer-events-none");
+            toast.classList.add("opacity-100");
+
+            setTimeout(() => {
+                toast.classList.remove("opacity-100");
+                toast.classList.add("opacity-0", "pointer-events-none");
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
