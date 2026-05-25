@@ -60,11 +60,12 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+        .overscroll-contain { overscroll-behavior-y: contain; }
     </style>
 </head>
-<body class="flex justify-center items-center min-h-screen p-0 sm:p-4">
+<body class="flex justify-center items-center h-screen p-0 sm:p-4">
 
-    <div class="w-full max-w-[440px] h-[900px] bg-background text-textPrimary flex flex-col justify-between relative overflow-hidden sm:rounded-modal sm:shadow-2xl border border-border">
+    <div class="w-full max-w-[440px] h-full bg-background text-textPrimary flex flex-col justify-between relative overflow-hidden sm:rounded-modal sm:shadow-2xl">
         
         <div class="p-4 bg-surface border-b border-border space-y-4 pt-6">
             <div class="flex items-center gap-3">
@@ -78,7 +79,7 @@
             </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto no-scrollbar pb-4">
+        <div class="flex-1 overflow-y-auto no-scrollbar overscroll-contain pb-4" style="overscroll-behavior-y:contain">
             
             <div class="grid grid-cols-3 gap-3 p-4">
                 <button onclick="parent.switchScreen('search')" class="flex flex-col items-center justify-center bg-surface border border-border p-4 rounded-card shadow-soft hover:border-primary transition-all duration-150 group">

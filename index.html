@@ -50,6 +50,19 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         #phone-screen-viewport iframe { width: 100%; height: 100%; border: none; }
+        @media (max-width: 768px) {
+            body { background: #F8FAFC !important; overflow-y: auto !important; height: 100dvh !important; }
+            body > aside { display: none !important; }
+            main { padding: 0 !important; }
+            main > .absolute.inset-0 { display: none !important; }
+            #phone-frame {
+                width: 100% !important; height: 100dvh !important;
+                max-height: none !important; border: none !important;
+                border-radius: 0 !important; box-shadow: none !important;
+            }
+            #status-bar { display: none !important; }
+            #phone-screen-viewport { padding-top: 0 !important; overscroll-behavior-y: contain; }
+        }
     </style>
 </head>
 <body class="bg-[#0F172A] text-textPrimary h-screen flex overflow-hidden antialiased">
@@ -164,9 +177,9 @@
     <main class="flex-1 bg-background relative flex items-center justify-center p-6 overflow-y-auto">
         <div class="absolute inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px]"></div>
 
-        <div class="relative w-[350px] h-[800px] max-h-[calc(100vh-48px)] bg-surface rounded-[40px] shadow-phone border-[10px] border-textPrimary overflow-hidden flex flex-col justify-between transition-all duration-300">
+        <div id="phone-frame" class="relative w-[350px] h-[800px] max-h-[calc(100vh-48px)] bg-surface rounded-[40px] shadow-phone border-[10px] border-textPrimary overflow-hidden flex flex-col justify-between transition-all duration-300">
 
-            <div class="h-7 bg-surface w-full absolute top-0 left-0 right-0 z-50 px-6 flex justify-between items-center text-[12px] font-semibold text-textPrimary">
+            <div id="status-bar" class="h-7 bg-surface w-full absolute top-0 left-0 right-0 z-50 px-6 flex justify-between items-center text-[12px] font-semibold text-textPrimary">
                 <span>09:41</span>
                 <div class="w-28 h-4 bg-textPrimary rounded-full absolute left-1/2 -translate-x-1/2 top-1.5"></div>
                 <div class="flex items-center gap-1.5">
