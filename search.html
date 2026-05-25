@@ -98,68 +98,50 @@
             </div>
 
             <!-- Quick Filter Comboboxes Toolbar -->
-            <div class="px-4 pb-4 flex gap-2 overflow-x-auto no-scrollbar">
-                <!-- Status Combobox -->
-                <div class="relative min-w-[115px] flex-shrink-0">
-                    <select class="w-full pl-3 pr-8 py-2 bg-background border border-border rounded-input text-small font-medium appearance-none focus:outline-none focus:border-primary text-textPrimary cursor-pointer">
-                        <option value="">Trạng thái</option>
-                        <option value="available">Còn phòng</option>
-                        <option value="rented">Hết phòng</option>
-                    </select>
-                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-textSecondary pointer-events-none"></i>
-                </div>
-
-                <!-- District Combobox -->
-                <div class="relative min-w-[90px] flex-shrink-0">
-                    <select class="w-full pl-3 pr-8 py-2 bg-background border border-border rounded-input text-small font-medium appearance-none focus:outline-none focus:border-primary text-textPrimary cursor-pointer">
-                        <option value="">Quận</option>
-                        <option value="q1">Quận 1</option>
-                        <option value="q3">Quận 3</option>
-                        <option value="bt">Bình Thạnh</option>
-                    </select>
-                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-textSecondary pointer-events-none"></i>
-                </div>
-
-                <!-- Room Type Combobox -->
-                <div class="relative min-w-[115px] flex-shrink-0">
-                    <select class="w-full pl-3 pr-8 py-2 bg-background border border-border rounded-input text-small font-medium appearance-none focus:outline-none focus:border-primary text-textPrimary cursor-pointer">
-                        <option value="">Loại phòng</option>
-                        <option value="studio">Studio</option>
-                        <option value="1br">1 Phòng ngủ</option>
-                        <option value="2br">2 Phòng ngủ</option>
-                    </select>
-                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-textSecondary pointer-events-none"></i>
-                </div>
-
-                <!-- Loại hình BDS Combobox -->
-                <div class="relative min-w-[115px] flex-shrink-0">
-                    <select id="propertyTypeSelect" onchange="applyPropertyTypeFilter()" class="w-full pl-3 pr-8 py-2 bg-background border border-border rounded-input text-small font-medium appearance-none focus:outline-none focus:border-primary text-textPrimary cursor-pointer">
-                        <option value="">Loại hình BDS</option>
-                        <option value="Căn hộ">Căn hộ</option>
-                        <option value="Tòa nhà">Tòa nhà</option>
-                        <option value="Phòng trọ">Phòng trọ</option>
-                    </select>
-                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-textSecondary pointer-events-none"></i>
-                </div>
-
-                <!-- Budget Combobox -->
-                <div class="relative min-w-[100px] flex-shrink-0">
-                    <select class="w-full pl-3 pr-8 py-2 bg-background border border-border rounded-input text-small font-medium appearance-none focus:outline-none focus:border-primary text-textPrimary cursor-pointer">
-                        <option value="">Giá thuê</option>
-                        <option value="u5">Dưới 5tr</option>
-                        <option value="5-10">5tr - 10tr</option>
-                    </select>
-                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-textSecondary pointer-events-none"></i>
-                </div>
-
-                <!-- Sort Combobox -->
-                <div class="relative min-w-[100px] flex-shrink-0">
-                    <select class="w-full pl-3 pr-8 py-2 bg-background border border-border rounded-input text-small font-medium appearance-none focus:outline-none focus:border-primary text-textPrimary cursor-pointer">
-                        <option value="">Sắp xếp</option>
-                        <option value="new">Mới nhất</option>
-                        <option value="p-asc">Giá tăng</option>
-                    </select>
-                    <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-textSecondary pointer-events-none"></i>
+            <div class="relative w-full">
+                <div id="searchQuickFilterScroll" class="px-4 pb-4 flex gap-2 overflow-x-auto no-scrollbar">
+                    <!-- Status Button -->
+                    <div class="relative dropdown-wrapper shrink-0">
+                        <button onclick="toggleQuickDropdown('searchDropStatus', this)" class="flex items-center gap-1 px-3 py-2 bg-background border border-border rounded-input text-[12px] font-medium text-textPrimary shadow-sm hover:bg-surface whitespace-nowrap">
+                            <span id="searchLabelStatus">Trạng thái</span>
+                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-textSecondary"></i>
+                        </button>
+                    </div>
+                    <!-- District Button -->
+                    <div class="relative dropdown-wrapper shrink-0">
+                        <button onclick="toggleQuickDropdown('searchDropDistrict', this)" class="flex items-center gap-1 px-3 py-2 bg-background border border-border rounded-input text-[12px] font-medium text-textPrimary shadow-sm hover:bg-surface whitespace-nowrap">
+                            <span id="searchLabelDistrict">Quận</span>
+                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-textSecondary"></i>
+                        </button>
+                    </div>
+                    <!-- Type Button -->
+                    <div class="relative dropdown-wrapper shrink-0">
+                        <button onclick="toggleQuickDropdown('searchDropType', this)" class="flex items-center gap-1 px-3 py-2 bg-background border border-border rounded-input text-[12px] font-medium text-textPrimary shadow-sm hover:bg-surface whitespace-nowrap">
+                            <span id="searchLabelType">Loại phòng</span>
+                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-textSecondary"></i>
+                        </button>
+                    </div>
+                    <!-- Loại hình BDS Button -->
+                    <div class="relative dropdown-wrapper shrink-0">
+                        <button onclick="toggleQuickDropdown('searchDropPropertyType', this)" class="flex items-center gap-1 px-3 py-2 bg-background border border-border rounded-input text-[12px] font-medium text-textPrimary shadow-sm hover:bg-surface whitespace-nowrap">
+                            <span id="searchLabelPropertyType">Loại hình BDS</span>
+                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-textSecondary"></i>
+                        </button>
+                    </div>
+                    <!-- Price Button -->
+                    <div class="relative dropdown-wrapper shrink-0">
+                        <button onclick="toggleQuickDropdown('searchDropPrice', this)" class="flex items-center gap-1 px-3 py-2 bg-background border border-border rounded-input text-[12px] font-medium text-textPrimary shadow-sm hover:bg-surface whitespace-nowrap">
+                            <span id="searchLabelPrice">Giá thuê</span>
+                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-textSecondary"></i>
+                        </button>
+                    </div>
+                    <!-- Sort Button -->
+                    <div class="relative dropdown-wrapper shrink-0">
+                        <button onclick="toggleQuickDropdown('searchDropSort', this)" class="flex items-center gap-1 px-3 py-2 bg-background border border-border rounded-input text-[12px] font-medium text-textPrimary shadow-sm hover:bg-surface whitespace-nowrap">
+                            <span id="searchLabelSort">Sắp xếp</span>
+                            <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 text-textSecondary"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -246,6 +228,41 @@
       </div>
     </div>
 
+    <!-- Quick Filter Dropdowns (portal-style, outside overflow-hidden) -->
+    <div id="searchDropStatus" class="hidden fixed w-36 bg-surface/95 backdrop-blur-md border border-border rounded-button shadow-xl z-50 py-1">
+        <button onclick="applySearchQuickFilter('status', '', 'Trạng thái')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Tất cả</button>
+        <button onclick="applySearchQuickFilter('status', 'available', 'Còn phòng')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Còn phòng</button>
+        <button onclick="applySearchQuickFilter('status', 'rented', 'Hết phòng')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Hết phòng</button>
+    </div>
+    <div id="searchDropDistrict" class="hidden fixed w-28 bg-surface/95 backdrop-blur-md border border-border rounded-button shadow-xl z-50 py-1">
+        <button onclick="applySearchQuickFilter('district', '', 'Quận')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Tất cả</button>
+        <button onclick="applySearchQuickFilter('district', 'q1', 'Quận 1')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Quận 1</button>
+        <button onclick="applySearchQuickFilter('district', 'q3', 'Quận 3')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Quận 3</button>
+        <button onclick="applySearchQuickFilter('district', 'bt', 'Bình Thạnh')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Bình Thạnh</button>
+    </div>
+    <div id="searchDropType" class="hidden fixed w-36 bg-surface/95 backdrop-blur-md border border-border rounded-button shadow-xl z-50 py-1">
+        <button onclick="applySearchQuickFilter('type', '', 'Loại phòng')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Tất cả</button>
+        <button onclick="applySearchQuickFilter('type', 'studio', 'Studio')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Studio</button>
+        <button onclick="applySearchQuickFilter('type', '1br', '1 Phòng ngủ')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">1 Phòng ngủ</button>
+        <button onclick="applySearchQuickFilter('type', '2br', '2 Phòng ngủ')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">2 Phòng ngủ</button>
+    </div>
+    <div id="searchDropPropertyType" class="hidden fixed w-36 bg-surface/95 backdrop-blur-md border border-border rounded-button shadow-xl z-50 py-1">
+        <button onclick="applySearchQuickFilter('propertyType', '', 'Loại hình BDS')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Tất cả</button>
+        <button onclick="applySearchQuickFilter('propertyType', 'Căn hộ', 'Căn hộ')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Căn hộ</button>
+        <button onclick="applySearchQuickFilter('propertyType', 'Tòa nhà', 'Tòa nhà')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Tòa nhà</button>
+        <button onclick="applySearchQuickFilter('propertyType', 'Phòng trọ', 'Phòng trọ')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Phòng trọ</button>
+    </div>
+    <div id="searchDropPrice" class="hidden fixed w-32 bg-surface/95 backdrop-blur-md border border-border rounded-button shadow-xl z-50 py-1">
+        <button onclick="applySearchQuickFilter('price', '', 'Giá thuê')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Tất cả</button>
+        <button onclick="applySearchQuickFilter('price', 'u5', 'Dưới 5tr')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Dưới 5tr</button>
+        <button onclick="applySearchQuickFilter('price', '5-10', '5tr - 10tr')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">5tr - 10tr</button>
+    </div>
+    <div id="searchDropSort" class="hidden fixed w-32 bg-surface/95 backdrop-blur-md border border-border rounded-button shadow-xl z-50 py-1">
+        <button onclick="applySearchQuickFilter('sort', '', 'Sắp xếp')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Mặc định</button>
+        <button onclick="applySearchQuickFilter('sort', 'new', 'Mới nhất')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Mới nhất</button>
+        <button onclick="applySearchQuickFilter('sort', 'p-asc', 'Giá tăng')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Giá tăng</button>
+    </div>
+
     <!-- Initialize Lucide Icons -->
     <script>
         lucide.createIcons();
@@ -293,12 +310,6 @@
             const idx = filterState[field].indexOf(value);
             if (idx > -1) filterState[field].splice(idx, 1);
             else filterState[field].push(value);
-            renderFilterChips();
-        }
-
-        function applyPropertyTypeFilter() {
-            const val = document.getElementById('propertyTypeSelect').value;
-            filterState.propertyType = val ? [val] : [];
             renderFilterChips();
         }
 
@@ -376,7 +387,10 @@
 
         function resetFilterSheet() {
             filterState = { status: [], type: [], propertyType: [], priceMin: 0, priceMax: 100, amenities: [] };
-            document.getElementById('propertyTypeSelect').value = '';
+            document.getElementById('searchLabelStatus').innerText = 'Trạng thái';
+            document.getElementById('searchLabelType').innerText = 'Loại phòng';
+            document.getElementById('searchLabelPropertyType').innerText = 'Loại hình BDS';
+            document.getElementById('searchLabelPrice').innerText = 'Giá thuê';
             renderFilterChips();
             syncFilterPriceUI();
         }
@@ -384,40 +398,29 @@
         function applyFilterSheet() {
             closeFilterSheet();
 
-            const statusSelect = document.querySelector('select:nth-of-type(1)');
-            const typeSelect = document.querySelector('select:nth-of-type(3)');
-            const budgetSelect = document.querySelector('select:nth-of-type(5)');
-            const propertyTypeSelect = document.getElementById('propertyTypeSelect');
-
             if (filterState.status.length === 1) {
-                const v = filterState.status[0] === 'Còn hàng' ? 'available' : 'rented';
-                statusSelect.value = v;
+                const map = { 'Còn hàng': 'Còn phòng', 'Hết hàng': 'Hết phòng' };
+                document.getElementById('searchLabelStatus').innerText = map[filterState.status[0]] || filterState.status[0];
             } else {
-                statusSelect.value = '';
+                document.getElementById('searchLabelStatus').innerText = 'Trạng thái';
             }
 
             if (filterState.type.length === 1) {
-                const map = { 'Studio': 'studio', '1 Phòng ngủ': '1br', '2 Phòng ngủ': '2br' };
-                typeSelect.value = map[filterState.type[0]] || '';
+                document.getElementById('searchLabelType').innerText = filterState.type[0];
             } else {
-                typeSelect.value = '';
+                document.getElementById('searchLabelType').innerText = 'Loại phòng';
             }
 
             if (filterState.propertyType.length === 1) {
-                propertyTypeSelect.value = filterState.propertyType[0];
+                document.getElementById('searchLabelPropertyType').innerText = filterState.propertyType[0];
             } else {
-                propertyTypeSelect.value = '';
+                document.getElementById('searchLabelPropertyType').innerText = 'Loại hình BDS';
             }
 
-            const priceRange = `${filterState.priceMin}tr - ${filterState.priceMax}tr`;
             if (filterState.priceMin > 0 || filterState.priceMax < 100) {
-                Array.from(budgetSelect.options).forEach(o => {
-                    if (o.label.includes(priceRange) || (filterState.priceMin === 0 && filterState.priceMax <= 5 && o.value === 'u5') || (filterState.priceMin >= 5 && filterState.priceMax <= 10 && o.value === '5-10')) {
-                        budgetSelect.value = o.value;
-                    }
-                });
+                document.getElementById('searchLabelPrice').innerText = `${filterState.priceMin}tr - ${filterState.priceMax}tr`;
             } else {
-                budgetSelect.value = '';
+                document.getElementById('searchLabelPrice').innerText = 'Giá thuê';
             }
         }
 
@@ -484,6 +487,63 @@
         }
 
         renderResults(MOCK_DATA);
+
+        function positionDropdown(id, btn) {
+            const el = document.getElementById(id);
+            const rect = btn.getBoundingClientRect();
+            el.style.left = rect.left + 'px';
+            el.style.top = (rect.bottom + 2) + 'px';
+        }
+
+        function toggleQuickDropdown(id, btn) {
+            const targetEl = document.getElementById(id);
+            const isCurrentlyHidden = targetEl.classList.contains('hidden');
+            document.querySelectorAll('[id^="searchDrop"]').forEach(el => el.classList.add('hidden'));
+            if (isCurrentlyHidden) {
+                targetEl._toggleBtn = btn;
+                positionDropdown(id, btn);
+                targetEl.classList.remove('hidden');
+            }
+        }
+
+        function applySearchQuickFilter(field, value, label) {
+            document.querySelectorAll('[id^="searchDrop"]').forEach(el => el.classList.add('hidden'));
+            
+            const labelIds = { status: 'searchLabelStatus', district: 'searchLabelDistrict', type: 'searchLabelType', propertyType: 'searchLabelPropertyType', price: 'searchLabelPrice', sort: 'searchLabelSort' };
+            document.getElementById(labelIds[field]).innerText = label;
+            
+            if (field === 'status') {
+                const statusMap = { 'available': 'Còn hàng', 'rented': 'Hết hàng' };
+                filterState.status = value ? [statusMap[value]] : [];
+                renderFilterChips();
+            } else if (field === 'type') {
+                const typeMap = { 'studio': 'Studio', '1br': '1 Phòng ngủ', '2br': '2 Phòng ngủ' };
+                filterState.type = value ? [typeMap[value]] : [];
+                renderFilterChips();
+            } else if (field === 'propertyType') {
+                filterState.propertyType = value ? [value] : [];
+                renderFilterChips();
+            } else if (field === 'price') {
+                if (value === 'u5') { filterState.priceMin = 0; filterState.priceMax = 5; }
+                else if (value === '5-10') { filterState.priceMin = 5; filterState.priceMax = 10; }
+                else { filterState.priceMin = 0; filterState.priceMax = 100; }
+                syncFilterPriceUI();
+            }
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.dropdown-wrapper') && !e.target.closest('[id^="searchDrop"]')) {
+                document.querySelectorAll('[id^="searchDrop"]').forEach(el => el.classList.add('hidden'));
+            }
+        });
+
+        document.getElementById('searchQuickFilterScroll').addEventListener('scroll', () => {
+            document.querySelectorAll('[id^="searchDrop"]').forEach(el => {
+                if (!el.classList.contains('hidden') && el._toggleBtn) {
+                    positionDropdown(el.id, el._toggleBtn);
+                }
+            });
+        });
     </script>
 </body>
 </html>

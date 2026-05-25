@@ -100,11 +100,11 @@
 
             <!-- Hàng 2: Thanh lọc nhanh -->
             <div class="relative w-full">
-                <div class="w-full flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+                <div id="quickFilterScroll" class="w-full flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
                     
                     <!-- Dropdown Trạng thái -->
                     <div class="relative dropdown-wrapper shrink-0 ml-4">
-                        <button onclick="toggleQuickDropdown('dropStatus')" class="flex items-center gap-1 px-3 py-2 bg-surface/90 backdrop-blur-sm border border-border rounded-full text-[12px] font-medium text-textPrimary shadow-sm hover:bg-surface">
+                        <button onclick="toggleQuickDropdown('dropStatus', this)" class="flex items-center gap-1 px-3 py-2 bg-surface/90 backdrop-blur-sm border border-border rounded-full text-[12px] font-medium text-textPrimary shadow-sm hover:bg-surface">
                             <span id="labelStatus">Còn hàng</span>
                             <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-textSecondary"></i>
                         </button>
@@ -112,7 +112,7 @@
 
                     <!-- Dropdown Loại phòng -->
                     <div class="relative dropdown-wrapper shrink-0">
-                        <button onclick="toggleQuickDropdown('dropType')" class="flex items-center gap-1 px-3 py-2 bg-surface/90 backdrop-blur-sm border border-border rounded-full text-[12px] font-medium text-textPrimary shadow-sm hover:bg-surface">
+                        <button onclick="toggleQuickDropdown('dropType', this)" class="flex items-center gap-1 px-3 py-2 bg-surface/90 backdrop-blur-sm border border-border rounded-full text-[12px] font-medium text-textPrimary shadow-sm hover:bg-surface">
                             <span id="labelType">Loại phòng</span>
                             <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-textSecondary"></i>
                         </button>
@@ -120,7 +120,7 @@
 
                     <!-- Dropdown Loại hình BDS -->
                     <div class="relative dropdown-wrapper shrink-0">
-                        <button onclick="toggleQuickDropdown('dropPropertyType')" class="flex items-center gap-1 px-3 py-2 bg-surface/90 backdrop-blur-sm border border-border rounded-full text-[12px] font-medium text-textPrimary shadow-sm hover:bg-surface">
+                        <button onclick="toggleQuickDropdown('dropPropertyType', this)" class="flex items-center gap-1 px-3 py-2 bg-surface/90 backdrop-blur-sm border border-border rounded-full text-[12px] font-medium text-textPrimary shadow-sm hover:bg-surface">
                             <span id="labelPropertyType">Loại hình BDS</span>
                             <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-textSecondary"></i>
                         </button>
@@ -139,21 +139,7 @@
                     </button>
                 </div>
                 
-                <!-- Dropdowns moved outside scroll container to prevent clipping -->
-                <div id="dropStatus" class="hidden absolute left-4 top-full mt-1.5 w-32 bg-surface/95 backdrop-blur-md border border-border rounded-button shadow-xl z-50 py-1">
-                    <button onclick="applyQuickFilter('status', 'Còn hàng')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Còn hàng</button>
-                    <button onclick="applyQuickFilter('status', 'Hết hàng')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Hết hàng</button>
-                </div>
-                <div id="dropType" class="hidden absolute left-28 top-full mt-1.5 w-36 bg-surface/95 backdrop-blur-md border border-border rounded-button shadow-xl z-50 py-1">
-                    <button onclick="applyQuickFilter('type', 'Studio')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Studio</button>
-                    <button onclick="applyQuickFilter('type', '1 Phòng ngủ')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">1 Phòng ngủ</button>
-                    <button onclick="applyQuickFilter('type', '2 Phòng ngủ')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">2 Phòng ngủ</button>
-                </div>
-                <div id="dropPropertyType" class="hidden absolute left-56 top-full mt-1.5 w-36 bg-surface/95 backdrop-blur-md border border-border rounded-button shadow-xl z-50 py-1">
-                    <button onclick="applyQuickFilter('propertyType', 'Căn hộ')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Căn hộ</button>
-                    <button onclick="applyQuickFilter('propertyType', 'Tòa nhà')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Tòa nhà</button>
-                    <button onclick="applyQuickFilter('propertyType', 'Phòng trọ')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Phòng trọ</button>
-                </div>
+
             </div>
         </div>
     </div>
@@ -319,6 +305,22 @@
         </div>
     </div>
 
+    <!-- Quick Filter Dropdowns (portal-style) -->
+    <div id="dropStatus" class="hidden fixed w-32 bg-surface/95 backdrop-blur-md border border-border rounded-button shadow-xl z-50 py-1">
+        <button onclick="applyQuickFilter('status', 'Còn hàng')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Còn hàng</button>
+        <button onclick="applyQuickFilter('status', 'Hết hàng')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Hết hàng</button>
+    </div>
+    <div id="dropType" class="hidden fixed w-36 bg-surface/95 backdrop-blur-md border border-border rounded-button shadow-xl z-50 py-1">
+        <button onclick="applyQuickFilter('type', 'Studio')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Studio</button>
+        <button onclick="applyQuickFilter('type', '1 Phòng ngủ')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">1 Phòng ngủ</button>
+        <button onclick="applyQuickFilter('type', '2 Phòng ngủ')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">2 Phòng ngủ</button>
+    </div>
+    <div id="dropPropertyType" class="hidden fixed w-36 bg-surface/95 backdrop-blur-md border border-border rounded-button shadow-xl z-50 py-1">
+        <button onclick="applyQuickFilter('propertyType', 'Căn hộ')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Căn hộ</button>
+        <button onclick="applyQuickFilter('propertyType', 'Tòa nhà')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Tòa nhà</button>
+        <button onclick="applyQuickFilter('propertyType', 'Phòng trọ')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Phòng trọ</button>
+    </div>
+
     <!-- HỆ THỐNG DỮ LIỆU MOCK DATA & LOGIC INTERACTION -->
     <script>
         const MOCK_DATA = [
@@ -418,15 +420,20 @@
         document.addEventListener("DOMContentLoaded", () => {
             renderAmenityChips(); syncFiltersToUI(); lucide.createIcons();
             
-            // Đóng menu thả xuống nếu click ra ngoài vùng hiển thị
             document.addEventListener("click", (e) => {
-                const isDropdownWrapper = e.target.closest('.dropdown-wrapper');
-                const isDropdownMenu = e.target.closest('#dropStatus') || e.target.closest('#dropType') || e.target.closest('#dropPropertyType');
-                if (!isDropdownWrapper && !isDropdownMenu) {
-                    document.getElementById("dropStatus").classList.add("hidden");
-                    document.getElementById("dropType").classList.add("hidden");
-                    document.getElementById("dropPropertyType").classList.add("hidden");
+                if (!e.target.closest('.dropdown-wrapper') && !e.target.closest('[id^="drop"]')) {
+                    document.querySelectorAll('[id^="drop"]').forEach(el => el.classList.add("hidden"));
                 }
+            });
+
+            document.getElementById('quickFilterScroll').addEventListener('scroll', () => {
+                ['dropStatus', 'dropType', 'dropPropertyType'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (!el.classList.contains('hidden')) {
+                        const btn = el._toggleBtn;
+                        if (btn) positionDropdown(id, btn);
+                    }
+                });
             });
         });
 
@@ -448,17 +455,24 @@
         }
 
         // SỬA LỖI: Cập nhật hàm toggle giúp đóng mở chuẩn xác không bị xung đột ẩn trực tiếp
-        function toggleQuickDropdown(id) {
+        function positionDropdown(id, btn) {
+            const el = document.getElementById(id);
+            const rect = btn.getBoundingClientRect();
+            el.style.left = rect.left + 'px';
+            el.style.top = (rect.bottom + 2) + 'px';
+        }
+
+        function toggleQuickDropdown(id, btn) {
             const targetEl = document.getElementById(id);
             const isCurrentlyHidden = targetEl.classList.contains("hidden");
             
-            // Ẩn tất cả dropdown trước
             document.getElementById("dropStatus").classList.add("hidden");
             document.getElementById("dropType").classList.add("hidden");
             document.getElementById("dropPropertyType").classList.add("hidden");
             
-            // Nếu trạng thái trước đó là đang ẩn, giờ mới kích hoạt hiển thị nó lên
             if (isCurrentlyHidden) {
+                targetEl._toggleBtn = btn;
+                positionDropdown(id, btn);
                 targetEl.classList.remove("hidden");
             }
         }
