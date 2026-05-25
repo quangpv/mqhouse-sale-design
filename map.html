@@ -57,6 +57,8 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+        .map-marker-overlay { z-index: 30; pointer-events: auto; }
+        .map-marker-overlay:hover { z-index: 50; }
         input[type="range"]::-webkit-slider-thumb {
             pointer-events: auto;
             width: 20px;
@@ -158,24 +160,9 @@
 
     <!-- KHÔNG GIAN BẢN ĐỒ TOÀN MÀN HÌNH (Đẩy sát lên trên cùng để tối ưu diện tích xuyên thấu) -->
     <div class="w-full h-full relative bg-[#E2E8F0] overflow-hidden">
-        <!-- Bản đồ vector graphic ảo -->
-        <div class="absolute inset-0 opacity-30 bg-[radial-gradient(#64748b_1px,transparent_1px)] [background-size:24px_24px]"></div>
-        <div class="absolute top-40 left-0 w-full h-8 bg-white transform rotate-3 opacity-75"></div>
-        <div class="absolute top-0 left-1/3 w-12 h-full bg-white transform -rotate-12 opacity-75"></div>
-        <div class="absolute bottom-60 left-0 w-full h-10 bg-white transform -rotate-6 opacity-75"></div>
-        <div class="absolute top-1/4 right-1/4 w-48 h-48 bg-emerald-100 rounded-full filter blur-xl opacity-60"></div>
+        <!-- Google Maps Container -->
+        <div id="gmap" class="w-full h-full absolute inset-0 z-0"></div>
 
-        <!-- VỊ TRÍ CỦA TÔI TRÊN BẢN ĐỒ (Animate GPS) -->
-        <div id="myLocation" class="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-10 transition-all duration-300">
-            <div class="relative flex items-center justify-center">
-                <div class="absolute w-12 h-12 bg-primary/20 rounded-full animate-ping"></div>
-                <div class="absolute w-7 h-7 bg-primary/40 rounded-full animate-pulse"></div>
-                <div class="w-4 h-4 bg-primary border-2 border-white rounded-full shadow-md"></div>
-            </div>
-        </div>
-
-        <!-- DYNAMIC MARKERS CÁC BDS -->
-        <div id="mapMarkersLayer" class="absolute inset-0 z-20 pointer-events-none"></div>
 
         <!-- ICON-BUTTON DI CHUYỂN ĐẾN VỊ TRÍ CỦA TÔI -->
         <button onclick="moveToMyLocation()" class="absolute bottom-32 right-2 z-20 w-12 h-12 bg-surface border border-border shadow-md rounded-full flex items-center justify-center text-textPrimary active:scale-95 transition-transform duration-150">
@@ -346,8 +333,8 @@
                 address: "123 Nguyễn Thái Học, Phường 12, Quận Bình Thạnh, TP.HCM",
                 image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80",
                 amenities: ["Hồ bơi", "Phòng gym", "Thang máy", "Balcony", "Cửa sổ", "Cửa sổ, ban công(thật, giả)", "Thang bộ/Thang máy"],
-                posX: "45%",
-                posY: "35%"
+                lat: 10.795,
+                lng: 106.708
             },
             {
                 id: 2,
@@ -360,8 +347,8 @@
                 address: "45/12 Xô Viết Nghệ Tĩnh, Phường 25, Quận Bình Thạnh, TP.HCM",
                 image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80",
                 amenities: ["Bãi đậu xe", "Bảo vệ", "Cửa sổ", "Thang bộ/Thang máy"],
-                posX: "58%",
-                posY: "48%"
+                lat: 10.810,
+                lng: 106.719
             },
             {
                 id: 3,
@@ -374,8 +361,8 @@
                 address: "210 Lê Quang Định, Phường 14, Quận Bình Thạnh, TP.HCM",
                 image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=400&q=80",
                 amenities: ["Hồ bơi", "Bãi đậu xe", "Thang máy", "Bảo vệ", "Lễ tân 24/7", "Dọn phòng", "Thang bộ/Thang máy"],
-                posX: "32%",
-                posY: "58%"
+                lat: 10.802,
+                lng: 106.698
             },
             {
                 id: 4,
@@ -388,8 +375,8 @@
                 address: "88 Nguyễn Văn Thương, Phường 25, Quận Bình Thạnh, TP.HCM",
                 image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400&q=80",
                 amenities: ["Bãi đậu xe", "Thang máy", "Balcony", "Cửa sổ", "Nuôi Pet", "Cửa sổ, ban công(thật, giả)", "Thang bộ/Thang máy"],
-                posX: "52%",
-                posY: "65%"
+                lat: 10.815,
+                lng: 106.722
             },
             {
                 id: 5,
@@ -402,8 +389,8 @@
                 address: "342 Bạch Đằng, Phường 14, Quận Bình Thạnh, TP.HCM",
                 image: "https://images.unsplash.com/photo-1616046229478-9901c5536a45?auto=format&fit=crop&w=400&q=80",
                 amenities: ["Bãi đậu xe", "Cửa sổ", "Cửa sổ (giếng trời, ngoài trời)"],
-                posX: "68%",
-                posY: "30%"
+                lat: 10.798,
+                lng: 106.725
             },
             {
                 id: 6,
@@ -416,8 +403,8 @@
                 address: "561A Điện Biên Phủ, Phường 25, Quận Bình Thạnh, TP.HCM",
                 image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80",
                 amenities: ["Hồ bơi", "Phòng gym", "Bãi đậu xe", "Thang máy", "Bảo vệ", "Lễ tân 24/7", "Balcony", "Cửa sổ", "Dọn phòng", "Cửa sổ, ban công(thật, giả)", "Thang bộ/Thang máy"],
-                posX: "25%",
-                posY: "40%"
+                lat: 10.805,
+                lng: 106.710
             }
         ];
 
@@ -426,9 +413,10 @@
 
         let currentFilters = { status: ["Còn hàng"], type: [], propertyType: [], priceMin: 0, priceMax: 100, amenities: [] };
         let isSheetOpen = false; let selectedPropertyId = null;
+        let map; let googleMarkers = []; let MapMarkerOverlay;
 
         document.addEventListener("DOMContentLoaded", () => {
-            renderAmenityChips(); syncFiltersToUI(); applyFiltersAndRender(); lucide.createIcons();
+            renderAmenityChips(); syncFiltersToUI(); lucide.createIcons();
             
             // Đóng menu thả xuống nếu click ra ngoài vùng hiển thị
             document.addEventListener("click", (e) => {
@@ -577,22 +565,101 @@
             document.getElementById("txtSummaryCount").innerText = `(${filtered.length} bất động sản)`;
         }
 
+        function initMap() {
+            MapMarkerOverlay = class extends google.maps.OverlayView {
+                constructor(position, content) {
+                    super();
+                    this.position = position;
+                    this.content = content;
+                    this.div = null;
+                }
+                onAdd() {
+                    this.div = document.createElement('div');
+                    this.div.innerHTML = this.content;
+                    this.div.className = 'map-marker-overlay';
+                    this.getPanes().overlayMouseTarget.appendChild(this.div);
+                }
+                draw() {
+                    if (!this.div) return;
+                    const point = this.getProjection().fromLatLngToDivPixel(this.position);
+                    if (point) {
+                        this.div.style.position = 'absolute';
+                        this.div.style.left = point.x + 'px';
+                        this.div.style.top = point.y + 'px';
+                        this.div.style.transform = 'translate(-50%, -50%)';
+                    }
+                }
+                onRemove() {
+                    if (this.div) {
+                        this.div.parentNode.removeChild(this.div);
+                        this.div = null;
+                    }
+                }
+            };
+            map = new google.maps.Map(document.getElementById('gmap'), {
+                center: { lat: 10.805, lng: 106.715 },
+                zoom: 14,
+                mapTypeControl: false,
+                streetViewControl: false,
+                fullscreenControl: false,
+                styles: [
+                    { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] },
+                    { featureType: 'transit', stylers: [{ visibility: 'off' }] }
+                ]
+            });
+            
+            class MyLocationOverlay extends google.maps.OverlayView {
+                constructor(position) { super(); this.position = position; this.div = null; }
+                onAdd() {
+                    this.div = document.createElement('div');
+                    this.div.innerHTML = '<div class="relative flex items-center justify-center"><div class="absolute w-12 h-12 bg-primary/20 rounded-full animate-ping"></div><div class="absolute w-7 h-7 bg-primary/40 rounded-full animate-pulse"></div><div class="w-4 h-4 bg-primary border-2 border-white rounded-full shadow-md"></div></div>';
+                    this.getPanes().overlayMouseTarget.appendChild(this.div);
+                }
+                draw() {
+                    if (!this.div) return;
+                    const point = this.getProjection().fromLatLngToDivPixel(this.position);
+                    if (point) { this.div.style.position = 'absolute'; this.div.style.left = point.x + 'px'; this.div.style.top = point.y + 'px'; this.div.style.transform = 'translate(-50%, -50%)'; }
+                }
+                onRemove() { if (this.div) { this.div.parentNode.removeChild(this.div); this.div = null; } }
+            }
+            const myLocationOverlay = new MyLocationOverlay(new google.maps.LatLng(10.805, 106.715));
+            myLocationOverlay.setMap(map);
+            
+            const idleListener = map.addListener('idle', () => {
+                google.maps.event.removeListener(idleListener);
+                applyFiltersAndRender();
+            });
+        }
+
         function renderMapMarkers(data) {
-            const layer = document.getElementById("mapMarkersLayer"); layer.innerHTML = "";
+            if (googleMarkers.length > 0) {
+                googleMarkers.forEach(m => m.setMap(null));
+                googleMarkers = [];
+            }
+            if (!map) return;
+
             data.forEach(item => {
-                const isSelected = selectedPropertyId === item.id; const marker = document.createElement("div");
-                marker.className = "absolute pointer-events-auto cursor-pointer transition-all duration-150 origin-bottom";
-                marker.style.left = item.posX; marker.style.top = item.posY; marker.style.transform = "translate(-50%, -50%)";
-                let iconName = "home"; if(item.type === "Căn hộ") iconName = "building-2"; if(item.type === "Tòa nhà") iconName = "building";
-                marker.innerHTML = `
-                    <div onclick="selectProperty(${item.id})" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full shadow-marker transition-all ${isSelected ? 'bg-primary text-white scale-110 z-40' : 'bg-surface text-textPrimary hover:scale-105 z-30'}">
+                const isSelected = selectedPropertyId === item.id;
+                let iconName = "home";
+                if (item.type === "Căn hộ") iconName = "building-2";
+                if (item.type === "Tòa nhà") iconName = "building";
+
+                const content = `
+                    <div onclick="selectProperty(${item.id})" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full shadow-marker transition-all cursor-pointer ${isSelected ? 'bg-primary text-white scale-110' : 'bg-surface text-textPrimary hover:scale-105'}" style="white-space:nowrap;">
                         <i data-lucide="${iconName}" class="w-3.5 h-3.5 ${isSelected ? 'text-white' : 'text-primary'}"></i>
                         <span class="text-[11px] font-semibold">${item.price} Tr</span>
                     </div>
                 `;
-                layer.appendChild(marker);
+
+                const overlay = new MapMarkerOverlay(
+                    new google.maps.LatLng(item.lat, item.lng),
+                    content
+                );
+                overlay.setMap(map);
+                googleMarkers.push(overlay);
             });
-            lucide.createIcons();
+
+            setTimeout(() => lucide.createIcons(), 50);
         }
 
         function renderPropertyCards(data) {
@@ -634,6 +701,11 @@
             selectedPropertyId = id; applyFiltersAndRender();
             const sheet = document.getElementById("bottomSheetList");
             if(sheet.style.height === "110px") toggleBottomSheetHeight();
+            const item = MOCK_DATA.find(d => d.id === id);
+            if (item && map) {
+                map.panTo({ lat: item.lat, lng: item.lng });
+                map.setZoom(16);
+            }
             setTimeout(() => {
                 const targetCard = document.getElementById(`card-item-${id}`);
                 if (targetCard) targetCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -653,9 +725,12 @@
         }
 
         function moveToMyLocation() {
-            const myLoc = document.getElementById("myLocation"); myLoc.classList.add("scale-150");
-            setTimeout(() => { myLoc.classList.remove("scale-150"); }, 300);
+            if (map) {
+                map.panTo({ lat: 10.805, lng: 106.715 });
+                map.setZoom(14);
+            }
         }
     </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJAiz1ejW6mwwf_Q7zXlAYwuAtCZdtGA8&callback=initMap" defer></script>
 </body>
 </html>
