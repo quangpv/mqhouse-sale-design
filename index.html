@@ -143,6 +143,9 @@
                         <button onclick="switchScreen('changePassword')" id="btn-changePassword" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
                             <i data-lucide="lock" class="w-4 h-4"></i> Đổi mật khẩu
                         </button>
+                        <button onclick="toggleFullscreen()" id="btn-fullscreen" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
+                            <i data-lucide="maximize" class="w-4 h-4"></i> Xem toàn màn hình
+                        </button>
                     </div>
                 </div>
 
@@ -332,6 +335,17 @@
             }
         }
 
+        function toggleFullscreen() {
+            try {
+                if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                    const el = document.documentElement;
+                    (el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen)?.call(el)?.catch(() => {});
+                } else {
+                    (document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen)?.call(document)?.catch(() => {});
+                }
+            } catch(e) {}
+        }
+
         function showNotImplemented(viewport) {
             viewport.innerHTML = `
                 <div class="h-full flex flex-col items-center justify-center text-center p-8 space-y-3">
@@ -345,6 +359,10 @@
         document.addEventListener("DOMContentLoaded", () => {
             lucide.createIcons();
             switchScreen('home');
+
+            window.addEventListener('message', (e) => {
+                if (e.data === 'toggleFullscreen') toggleFullscreen();
+            });
 
             const scrollContainer = document.getElementById('tab-scroll-container');
             if (scrollContainer) {
