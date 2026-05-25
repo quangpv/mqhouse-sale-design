@@ -166,104 +166,7 @@
 
         <!-- Scrollable Vertical Rooms Stream List -->
         <div class="flex-1 overflow-y-auto no-scrollbar p-4 space-y-4 pb-24">
-            
-            <!-- Item Card 1 -->
-            <div onclick="parent.switchScreen('propertyDetails')" class="bg-surface rounded-card border border-border p-3 shadow-soft space-y-3 flex flex-col group cursor-pointer">
-                
-                <!-- Max 4 Images Structural Layout Grid -->
-                <div class="grid grid-cols-4 gap-1.5 h-[130px] w-full rounded-input overflow-hidden bg-slate-100 flex-shrink-0 relative">
-                    <div class="col-span-2 h-full">
-                        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400" alt="Room Area" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]">
-                    </div>
-                    <div class="col-span-1 h-full">
-                        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400" alt="Kitchen View" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]">
-                    </div>
-                    <div class="col-span-1 h-full relative">
-                        <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400" alt="Bathroom layout" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]">
-                        <div class="absolute inset-0 bg-slate-900/40 flex items-center justify-center text-white text-small font-semibold backdrop-blur-[1px]">+1 ảnh</div>
-                    </div>
-                </div>
-
-                <!-- Details Context Row -->
-                <div class="space-y-2 flex-1 flex flex-col justify-between">
-                    <div class="space-y-1">
-                        <!-- Room category and status tags -->
-                        <div class="flex items-center justify-between">
-                            <span class="text-small font-semibold text-primary tracking-wide">CĂN HỘ CHUNG CƯ</span>
-                            <span class="text-small font-semibold text-success bg-green-50 px-2 py-0.5 rounded-full border border-success/10">Còn phòng</span>
-                        </div>
-                        <!-- Header names -->
-                        <h4 class="text-body font-semibold text-textPrimary line-clamp-1">Flora Novia Skyline Studio</h4>
-                        <!-- Address lines -->
-                        <p class="text-small text-textSecondary truncate">128 Nguyễn Văn Bánh, Phường 15, Bình Thạnh</p>
-                    </div>
-
-                    <!-- Bottom Functional Actions Layer -->
-                    <div class="flex items-center justify-between pt-1 border-t border-slate-50">
-                        <!-- Valuation metrics -->
-                        <div class="text-textSecondary text-small font-medium">
-                            <span class="text-body font-semibold text-primary">14.5tr</span> /tháng
-                        </div>
-                        <!-- Utility Actions -->
-                        <div class="flex items-center gap-2">
-                            <!-- Share icon button -->
-                            <button onclick="parent.switchScreen('sharing')" class="w-8 h-8 flex items-center justify-center text-textSecondary hover:text-primary bg-slate-50 hover:bg-blue-50/50 rounded-full transition-colors duration-150" title="Chia sẻ bài đăng">
-                                <i data-lucide="share-2" class="w-4 h-4"></i>
-                            </button>
-                            <!-- Favorite icon button -->
-                            <button class="w-8 h-8 flex items-center justify-center text-error bg-red-50/30 rounded-full transition-colors duration-150" title="Bỏ yêu thích">
-                                <i data-lucide="heart" class="w-4 h-4 fill-current"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item Card 2 -->
-            <div onclick="parent.switchScreen('propertyDetails')" class="bg-surface rounded-card border border-border p-3 shadow-soft space-y-3 flex flex-col group cursor-pointer">
-                
-                <!-- Max 4 Images Layout Grid -->
-                <div class="grid grid-cols-4 gap-1.5 h-[130px] w-full rounded-input overflow-hidden bg-slate-100 flex-shrink-0">
-                    <div class="col-span-2 h-full">
-                        <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400" alt="Studio Main View" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]">
-                    </div>
-                    <div class="col-span-1 h-full">
-                        <img src="https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=400" alt="Kitchen setup" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]">
-                    </div>
-                    <div class="col-span-1 h-full">
-                        <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=400" alt="Bedroom side" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]">
-                    </div>
-                </div>
-
-                <!-- Details Context Row -->
-                <div class="space-y-2 flex-1 flex flex-col justify-between">
-                    <div class="space-y-1">
-                        <div class="flex items-center justify-between">
-                            <span class="text-small font-semibold text-primary tracking-wide">PHÒNG TRỌ KHÉP KÍN</span>
-                            <span class="text-small font-semibold text-error bg-red-50 px-2 py-0.5 rounded-full border border-error/10">Hết phòng</span>
-                        </div>
-                        <h4 class="text-body font-semibold text-textPrimary line-clamp-1">Vinhomes Central Cozy Room</h4>
-                        <p class="text-small text-textSecondary truncate">208 Nguyễn Hữu Cảnh, Phường 22, Bình Thạnh</p>
-                    </div>
-
-                    <div class="flex items-center justify-between pt-1 border-t border-slate-50">
-                        <div class="text-textSecondary text-small font-medium">
-                            <span class="text-body font-semibold text-primary">6.8tr</span> /tháng
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <!-- Share icon button -->
-                            <button onclick="parent.switchScreen('sharing')" class="w-8 h-8 flex items-center justify-center text-textSecondary hover:text-primary bg-slate-50 hover:bg-blue-50/50 rounded-full transition-colors duration-150">
-                                <i data-lucide="share-2" class="w-4 h-4"></i>
-                            </button>
-                            <!-- Favorite icon button -->
-                            <button class="w-8 h-8 flex items-center justify-center text-textSecondary hover:text-error bg-slate-50 hover:bg-red-50/50 rounded-full transition-colors duration-150" title="Thêm vào yêu thích">
-                                <i data-lucide="heart" class="w-4 h-4"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+            <div id="result-list" class="space-y-4"></div>
         </div>
 
     </div>
@@ -479,7 +382,8 @@
         }
 
         function applyFilterSheet() {
-            // Sync state to quick select fields
+            closeFilterSheet();
+
             const statusSelect = document.querySelector('select:nth-of-type(1)');
             const typeSelect = document.querySelector('select:nth-of-type(3)');
             const budgetSelect = document.querySelector('select:nth-of-type(5)');
@@ -515,9 +419,71 @@
             } else {
                 budgetSelect.value = '';
             }
-
-            closeFilterSheet();
         }
+
+        const MOCK_DATA = [
+            { id: 1, title: "Flora Novia Skyline Studio", category: "CĂN HỘ CHUNG CƯ", status: "available", price: 14.5, address: "128 Nguyễn Văn Bánh, Phường 15, Bình Thạnh", favorited: true, images: ["https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400", "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400", "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400", "https://images.unsplash.com/photo-1560185007-5f0bb1866cab?w=400"] },
+            { id: 2, title: "Vinhomes Central Cozy Room", category: "PHÒNG TRỌ KHÉP KÍN", status: "rented", price: 6.8, address: "208 Nguyễn Hữu Cảnh, Phường 22, Bình Thạnh", favorited: false, images: ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400", "https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=400", "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=400"] },
+            { id: 3, title: "The Manor Premium Studio", category: "CĂN HỘ STUDIO", status: "available", price: 8.5, address: "55 Nguyễn Đình Chiểu, Quận 1", favorited: false, images: ["https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400", "https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=400", "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400"] },
+            { id: 4, title: "Saigon Centre Office Suite", category: "TÒA NHÀ VĂN PHÒNG", status: "available", price: 45, address: "65 Lê Lợi, Phường Bến Nghé, Quận 1", favorited: true, images: ["https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400", "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400", "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400", "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400"] },
+            { id: 5, title: "Phú Nhuận Garden Homestay", category: "PHÒNG TRỌ KHÉP KÍN", status: "available", price: 3.8, address: "120 Trần Huy Liệu, Phường 12, Phú Nhuận", favorited: false, images: ["https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400", "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400"] },
+            { id: 6, title: "Phú Mỹ Hưng Sky Villa", category: "CĂN HỘ CHUNG CƯ", status: "available", price: 22, address: "Nguyễn Văn Linh, Phường Tân Phong, Quận 7", favorited: false, images: ["https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400", "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400", "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=400"] },
+            { id: 7, title: "Bình Thạnh Mini Studio", category: "CĂN HỘ STUDIO", status: "rented", price: 6.2, address: "42/10 Ung Văn Khiêm, Phường 25, Bình Thạnh", favorited: false, images: ["https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=400", "https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=400", "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400"] },
+            { id: 8, title: "Sài Gòn Pearl Executive Office", category: "TÒA NHÀ VĂN PHÒNG", status: "available", price: 95, address: "92 Nguyễn Hữu Cảnh, Phường 22, Bình Thạnh", favorited: false, images: ["https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400", "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400", "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400", "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400"] },
+            { id: 9, title: "Gò Vấp Garden Private Room", category: "PHÒNG TRỌ KHÉP KÍN", status: "available", price: 2.5, address: "300 Phan Văn Trị, Phường 11, Gò Vấp", favorited: true, images: ["https://images.unsplash.com/photo-1585412727339-54e4bae3bbf9?w=400", "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=400"] },
+            { id: 10, title: "Thảo Điền River Apartment", category: "CĂN HỘ CHUNG CƯ", status: "rented", price: 12, address: "54 Nguyễn Văn Hưởng, Phường Thảo Điền, Quận 2", favorited: false, images: ["https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=400", "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=400", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400"] }
+        ];
+
+        function createCard(item) {
+            const isAvail = item.status === 'available';
+            const stCls = isAvail ? 'text-success bg-green-50 border-success/10' : 'text-error bg-red-50 border-error/10';
+            const hCls = item.favorited ? 'text-error bg-red-50/30' : 'text-textSecondary bg-slate-50 hover:text-error hover:bg-red-50/50';
+            const hFill = item.favorited ? ' fill-current' : '';
+            const imgs = item.images;
+            const len = imgs.length;
+            let gHtml = '';
+            if (len === 1) {
+                gHtml = `<div class="col-span-4 h-full"><img src="${imgs[0]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"></div>`;
+            } else if (len === 2) {
+                gHtml = `<div class="col-span-2 h-full"><img src="${imgs[0]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"></div><div class="col-span-2 h-full"><img src="${imgs[1]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"></div>`;
+            } else {
+                const extra = len > 3 ? `<div class="absolute inset-0 bg-slate-900/40 flex items-center justify-center text-white text-small font-semibold backdrop-blur-[1px]">+${len - 3} ảnh</div>` : '';
+                gHtml = `<div class="col-span-2 h-full"><img src="${imgs[0]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"></div><div class="col-span-1 h-full"><img src="${imgs[1]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"></div><div class="col-span-1 h-full relative"><img src="${imgs[2]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]">${extra}</div>`;
+            }
+            return `<div onclick="parent.switchScreen('propertyDetails')" class="bg-surface rounded-card border border-border p-3 shadow-soft space-y-3 flex flex-col group cursor-pointer">
+                <div class="grid grid-cols-4 gap-1.5 h-[130px] w-full rounded-input overflow-hidden bg-slate-100 flex-shrink-0 relative">${gHtml}</div>
+                <div class="space-y-2 flex-1 flex flex-col justify-between">
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-small font-semibold text-primary tracking-wide">${item.category}</span>
+                            <span class="text-small font-semibold ${stCls} px-2 py-0.5 rounded-full border">${isAvail ? 'Còn phòng' : 'Hết phòng'}</span>
+                        </div>
+                        <h4 class="text-body font-semibold text-textPrimary line-clamp-1">${item.title}</h4>
+                        <p class="text-small text-textSecondary truncate">${item.address}</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-1 border-t border-slate-50">
+                        <div class="text-textSecondary text-small font-medium">
+                            <span class="text-body font-semibold text-primary">${item.price}tr</span> /tháng
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="event.stopPropagation();parent.switchScreen('sharing')" class="w-8 h-8 flex items-center justify-center text-textSecondary hover:text-primary bg-slate-50 hover:bg-blue-50/50 rounded-full transition-colors duration-150" title="Chia sẻ bài đăng">
+                                <i data-lucide="share-2" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="event.stopPropagation();" class="w-8 h-8 flex items-center justify-center ${hCls} rounded-full transition-colors duration-150" title="${item.favorited ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'}">
+                                <i data-lucide="heart" class="w-4 h-4${hFill}"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderResults(data) {
+            const el = document.getElementById('result-list');
+            if (el) { el.innerHTML = data.map(createCard).join(''); lucide.createIcons(); }
+        }
+
+        renderResults(MOCK_DATA);
     </script>
 </body>
 </html>
