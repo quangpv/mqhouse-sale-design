@@ -256,24 +256,22 @@
                         <h2 class="text-small font-semibold tracking-wider text-textSecondary uppercase">Vai trò người dùng</h2>
                         <span id="role-badge" class="px-2.5 py-0.5 rounded-full text-small font-medium bg-blue-50 text-primary border border-blue-100 transition-all whitespace-nowrap">Admin</span>
                     </div>
-                    <div id="role-tab-bar" class="bg-surface border border-border p-3 rounded-card shadow-soft flex gap-2 overflow-x-auto scrollbar-none">
-                        <button onclick="selectRole('admin')" id="role-tab-admin" class="shrink-0 whitespace-nowrap flex flex-col items-center gap-2 py-3 px-3 rounded-button border text-center transition-all bg-blue-50 border-primary text-primary font-medium">
-                            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary transition-colors">
-                                <i data-lucide="shield-check" class="w-5 h-5 mx-auto"></i>
-                            </div>
-                            <span class="text-small font-medium">Admin</span>
+                    <div id="role-tab-bar" class="flex flex-wrap gap-2">
+                        <button onclick="selectRole('admin')" id="role-tab-admin" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full transition-all text-small font-medium bg-primary text-surface shadow-sm">
+                            <i data-lucide="shield-check" class="w-4 h-4"></i>
+                            Admin
                         </button>
-                        <button onclick="selectRole('manager')" id="role-tab-manager" class="shrink-0 whitespace-nowrap flex flex-col items-center gap-2 py-3 px-3 rounded-button border text-center transition-all bg-surface border-border text-textSecondary hover:text-textPrimary hover:border-textSecondary">
-                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-textSecondary transition-colors">
-                                <i data-lucide="map-pin" class="w-5 h-5 mx-auto"></i>
-                            </div>
-                            <span class="text-small font-medium">Quản lý khu vực</span>
+                        <button onclick="selectRole('manager')" id="role-tab-manager" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full transition-all text-small font-medium bg-background border border-border text-textSecondary hover:border-textSecondary hover:text-textPrimary">
+                            <i data-lucide="map-pin" class="w-4 h-4"></i>
+                            Quản lý khu vực
                         </button>
-                        <button onclick="selectRole('sale')" id="role-tab-sale" class="shrink-0 whitespace-nowrap flex flex-col items-center gap-2 py-3 px-3 rounded-button border text-center transition-all bg-surface border-border text-textSecondary hover:text-textPrimary hover:border-textSecondary">
-                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-textSecondary transition-colors">
-                                <i data-lucide="badge-dollar-sign" class="w-5 h-5 mx-auto"></i>
-                            </div>
-                            <span class="text-small font-medium">Sale</span>
+                        <button onclick="selectRole('sale')" id="role-tab-sale" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full transition-all text-small font-medium bg-background border border-border text-textSecondary hover:border-textSecondary hover:text-textPrimary">
+                            <i data-lucide="badge-dollar-sign" class="w-4 h-4"></i>
+                            Sale
+                        </button>
+                        <button onclick="selectRole('owner')" id="role-tab-owner" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full transition-all text-small font-medium bg-background border border-border text-textSecondary hover:border-textSecondary hover:text-textPrimary">
+                            <i data-lucide="building-2" class="w-4 h-4"></i>
+                            Chủ nhà
                         </button>
                     </div>
                 </section>
@@ -543,13 +541,15 @@
         const rolePermissions = {
             admin: ["perm_approve_bds", "perm_approve_room", "perm_write_bds", "perm_write_room", "perm_read_users", "perm_write_users", "perm_write_geo", "perm_write_furniture", "perm_write_amenity", "perm_write_room_type", "perm_write_bds_type", "perm_write_service"],
             manager: ["perm_approve_bds", "perm_approve_room", "perm_write_bds", "perm_write_room", "perm_read_users", "perm_write_furniture", "perm_write_amenity"],
-            sale: ["perm_write_bds", "perm_write_room", "perm_read_users"]
+            sale: ["perm_write_bds", "perm_write_room", "perm_read_users"],
+            owner: ["perm_write_bds", "perm_write_room", "perm_write_furniture", "perm_write_amenity", "perm_write_room_type", "perm_write_bds_type", "perm_read_users"]
         };
 
         const roleLabels = {
             admin: "Admin",
             manager: "Quản lý khu vực",
-            sale: "Sale"
+            sale: "Sale",
+            owner: "Chủ nhà"
         };
 
         let currentRole = "admin";
@@ -598,17 +598,13 @@
         function selectRole(role) {
             currentRole = role;
             activePermissions = [...rolePermissions[role]];
-            const baseBtn = "shrink-0 whitespace-nowrap flex flex-col items-center gap-2 py-3 px-3 rounded-button border text-center transition-all";
-            const activeBtn = `${baseBtn} bg-blue-50 border-primary text-primary font-medium`;
-            const inactiveBtn = `${baseBtn} bg-surface border-border text-textSecondary hover:text-textPrimary hover:border-textSecondary`;
-            ['admin', 'manager', 'sale'].forEach(r => {
+            const baseBtn = "inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full transition-all text-small font-medium";
+            const activeBtn = `${baseBtn} bg-primary text-surface shadow-sm`;
+            const inactiveBtn = `${baseBtn} bg-background border border-border text-textSecondary hover:border-textSecondary hover:text-textPrimary`;
+            ['admin', 'manager', 'sale', 'owner'].forEach(r => {
                 const tab = document.getElementById(`role-tab-${r}`);
                 if (!tab) return;
-                const iconDiv = tab.querySelector('div');
                 tab.className = r === role ? activeBtn : inactiveBtn;
-                iconDiv.className = r === role
-                    ? "w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary transition-colors"
-                    : "w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-textSecondary transition-colors";
             });
             const badge = document.getElementById('role-badge');
             if (badge) badge.innerText = roleLabels[role];

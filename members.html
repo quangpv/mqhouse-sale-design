@@ -566,13 +566,13 @@
             showFormDialog();
         }
 
-        // [[Sửa thành viên Dialog]]
+        // [[Sửa thành viên]]
         function triggerEditUser() {
             const user = users.find(u => u.id === selectedUserId);
             closeActionMenu();
             if(!user) return;
 
-            document.getElementById('dialogTitle').innerText = "Sửa thành viên Dialog";
+            document.getElementById('dialogTitle').innerText = "Sửa thành viên";
             document.getElementById('formStatusContainer').classList.remove('hidden');
 
             document.getElementById('formAvatarPreview').src = user.avatar;
