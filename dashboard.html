@@ -72,7 +72,7 @@
                     <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-textSecondary"></i>
                     <input type="text" id="search-input" placeholder="Tìm kiếm địa chỉ..." onkeydown="if(event.key==='Enter'){parent.switchScreen('search')}" class="w-full pl-9 pr-4 py-2.5 bg-background border border-border rounded-input text-body placeholder:text-textSecondary focus:outline-none focus:border-primary transition-colors duration-150">
                 </div>
-                <button class="w-[42px] h-[42px] flex items-center justify-center bg-primary text-white rounded-button hover:bg-opacity-90 transition-all duration-150 active:scale-95 shadow-soft">
+                <button onclick="parent.switchScreen('addProperty')" class="w-[42px] h-[42px] flex items-center justify-center bg-primary text-white rounded-button hover:bg-opacity-90 transition-all duration-150 active:scale-95 shadow-soft">
                     <i data-lucide="plus" class="w-5 h-5"></i>
                 </button>
             </div>

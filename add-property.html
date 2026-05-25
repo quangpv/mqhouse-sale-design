@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Bất Động Sản & Phòng</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        primary: '#2563EB',
+                        background: '#F8FAFC',
+                        surface: '#FFFFFF',
+                        border: '#E2E8F0',
+                        textPrimary: '#0F172A',
+                        textSecondary: '#64748B',
+                        success: '#16A34A',
+                        warning: '#F59E0B',
+                        error: '#DC2626',
+                    },
+                    borderRadius: {
+                        'card': '16px',
+                        'button': '12px',
+                        'input': '10px',
+                        'modal': '20px',
+                    },
+                    boxShadow: {
+                        'soft': '0 2px 12px -2px rgba(15, 23, 42, 0.04), 0 4px 16px -1px rgba(15, 23, 42, 0.03)',
+                    },
+                    fontSize: {
+                        'h1': ['32px', { lineHeight: '40px', fontWeight: '600' }],
+                        'h2': ['24px', { lineHeight: '32px', fontWeight: '600' }],
+                        'h3': ['20px', { lineHeight: '28px', fontWeight: '500' }],
+                        'body': ['14px', { lineHeight: '20px', fontWeight: '400' }],
+                        'small': ['12px', { lineHeight: '16px', fontWeight: '400' }],
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; color: #0F172A; -webkit-tap-highlight-color: transparent; }
+        .custom-transition { transition: all 150ms ease-in-out; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="h-screen overflow-hidden">
+
+    <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-textPrimary text-white px-4 py-3 rounded-button text-body shadow-soft flex items-center gap-2 opacity-0 pointer-events-none custom-transition">
+        <i data-lucide="info" class="w-4 h-4 text-primary"></i>
+        <span id="toast-message">Thông báo</span>
+    </div>
+
+    <div class="max-w-md mx-auto bg-background h-screen flex flex-col">
+
+        <div id="screen-them-bds" class="flex flex-col flex-1 min-h-0">
+            <!-- Sticky header -->
+            <div class="flex-shrink-0 px-4 pt-6 pb-3 bg-background border-b border-border shadow-sm" style="background-color:white;">
+                <div class="flex items-center gap-3">
+                    <button onclick="parent.switchScreen('home')" class="text-textPrimary hover:bg-background custom-transition">
+                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    </button>
+                    <h1 class="text-h2 text-textPrimary">Thêm BDS</h1>
+                </div>
+            </div>
+            <!-- Scrollable content -->
+            <div class="flex-1 overflow-y-auto px-4 space-y-6 py-4 no-scrollbar min-h-0">
+                <div class="bg-surface p-4 rounded-card shadow-soft space-y-4 border border-border">
+                    <div>
+                        <label class="block text-small font-medium text-textSecondary mb-1">Mã bất động sản</label>
+                        <input type="text" id="bds-ma" value="BDS-2026-HQ" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary focus:outline-none focus:border-primary custom-transition">
+                    </div>
+                    <div>
+                        <label class="block text-small font-medium text-textSecondary mb-1">Loại bất động sản</label>
+                        <select id="bds-loai" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary focus:outline-none focus:border-primary custom-transition">
+                            <option value="Căn hộ">Căn hộ</option>
+                            <option value="phòng trọ" selected>Phòng trọ</option>
+                            <option value="Tòa nhà">Tòa nhà</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="bg-surface p-4 rounded-card shadow-soft space-y-3 border border-border">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-body font-semibold text-textPrimary">Upload hình ảnh (Tối đa 10)</h3>
+                        <span class="text-small text-textSecondary">2 / 10</span>
+                    </div>
+                    <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+                        <button onclick="triggerUpload()" class="w-20 h-20 shrink-0 border-2 border-dashed border-border rounded-input flex flex-col items-center justify-center text-textSecondary hover:text-primary hover:border-primary custom-transition bg-background">
+                            <i data-lucide="camera" class="w-5 h-5 mb-1"></i>
+                            <span class="text-[10px]">Thêm hình</span>
+                        </button>
+                        <div class="relative w-20 h-20 shrink-0 rounded-input overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=150&q=80" class="w-full h-full object-cover" alt="BDS">
+                            <button class="absolute top-1 right-1 bg-black/50 text-white rounded-full p-0.5" onclick="this.parentElement.remove()"><i data-lucide="x" class="w-3 h-3"></i></button>
+                        </div>
+                        <div class="relative w-20 h-20 shrink-0 rounded-input overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=150&q=80" class="w-full h-full object-cover" alt="BDS">
+                            <button class="absolute top-1 right-1 bg-black/50 text-white rounded-full p-0.5" onclick="this.parentElement.remove()"><i data-lucide="x" class="w-3 h-3"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-surface p-4 rounded-card shadow-soft space-y-4 border border-border">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-body font-semibold text-textPrimary">Vị trí địa lý</h3>
+                        <button onclick="useGPS()" class="flex items-center gap-1 text-small font-medium text-primary bg-blue-50 px-2.5 py-1 rounded-input custom-transition hover:bg-blue-100">
+                            <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Vị trí hiện tại (GPS)
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-small font-medium text-textSecondary mb-1">Tỉnh/thành</label>
+                            <select id="bds-tinh" onchange="updateDistricts()" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary focus:outline-none focus:border-primary custom-transition">
+                                <option value="Hồ Chí Minh" selected>Hồ Chí Minh</option>
+                                <option value="Bình Dương">Bình Dương</option>
+                                <option value="Gia Lai">Gia Lai</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-small font-medium text-textSecondary mb-1">Thành phố (Optional)</label>
+                            <select id="bds-thanhpho" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary focus:outline-none focus:border-primary custom-transition">
+                                <option value="">-- Không chọn --</option>
+                                <option value="Thủ Đức">Thủ Đức</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-small font-medium text-textSecondary mb-1">Quận/huyện</label>
+                        <select id="bds-quan" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary focus:outline-none focus:border-primary custom-transition">
+                            <option value="Quận 1">Quận 1</option>
+                            <option value="Bình Thạnh" selected>Bình Thạnh</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-small font-medium text-textSecondary mb-1">Địa chỉ đường</label>
+                        <input type="text" id="bds-diachi" value="452/12 Xô Viết Nghệ Tĩnh" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary focus:outline-none focus:border-primary custom-transition">
+                    </div>
+                </div>
+
+                <div class="bg-surface p-4 rounded-card shadow-soft space-y-3 border border-border">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-body font-semibold text-textPrimary">Nội thất tổng thể</h3>
+                        <button onclick="openNameDialog('bds-noithat-nhom-add', 'Thêm nhóm nội thất', 'Nhập tên nhóm nội thất cho BDS')" class="text-primary hover:bg-blue-50 p-1.5 rounded-full custom-transition">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                    <div class="space-y-3" id="bds-noithat-container"></div>
+                </div>
+
+                <div class="bg-surface p-4 rounded-card shadow-soft space-y-3 border border-border">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-body font-semibold text-textPrimary">Tiện ích tòa nhà</h3>
+                        <button onclick="openNameDialog('bds-tienich-nhom-add', 'Thêm nhóm tiện ích', 'Nhập tên nhóm tiện ích tổng thể')" class="text-primary hover:bg-blue-50 p-1.5 rounded-full custom-transition">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                    <div class="space-y-3" id="bds-tienich-container"></div>
+                </div>
+
+                <div class="bg-surface p-4 rounded-card shadow-soft space-y-3 border border-border">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-body font-semibold text-textPrimary">Dịch vụ áp dụng</h3>
+                        <button onclick="openServiceDialog(null, 'bds')" class="text-primary hover:bg-blue-50 p-1.5 rounded-full custom-transition">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3" id="bds-dichvu-container"></div>
+                </div>
+
+                <div class="bg-surface p-4 rounded-card shadow-soft space-y-3 border border-border">
+                    <h3 class="text-body font-semibold text-textPrimary">Thông tin mô tả tin</h3>
+                    <div class="space-y-3">
+                        <input type="text" id="bds-tieu-de" value="Căn hộ studio dịch vụ full nội thất cao cấp" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary focus:outline-none focus:border-primary custom-transition" placeholder="Tiêu đề bài đăng">
+                        <textarea id="bds-noi-dung" rows="3" class="w-full p-3 bg-background border border-border rounded-input text-body text-textPrimary focus:outline-none focus:border-primary custom-transition resize-none" placeholder="Nội dung chi tiết...">Phòng sạch sẽ thoáng mát, giờ giấc tự do, ban công rộng.</textarea>
+                    </div>
+                </div>
+
+                <div class="bg-surface p-4 rounded-card shadow-soft space-y-3 border border-border">
+                    <h3 class="text-body font-semibold text-textPrimary">Thông tin liên hệ bổ sung</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-small font-medium text-textSecondary mb-1">Vai trò</label>
+                            <input type="text" id="bds-vaitro" value="Quản lý" readonly class="w-full h-10 px-3 bg-slate-50 border border-border rounded-input text-body text-textSecondary cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-small font-medium text-textSecondary mb-1">Zalo Link</label>
+                            <input type="text" id="bds-zalo" value="https://zalo.me/0933111222" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-small font-medium text-textSecondary mb-1">Tên liên hệ</label>
+                            <input type="text" id="bds-lienhe" value="Lê Văn Duy" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary">
+                        </div>
+                        <div>
+                            <label class="block text-small font-medium text-textSecondary mb-1">Số điện thoại</label>
+                            <input type="tel" id="bds-sdt" value="0933111222" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-small font-medium text-textSecondary mb-1">Ghi chú hành chính</label>
+                        <input type="text" id="bds-ghichu" value="Không nuôi thú cưng lớn" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary">
+                    </div>
+                </div>
+
+                <div class="border-t border-border pt-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-body font-semibold text-textPrimary">Sơ đồ danh sách phòng</h3>
+                        <button onclick="navigateTo('them-phong')" class="flex items-center gap-1 text-small font-medium text-white bg-primary px-3 py-1.5 rounded-input custom-transition hover:bg-blue-700">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i> Thêm phòng
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2.5" id="bds-sodophong-container"></div>
+                </div>
+            </div>
+            <!-- Sticky footer -->
+            <div class="flex-shrink-0 px-4 pb-4 pt-3 bg-background border-t border-border">
+                <button onclick="handleCreateBDS()" class="w-full h-12 bg-primary text-white text-body font-medium rounded-button shadow-soft hover:bg-blue-700 active:scale-[0.99] custom-transition flex items-center justify-center gap-2">
+                    <i data-lucide="check-circle" class="w-5 h-5"></i> Xác nhận tạo
+                </button>
+            </div>
+        </div>
+
+        <div id="screen-them-phong" class="flex flex-col flex-1 min-h-0 hidden">
+            <!-- Sticky header -->
+            <div class="flex-shrink-0 px-4 pt-6 pb-3 bg-background border-b border-border shadow-sm" style="background-color:white;">
+                <div class="flex items-center gap-3">
+                    <button onclick="navigateTo('them-bds')" class="text-textPrimary hover:bg-background custom-transition">
+                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    </button>
+                    <h1 class="text-h2 text-textPrimary" id="phong-screen-title">Thêm phòng mới</h1>
+                </div>
+            </div>
+            <!-- Scrollable content -->
+            <div class="flex-1 overflow-y-auto px-4 space-y-6 py-4 no-scrollbar min-h-0">
+                <div class="bg-surface p-4 rounded-card shadow-soft space-y-4 border border-border">
+                    <span id="lbl-parent-bds" class="block text-small font-medium text-textSecondary">BDS: BDS-2026-HQ</span>
+                    <div>
+                        <label class="block text-small font-medium text-textSecondary mb-1">Mã phòng</label>
+                        <input type="text" id="phong-ma" value="P.101" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-small font-medium text-textSecondary mb-1">Trạng thái phòng</label>
+                            <select id="phong-trangthai" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary">
+                                <option value="Đang trống" selected>Đang trống</option>
+                                <option value="Sắp trống">Sắp trống</option>
+                                <option value="Đã cọc">Đã cọc</option>
+                                <option value="Đã cho thuê">Đã cho thuê</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-small font-medium text-textSecondary mb-1">Loại phòng (Multi)</label>
+                            <select id="phong-loai" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary" style="max-height: 40px;">
+                                <option value="Studio" selected>Studio</option>
+                                <option value="Duplex">Duplex</option>
+                                <option value="1 Phòng ngủ">1 Phòng ngủ</option>
+                                <option value="2 Phòng Ngủ">2 Phòng Ngủ</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-surface p-4 rounded-card shadow-soft space-y-3 border border-border">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-body font-semibold text-textPrimary">Hình ảnh thực tế phòng</h3>
+                        <span class="text-small text-textSecondary">1 / 10</span>
+                    </div>
+                    <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+                        <button onclick="triggerUpload()" class="w-20 h-20 shrink-0 border-2 border-dashed border-border rounded-input flex flex-col items-center justify-center text-textSecondary bg-background">
+                            <i data-lucide="camera" class="w-4 h-4 mb-1"></i>
+                            <span class="text-[10px]">Thêm hình</span>
+                        </button>
+                        <div class="relative w-20 h-20 shrink-0 rounded-input overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=150&q=80" class="w-full h-full object-cover" alt="Phong">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-surface p-4 rounded-card shadow-soft space-y-3 border border-border">
+                    <h3 class="text-body font-semibold text-textPrimary">Tiền thuê hàng kỳ</h3>
+                    <div>
+                        <label class="block text-small font-medium text-textSecondary mb-1">Phí thuê phòng (VND / Tháng)</label>
+                        <input type="number" id="phong-phithue" value="6000000" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body font-semibold text-textPrimary">
+                    </div>
+                </div>
+
+                <div class="bg-surface p-4 rounded-card shadow-soft space-y-3 border border-border">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-body font-semibold text-textPrimary">Nội thất phòng</h3>
+                            <p class="text-[11px] text-textSecondary">Đã thừa hưởng từ cấu hình mẫu BDS</p>
+                        </div>
+                        <button onclick="openNameDialog('phong-noithat-nhom-add', 'Thêm nhóm nội thất', 'Nhập tên nhóm riêng cho phòng này')" class="text-primary hover:bg-blue-50 p-1.5 rounded-full custom-transition">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                    <div class="space-y-3" id="phong-noithat-container"></div>
+                </div>
+
+                <div class="bg-surface p-4 rounded-card shadow-soft space-y-3 border border-border">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-body font-semibold text-textPrimary">Tiện ích phòng</h3>
+                            <p class="text-[11px] text-textSecondary">Đã thừa hưởng từ cấu hình mẫu BDS</p>
+                        </div>
+                        <button onclick="openNameDialog('phong-tienich-nhom-add', 'Thêm nhóm tiện ích', 'Nhập tên tiện ích riêng cho phòng này')" class="text-primary hover:bg-blue-50 p-1.5 rounded-full custom-transition">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                    <div class="space-y-3" id="phong-tienich-container"></div>
+                </div>
+
+                <div class="bg-surface p-4 rounded-card shadow-soft space-y-3 border border-border">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-body font-semibold text-textPrimary">Dịch vụ phòng</h3>
+                            <p class="text-[11px] text-textSecondary">Đã thừa hưởng từ cấu hình mẫu BDS</p>
+                        </div>
+                        <button onclick="openServiceDialog(null, 'phong')" class="text-primary hover:bg-blue-50 p-1.5 rounded-full custom-transition">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3" id="phong-dichvu-container"></div>
+                </div>
+            </div>
+            <!-- Sticky footer -->
+            <div class="flex-shrink-0 px-4 pb-4 pt-3 bg-background border-t border-border">
+                <button onclick="commitSavePhong()" class="w-full h-12 bg-success text-white font-medium rounded-button shadow-soft hover:bg-green-700 active:scale-[0.99] custom-transition flex items-center justify-center gap-2">
+                    <i data-lucide="check-circle" class="w-5 h-5"></i> Lưu cấu hình phòng này
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="action-menu-popup" class="fixed inset-0 bg-black/40 z-50 flex items-end justify-center opacity-0 pointer-events-none custom-transition" onclick="closePopup('action-menu-popup')">
+        <div class="bg-surface w-full max-w-md rounded-t-modal p-4 space-y-3 transform translate-y-full custom-transition" onclick="event.stopPropagation()">
+            <div class="w-12 h-1 bg-border rounded-full mx-auto mb-2"></div>
+            <h3 class="text-small font-semibold text-textSecondary uppercase tracking-wider" id="action-menu-title">Tùy chọn mục</h3>
+            <div class="space-y-1">
+                <button onclick="handleActionMenu('edit')" class="w-full h-12 px-3 text-left rounded-button hover:bg-background text-body text-textPrimary flex items-center gap-3 custom-transition">
+                    <i data-lucide="edit-2" class="w-4 h-4 text-textSecondary"></i> Sửa mục này
+                </button>
+                <button onclick="handleActionMenu('delete')" class="w-full h-12 px-3 text-left rounded-button hover:bg-red-50 text-body text-error flex items-center gap-3 custom-transition">
+                    <i data-lucide="trash-2" class="w-4 h-4 text-error"></i> Xóa khỏi danh sách
+                </button>
+            </div>
+            <button onclick="closePopup('action-menu-popup')" class="w-full h-11 bg-background text-textPrimary font-medium rounded-button text-body mt-2">Hủy</button>
+        </div>
+    </div>
+
+    <div id="name-dialog" class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none custom-transition" onclick="closePopup('name-dialog')">
+        <div class="bg-surface w-full max-w-sm rounded-modal p-5 space-y-4 transform scale-95 custom-transition" onclick="event.stopPropagation()">
+            <div>
+                <h3 class="text-h3 text-textPrimary" id="name-dialog-title">Tiêu đề</h3>
+                <p class="text-small text-textSecondary mt-0.5" id="name-dialog-desc">Mô tả cấu hình</p>
+            </div>
+            <input type="text" id="name-dialog-input" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary focus:outline-none focus:border-primary custom-transition" placeholder="Nhập nhãn dữ liệu...">
+            <div class="flex gap-3 justify-end pt-2">
+                <button onclick="closePopup('name-dialog')" class="px-4 h-10 text-body text-textSecondary hover:bg-background rounded-button">Hủy</button>
+                <button onclick="submitNameDialog()" class="px-4 h-10 bg-primary text-white text-body font-medium rounded-button hover:bg-blue-700">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="service-dialog" class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none custom-transition" onclick="closePopup('service-dialog')">
+        <div class="bg-surface w-full max-w-sm rounded-modal p-5 space-y-4 transform scale-95 custom-transition" onclick="event.stopPropagation()">
+            <div>
+                <h3 class="text-h3 text-textPrimary" id="service-dialog-title">Thiết lập dịch vụ</h3>
+                <p class="text-small text-textSecondary mt-0.5">Cập nhật đơn giá & phương thức tính toán.</p>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-small font-medium text-textSecondary mb-1">Tên dịch vụ</label>
+                    <input type="text" id="service-name" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-small font-medium text-textSecondary mb-1">Giá dịch vụ</label>
+                        <input type="number" id="service-price" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary">
+                    </div>
+                    <div>
+                        <label class="block text-small font-medium text-textSecondary mb-1">Đơn vị tính</label>
+                        <input type="text" id="service-unit" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary" placeholder="Ví dụ: kWh, Khối">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-small font-medium text-textSecondary mb-1">Loại dịch vụ / Chu kỳ</label>
+                    <div class="grid grid-cols-2 gap-2 mb-2">
+                        <button id="btn-type-fixed" onclick="setServiceTypeUI('Cố định')" class="h-9 text-small font-medium border rounded-input custom-transition">Cố định</button>
+                        <button id="btn-type-usage" onclick="setServiceTypeUI('Theo mức sử dụng')" class="h-9 text-small font-medium border rounded-input custom-transition">Theo mức sử dụng</button>
+                    </div>
+                    <select id="service-cycle" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary">
+                        <option value="Ngày">Ngày</option>
+                        <option value="Tuần">Tuần</option>
+                        <option value="Tháng" selected>Tháng</option>
+                        <option value="Quý">Quý</option>
+                        <option value="Năm">Năm</option>
+                    </select>
+                </div>
+                <div id="service-usage-block" class="hidden bg-amber-50 p-3 rounded-input border border-amber-200">
+                    <label class="block text-small font-medium text-warning mb-1">Chỉ số ban đầu</label>
+                    <input type="number" id="service-initial-index" value="0" class="w-full h-9 px-3 bg-white border border-border rounded-input text-body text-textPrimary">
+                </div>
+            </div>
+            <div class="flex gap-3 justify-end pt-2">
+                <button onclick="closePopup('service-dialog')" class="px-4 h-10 text-body text-textSecondary hover:bg-background rounded-button">Hủy</button>
+                <button onclick="submitServiceDialog()" class="px-4 h-10 bg-primary text-white text-body font-medium rounded-button hover:bg-blue-700">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // MOCK DATA ĐỒNG BỘ CHO CẢ BDS VÀ PHÒNG KẾ THỪA
+        let bdsData = {
+            noiThat: [
+                { id: "bds-nt1", name: "Nội thất cơ bản", items: ["Giường ngủ", "Tủ quần áo", "Kệ bếp"] },
+                { id: "bds-nt2", name: "Điện máy", items: ["Máy lạnh Inverter", "Tủ lạnh 150L"] }
+            ],
+            tienIch: [
+                { id: "bds-ti1", name: "An ninh", items: ["Khóa vân tay", "Camera an ninh", "Bảo vệ 24/7"] },
+                { id: "bds-ti2", name: "Dịch vụ tòa nhà", items: ["Thang máy", "Khu giặt sấy chung"] }
+            ],
+            dichVu: [
+                { id: "bds-dv1", name: "Điện sinh hoạt", price: 3500, unit: "kWh", type: "Theo mức sử dụng", cycle: "Tháng", initialIndex: 0 },
+                { id: "bds-dv2", name: "Nước sạch", price: 18000, unit: "Khối", type: "Theo mức sử dụng", cycle: "Tháng", initialIndex: 0 },
+                { id: "bds-dv3", name: "Phí quản lý & Wifi", price: 150000, unit: "Phòng", type: "Cố định", cycle: "Tháng" }
+            ],
+            phongGrid: [
+                { id: "p1", code: "P.101", status: "Đang trống", price: 5800000 },
+                { id: "p2", code: "P.102", status: "Đã cho thuê", price: 6000000 },
+                { id: "p3", code: "P.201", status: "Đã cọc", price: 5900000 },
+                { id: "p4", code: "P.202", status: "Sắp trống", price: 6200000 },
+                { id: "p5", code: "P.301", status: "Đang trống", price: 5500000 }
+            ]
+        };
+
+        // Trạng thái độc lập của phòng khi bấm vào chỉnh sửa/thêm mới
+        let phongEditingData = { noiThat: [], tienIch: [], dichVu: [], isEditMode: false, currentId: null };
+        let activeScope = 'bds'; 
+        let currentMenuContext = null;
+        let selectedServiceType = 'Cố định';
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderBDSViews();
+            lucide.createIcons();
+        });
+
+        // HÀM RENDER CHO MÀN HÌNH CHÍNH (BDS)
+        function renderBDSViews() {
+            // Render Nội thất BDS
+            document.getElementById('bds-noithat-container').innerHTML = renderSectionList(bdsData.noiThat, 'bds', 'noithat');
+            // Render Tiện ích BDS
+            document.getElementById('bds-tienich-container').innerHTML = renderSectionList(bdsData.tienIch, 'bds', 'tienich');
+            // Render Dịch vụ BDS
+            document.getElementById('bds-dichvu-container').innerHTML = renderServiceGrid(bdsData.dichVu, 'bds');
+            // Render Sơ đồ phòng Grid
+            renderPhongGrid();
+            lucide.createIcons();
+        }
+
+        // HÀM RENDER CHO MÀN HÌNH CHI TIẾT (PHÒNG KẾ THỪA)
+        function renderPhongViews() {
+            document.getElementById('phong-noithat-container').innerHTML = renderSectionList(phongEditingData.noiThat, 'phong', 'noithat');
+            document.getElementById('phong-tienich-container').innerHTML = renderSectionList(phongEditingData.tienIch, 'phong', 'tienich');
+            document.getElementById('phong-dichvu-container').innerHTML = renderServiceGrid(phongEditingData.dichVu, 'phong');
+            lucide.createIcons();
+        }
+
+        // Tạo chuỗi HTML dùng chung cho list nhóm nội thất / tiện ích
+        function renderSectionList(dataArray, scope, type) {
+            if(dataArray.length === 0) return `<p class="text-small text-textSecondary italic">Chưa có nhóm nào được tạo.</p>`;
+            return dataArray.map(group => `
+                <div class="bg-background p-3 rounded-input border border-border space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-body font-medium text-textPrimary">${group.name}</span>
+                        <button onclick="openNameDialog('${scope}-${type}-nhom-edit', 'Sửa nhóm', 'Thay đổi tên phân nhóm', '${group.id}', '${group.name}')" class="text-textSecondary hover:text-primary custom-transition">
+                            <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5">
+                        ${group.items.map(item => `
+                            <span onclick="openActionMenu('${scope}-${type}-item', '${group.id}', '${item}')" class="text-small bg-white border border-border px-2.5 py-1 rounded-full text-textPrimary shadow-[0_1px_2px_rgba(0,0,0,0.02)] cursor-pointer hover:border-primary custom-transition inline-flex items-center gap-1">
+                                ${item} <i data-lucide="more-vertical" class="w-3 h-3 text-textSecondary"></i>
+                            </span>
+                        `).join('')}
+                        <button onclick="openNameDialog('${scope}-${type}-item-add', 'Thêm mục', 'Nhập tên thẻ mục mới', '${group.id}')" class="text-small text-primary border border-dashed border-primary/30 px-2.5 py-0.5 rounded-full bg-blue-50/50 hover:bg-blue-50 custom-transition">
+                            + Thêm
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Tạo chuỗi HTML dùng chung cho Grid Dịch vụ
+        function renderServiceGrid(services, scope) {
+            if(services.length === 0) return `<p class="text-small text-textSecondary italic col-span-2">Chưa có dịch vụ nào.</p>`;
+            return services.map(srv => `
+                <div onclick="openServiceDialog('${srv.id}', '${scope}')" class="bg-background p-3 rounded-input border border-border cursor-pointer hover:border-primary shadow-[0_1px_3px_rgba(0,0,0,0.01)] custom-transition space-y-1">
+                    <div class="flex justify-between items-center">
+                        <span class="text-small font-semibold text-textPrimary truncate">${srv.name}</span>
+                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded ${srv.type === 'Cố định' ? 'bg-slate-200 text-textSecondary' : 'bg-blue-100 text-primary'}">${srv.type === 'Cố định' ? 'CĐ' : 'SỐ'}</span>
+                    </div>
+                    <div class="text-body font-bold text-textPrimary">
+                        ${Number(srv.price).toLocaleString('vi-VN')}đ<span class="text-small font-normal text-textSecondary">/${srv.unit}</span>
+                    </div>
+                    <div class="text-[10px] text-textSecondary flex items-center gap-0.5">
+                        <i data-lucide="refresh-cw" class="w-2.5 h-2.5"></i> Kỳ: ${srv.cycle}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render sơ đồ phòng phòng tại BDS
+        function renderPhongGrid() {
+            const container = document.getElementById('bds-sodophong-container');
+            container.innerHTML = bdsData.phongGrid.map(room => {
+                let statusColor = "success";
+                if(room.status === "Sắp trống") statusColor = "error";
+                if(room.status === "Đã cọc") statusColor = "warning";
+                if(room.status === "Đã cho thuê") statusColor = "textSecondary";
+
+                return `
+                    <div onclick="clickQuickUpdatePhong('${room.id}')" class="bg-surface border border-borderClr p-2.5 rounded-card shadow-soft cursor-pointer active:scale-[0.98] custom-transition aspect-square flex flex-col items-center justify-center text-center">
+                        <div class="text-[11px] font-semibold text-textPrimary mb-1">${room.code}</div>
+                        <span class="text-[10px] font-medium px-1.5 py-0.5 rounded-md bg-${statusColor}/10 text-${statusColor}">${room.status}</span>
+                        <div class="mt-auto pt-1.5">
+                            <p class="text-[12px] font-semibold text-primary">${Number(room.price).toLocaleString('vi-VN')} <span class="text-[10px] font-normal text-textSecondary">đ/th</span></p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ĐIỀU HƯỚNG VÀ KẾ THỪA DỮ LIỆU CHUYỂN TIẾP
+        function navigateTo(screenId) {
+            if (screenId === 'them-phong') {
+                document.getElementById('screen-them-bds').classList.add('hidden');
+                document.getElementById('screen-them-phong').classList.remove('hidden');
+                document.getElementById('lbl-parent-bds').innerText = 'BDS: ' + (document.getElementById('bds-ma').value || 'BDS-2026-HQ');
+                
+                // Nếu chưa có dữ liệu chỉnh sửa riêng biệt, thực hiện nhân bản kế thừa từ BDS
+                if(!phongEditingData.isEditMode) {
+                    document.getElementById('phong-screen-title').innerText = "Thêm phòng mới";
+                    document.getElementById('phong-ma').value = "P." + (bdsData.phongGrid.length + 101);
+                    document.getElementById('phong-phithue').value = 6000000;
+                    phongEditingData.noiThat = JSON.parse(JSON.stringify(bdsData.noiThat));
+                    phongEditingData.tienIch = JSON.parse(JSON.stringify(bdsData.tienIch));
+                    phongEditingData.dichVu = JSON.parse(JSON.stringify(bdsData.dichVu));
+                }
+                renderPhongViews();
+            } else {
+                document.getElementById('screen-them-phong').classList.add('hidden');
+                document.getElementById('screen-them-bds').classList.remove('hidden');
+                phongEditingData.isEditMode = false;
+                phongEditingData.currentId = null;
+            }
+        }
+
+        // Sửa nhanh phòng bằng cách click trực tiếp vào Sơ đồ phòng grid
+        function clickQuickUpdatePhong(roomId) {
+            let targetRoom = bdsData.phongGrid.find(p => p.id === roomId);
+            if(!targetRoom) return;
+            
+            phongEditingData.isEditMode = true;
+            phongEditingData.currentId = roomId;
+            document.getElementById('phong-screen-title').innerText = `Cập nhật nhanh: ${targetRoom.code}`;
+            document.getElementById('phong-ma').value = targetRoom.code;
+            document.getElementById('phong-trangthai').value = targetRoom.status;
+            document.getElementById('phong-phithue').value = targetRoom.price;
+
+            // Trong thực tế sẽ clone data riêng phòng, demo sẽ clone mẫu từ BDS
+            phongEditingData.noiThat = JSON.parse(JSON.stringify(bdsData.noiThat));
+            phongEditingData.tienIch = JSON.parse(JSON.stringify(bdsData.tienIch));
+            phongEditingData.dichVu = JSON.parse(JSON.stringify(bdsData.dichVu));
+
+            navigateTo('them-phong');
+        }
+
+        // XỬ LÝ LƯU PHÒNG VÀO SƠ ĐỒ GRID
+        function commitSavePhong() {
+            const code = document.getElementById('phong-ma').value.trim();
+            const status = document.getElementById('phong-trangthai').value;
+            const price = parseFloat(document.getElementById('phong-phithue').value) || 0;
+
+            if(!code) { showToast("Vui lòng điền mã phòng!"); return; }
+
+            if(phongEditingData.isEditMode && phongEditingData.currentId) {
+                let room = bdsData.phongGrid.find(p => p.id === phongEditingData.currentId);
+                if(room) { room.code = code; room.status = status; room.price = price; }
+                showToast("Đã cập nhật phòng thành công!");
+            } else {
+                bdsData.phongGrid.push({ id: 'p' + (bdsData.phongGrid.length + 1), code, status, price });
+                showToast("Đã thêm phòng mới vào sơ đồ!");
+            }
+
+            navigateTo('them-bds');
+            renderBDSViews();
+        }
+
+        // POPUP DIALOGS CONTROL
+        function openPopup(id) {
+            const el = document.getElementById(id);
+            el.classList.remove('opacity-0', 'pointer-events-none');
+            const inner = el.querySelector('div');
+            if (inner.classList.contains('translate-y-full')) inner.classList.remove('translate-y-full');
+            if (inner.classList.contains('scale-95')) { inner.classList.remove('scale-95'); inner.classList.add('scale-100'); }
+        }
+
+        function closePopup(id) {
+            const el = document.getElementById(id);
+            el.classList.add('opacity-0', 'pointer-events-none');
+            const inner = el.querySelector('div');
+            if (id === 'action-menu-popup') inner.classList.add('translate-y-full');
+            if (id === 'name-dialog' || id === 'service-dialog') { inner.classList.remove('scale-100'); inner.classList.add('scale-95'); }
+        }
+
+        // [<<Name>> action-menu-popup] CONTROL
+        function openActionMenu(mode, groupId, itemName) {
+            currentMenuContext = { mode, groupId, itemName };
+            document.getElementById('action-menu-title').innerText = `Tùy chọn: ${itemName}`;
+            openPopup('action-menu-popup');
+        }
+
+        function handleActionMenu(action) {
+            closePopup('action-menu-popup');
+            if (!currentMenuContext) return;
+            const { mode, groupId, itemName } = currentMenuContext;
+
+            const parts = mode.split('-'); // e.g., ['bds', 'noithat', 'item']
+            const targetScope = parts[0];   // bds hoặc phong
+            const targetType = parts[1];    // noithat hoặc tienich
+            const pool = targetScope === 'bds' ? bdsData[targetType === 'noithat' ? 'noiThat' : 'tienIch'] : phongEditingData[targetType === 'noithat' ? 'noiThat' : 'tienIch'];
+
+            if (action === 'edit') {
+                openNameDialog(`${targetScope}-${targetType}-item-edit`, 'Sửa tên mục', 'Nhập nhãn chỉnh sửa mới', groupId, itemName);
+            } else if (action === 'delete') {
+                let g = pool.find(group => group.id === groupId);
+                if (g) g.items = g.items.filter(i => i !== itemName);
+                targetScope === 'bds' ? renderBDSViews() : renderPhongViews();
+                showToast("Đã gỡ bỏ thành công.");
+            }
+        }
+
+        // [<<Name>> name-dialog] CONTROL
+        function openNameDialog(actionType, title, desc, targetGroupId = '', currentVal = '') {
+            currentMenuContext = { actionType, targetGroupId, currentVal };
+            document.getElementById('name-dialog-title').innerText = title;
+            document.getElementById('name-dialog-desc').innerText = desc;
+            document.getElementById('name-dialog-input').value = currentVal || '';
+            openPopup('name-dialog');
+        }
+
+        function submitNameDialog() {
+            const inputVal = document.getElementById('name-dialog-input').value.trim();
+            if (!inputVal || !currentMenuContext) return;
+            const { actionType, targetGroupId, currentVal } = currentMenuContext;
+
+            const parts = actionType.split('-'); // ['bds'/'phong', 'noithat'/'tienich', 'nhom'/'item', 'add'/'edit']
+            const scope = parts[0];
+            const type = parts[1] === 'noithat' ? 'noiThat' : 'tienIch';
+            const action = parts[2];
+            const method = parts[3];
+
+            const pool = scope === 'bds' ? bdsData[type] : phongEditingData[type];
+
+            if (action === 'nhom' && method === 'add') {
+                pool.push({ id: `${scope}-g-${Date.now()}`, name: inputVal, items: [] });
+            } else if (action === 'nhom' && method === 'edit') {
+                let g = pool.find(x => x.id === targetGroupId);
+                if (g) g.name = inputVal;
+            } else if (action === 'item' && method === 'add') {
+                let g = pool.find(x => x.id === targetGroupId);
+                if (g) g.items.push(inputVal);
+            } else if (action === 'item' && method === 'edit') {
+                let g = pool.find(x => x.id === targetGroupId);
+                if (g) {
+                    let idx = g.items.indexOf(currentVal);
+                    if (idx !== -1) g.items[idx] = inputVal;
+                }
+            }
+
+            closePopup('name-dialog');
+            scope === 'bds' ? renderBDSViews() : renderPhongViews();
+            showToast("Dữ liệu danh sách cập nhật.");
+        }
+
+        // [<<Name>> service-dialog] CONTROL
+        function setServiceTypeUI(type) {
+            selectedServiceType = type;
+            const fixedBtn = document.getElementById('btn-type-fixed');
+            const usageBtn = document.getElementById('btn-type-usage');
+            const usageBlock = document.getElementById('service-usage-block');
+
+            if (type === 'Cố định') {
+                fixedBtn.className = "h-9 text-small font-medium border rounded-input custom-transition bg-primary text-white border-primary";
+                usageBtn.className = "h-9 text-small font-medium border rounded-input custom-transition bg-white text-textSecondary border-border";
+                usageBlock.classList.add('hidden');
+            } else {
+                usageBtn.className = "h-9 text-small font-medium border rounded-input custom-transition bg-primary text-white border-primary";
+                fixedBtn.className = "h-9 text-small font-medium border rounded-input custom-transition bg-white text-textSecondary border-border";
+                usageBlock.classList.remove('hidden');
+            }
+        }
+
+        function openServiceDialog(serviceId = null, scope = 'bds') {
+            activeScope = scope;
+            currentMenuContext = { serviceId };
+            const pool = scope === 'bds' ? bdsData.dichVu : phongEditingData.dichVu;
+
+            if (serviceId) {
+                const s = pool.find(x => x.id === serviceId);
+                document.getElementById('service-dialog-title').innerText = "Sửa dịch vụ";
+                document.getElementById('service-name').value = s.name;
+                document.getElementById('service-price').value = s.price;
+                document.getElementById('service-unit').value = s.unit;
+                document.getElementById('service-cycle').value = s.cycle;
+                setServiceTypeUI(s.type);
+                if(s.type === 'Theo mức sử dụng') document.getElementById('service-initial-index').value = s.initialIndex || 0;
+            } else {
+                document.getElementById('service-dialog-title').innerText = "Thêm dịch vụ mới";
+                document.getElementById('service-name').value = "";
+                document.getElementById('service-price').value = "";
+                document.getElementById('service-unit').value = "";
+                document.getElementById('service-cycle').value = "Tháng";
+                setServiceTypeUI('Cố định');
+            }
+            openPopup('service-dialog');
+        }
+
+        function submitServiceDialog() {
+            const name = document.getElementById('service-name').value.trim();
+            const price = parseFloat(document.getElementById('service-price').value) || 0;
+            const unit = document.getElementById('service-unit').value.trim();
+            const cycle = document.getElementById('service-cycle').value;
+            const pool = activeScope === 'bds' ? bdsData.dichVu : phongEditingData.dichVu;
+
+            if (!name || !unit) { showToast("Vui lòng nhập đủ thông tin dịch vụ!"); return; }
+
+            let initialIndex = 0;
+            if (selectedServiceType === 'Theo mức sử dụng') {
+                initialIndex = parseFloat(document.getElementById('service-initial-index').value) || 0;
+            }
+
+            if (currentMenuContext && currentMenuContext.serviceId) {
+                let s = pool.find(x => x.id === currentMenuContext.serviceId);
+                if (s) { Object.assign(s, { name, price, unit, cycle, type: selectedServiceType, initialIndex }); }
+            } else {
+                pool.push({ id: `srv-${Date.now()}`, name, price, unit, cycle, type: selectedServiceType, initialIndex });
+            }
+
+            closePopup('service-dialog');
+            activeScope === 'bds' ? renderBDSViews() : renderPhongViews();
+            showToast("Đã cập nhật biểu phí dịch vụ.");
+        }
+
+        // XÁC NHẬN TẠO BDS
+        function handleCreateBDS() {
+            const ma = document.getElementById('bds-ma').value.trim();
+            if(!ma) { showToast("Vui lòng nhập mã bất động sản!"); return; }
+            showToast("Đã tạo bất động sản thành công!");
+            setTimeout(() => parent.switchScreen('home'), 800);
+        }
+
+        // UTILS
+        function useGPS() {
+            showToast("Đang thu thập tọa độ vệ tinh GPS...");
+            setTimeout(() => {
+                document.getElementById('bds-diachi').value = "62 Nguyễn Gia Trí";
+                document.getElementById('bds-tinh').value = "Hồ Chí Minh";
+                updateDistricts();
+                showToast("Đã điền thông tin vị trí hiện tại!");
+            }, 600);
+        }
+
+        function updateDistricts() {
+            const tinh = document.getElementById('bds-tinh').value;
+            const quan = document.getElementById('bds-quan');
+            quan.innerHTML = tinh === "Hồ Chí Minh" 
+                ? '<option value="Quận 1">Quận 1</option><option value="Bình Thạnh" selected>Bình Thạnh</option>'
+                : '<option value="Thủ Dầu Một">Thủ Dầu Một</option><option value="Pleiku">Pleiku</option>';
+        }
+
+        function triggerUpload() { showToast("Đang mở thư viện ảnh..."); }
+        function showToast(m) {
+            const t = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = m;
+            t.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => t.classList.add('opacity-0', 'pointer-events-none'), 2000);
+        }
+    </script>
+</body>
+</html>

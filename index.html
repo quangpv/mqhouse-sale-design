@@ -145,6 +145,9 @@
                         <button onclick="switchScreen('myProperties')" id="btn-myProperties" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
                             <i data-lucide="building-2" class="w-4 h-4"></i> Bất động sản của tôi
                         </button>
+                        <button onclick="switchScreen('addProperty')" id="btn-addProperty" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-body font-medium text-textSecondary hover:text-textPrimary hover:bg-background transition-all duration-150">
+                            <i data-lucide="plus-circle" class="w-4 h-4"></i> Thêm bất động sản
+                        </button>
                     </div>
                 </div>
             </div>
@@ -235,6 +238,7 @@
             roomDetails: 'room-detail.html',
             catalog: 'catalog.html',
             userInfo: 'user-info.html',
+            addProperty: 'add-property.html',
         };
 
         function switchScreen(screenKey) {

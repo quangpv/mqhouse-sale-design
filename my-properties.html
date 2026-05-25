@@ -76,7 +76,7 @@
                         class="w-full pl-9 pr-4 py-2 bg-surface border border-border rounded-input text-body text-textPrimary placeholder:text-textSecondary focus:outline-none focus:border-primary transition-colors duration-150"
                     >
                 </div>
-                <button id="btn-create-top" onclick="openBottomSheet()" class="bg-primary text-surface p-2 rounded-button hover:bg-blue-700 transition-colors duration-150 flex items-center justify-center shadow-soft">
+                <button id="btn-create-top" onclick="parent.switchScreen('addProperty')" class="bg-primary text-surface p-2 rounded-button hover:bg-blue-700 transition-colors duration-150 flex items-center justify-center shadow-soft">
                     <i data-lucide="plus" class="w-5 h-5"></i>
                 </button>
             </div>
@@ -283,10 +283,10 @@
                             <i data-lucide="folder-open" class="w-5 h-5"></i>
                         </div>
                         <p class="text-body text-textSecondary max-w-[200px] mx-auto">Chưa có bất động sản nào, vui lòng tạo mới</p>
-                        <button onclick="openBottomSheet()" class="inline-flex items-center gap-2 bg-primary text-surface px-4 py-2 rounded-button font-medium text-body transition-colors duration-150 hover:bg-blue-700 shadow-soft">
-                            <i data-lucide="plus" class="w-4 h-4"></i>
-                            Đăng tin ngay
-                        </button>
+                            <button onclick="parent.switchScreen('addProperty')" class="inline-flex items-center gap-2 bg-primary text-surface px-4 py-2 rounded-button font-medium text-body transition-colors duration-150 hover:bg-blue-700 shadow-soft">
+                                <i data-lucide="plus" class="w-4 h-4"></i>
+                                Đăng tin ngay
+                            </button>
                     </div>
                 `;
                 lucide.createIcons();
