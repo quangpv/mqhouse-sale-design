@@ -237,6 +237,29 @@
                         </div>
                     </div>
                 </div>
+                <!-- Diện tích -->
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="text-[14px] font-semibold text-textPrimary">Diện tích (m²)</h3>
+                        <span class="text-[12px] text-primary font-medium" id="lblDetailAreaRange">0 - 200 m²</span>
+                    </div>
+                    <div class="relative w-full h-6 mt-4 mb-2 flex items-center">
+                        <div class="absolute left-0 right-0 h-1.5 bg-slate-200 rounded-full"></div>
+                        <div id="detailAreaTrack" class="absolute h-1.5 bg-primary rounded-full" style="left: 0%; right: 0%;"></div>
+                        <input type="range" id="detailAreaSliderMin" min="0" max="200" value="0" oninput="syncAreaSliders('min')" class="absolute pointer-events-none appearance-none w-full bg-transparent top-0 h-full z-30">
+                        <input type="range" id="detailAreaSliderMax" min="0" max="200" value="200" oninput="syncAreaSliders('max')" class="absolute pointer-events-none appearance-none w-full bg-transparent top-0 h-full z-30">
+                    </div>
+                    <div class="flex items-center gap-3 mt-4">
+                        <div class="flex-1">
+                            <label class="text-[11px] text-textSecondary block mb-1">Từ (Min)</label>
+                            <input type="number" id="detailAreaInputMin" value="0" min="0" max="200" oninput="syncAreaInputs('min')" class="w-full px-3 py-1.5 border border-border text-[13px] rounded-input focus:outline-none focus:border-primary">
+                        </div>
+                        <div class="flex-1">
+                            <label class="text-[11px] text-textSecondary block mb-1">Đến (Max)</label>
+                            <input type="number" id="detailAreaInputMax" value="200" min="0" max="200" oninput="syncAreaInputs('max')" class="w-full px-3 py-1.5 border border-border text-[13px] rounded-input focus:outline-none focus:border-primary">
+                        </div>
+                    </div>
+                </div>
                 <!-- Tiện ích tích hợp -->
                 <div>
                     <h3 class="text-[14px] font-semibold text-textPrimary mb-2">Tiện ích cơ bản</h3>
@@ -335,6 +358,7 @@
                 address: "123 Nguyễn Thái Học, Phường 12, Quận Bình Thạnh, TP.HCM",
                 image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80",
                 amenities: ["Hồ bơi", "Phòng gym", "Thang máy", "Balcony", "Cửa sổ", "Cửa sổ, ban công(thật, giả)", "Thang bộ/Thang máy"],
+                area: "30m²",
                 lat: 10.795,
                 lng: 106.708
             },
@@ -349,6 +373,7 @@
                 address: "45/12 Xô Viết Nghệ Tĩnh, Phường 25, Quận Bình Thạnh, TP.HCM",
                 image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80",
                 amenities: ["Bãi đậu xe", "Bảo vệ", "Cửa sổ", "Thang bộ/Thang máy"],
+                area: "25m²",
                 lat: 10.810,
                 lng: 106.719
             },
@@ -363,6 +388,7 @@
                 address: "210 Lê Quang Định, Phường 14, Quận Bình Thạnh, TP.HCM",
                 image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=400&q=80",
                 amenities: ["Hồ bơi", "Bãi đậu xe", "Thang máy", "Bảo vệ", "Lễ tân 24/7", "Dọn phòng", "Thang bộ/Thang máy"],
+                area: "40m²",
                 lat: 10.802,
                 lng: 106.698
             },
@@ -377,6 +403,7 @@
                 address: "88 Nguyễn Văn Thương, Phường 25, Quận Bình Thạnh, TP.HCM",
                 image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400&q=80",
                 amenities: ["Bãi đậu xe", "Thang máy", "Balcony", "Cửa sổ", "Nuôi Pet", "Cửa sổ, ban công(thật, giả)", "Thang bộ/Thang máy"],
+                area: "30m²",
                 lat: 10.815,
                 lng: 106.722
             },
@@ -391,6 +418,7 @@
                 address: "342 Bạch Đằng, Phường 14, Quận Bình Thạnh, TP.HCM",
                 image: "https://images.unsplash.com/photo-1616046229478-9901c5536a45?auto=format&fit=crop&w=400&q=80",
                 amenities: ["Bãi đậu xe", "Cửa sổ", "Cửa sổ (giếng trời, ngoài trời)"],
+                area: "18m²",
                 lat: 10.798,
                 lng: 106.725
             },
@@ -405,6 +433,7 @@
                 address: "561A Điện Biên Phủ, Phường 25, Quận Bình Thạnh, TP.HCM",
                 image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80",
                 amenities: ["Hồ bơi", "Phòng gym", "Bãi đậu xe", "Thang máy", "Bảo vệ", "Lễ tân 24/7", "Balcony", "Cửa sổ", "Dọn phòng", "Cửa sổ, ban công(thật, giả)", "Thang bộ/Thang máy"],
+                area: "95m²",
                 lat: 10.805,
                 lng: 106.710
             }
@@ -413,7 +442,7 @@
         const AMENITIES_BASIC = ["Hồ bơi", "Phòng gym", "Bãi đậu xe", "Thang máy", "Bảo vệ", "Lễ tân 24/7", "Balcony", "Cửa sổ", "Dọn phòng", "Nuôi Pet", "Cửa sổ (giếng trời, ngoài trời)"];
         const AMENITIES_FURNITURE = ["Cửa sổ, ban công(thật, giả)", "Thang bộ/Thang máy"];
 
-        let currentFilters = { status: ["Còn hàng"], type: [], propertyType: [], priceMin: 0, priceMax: 100, amenities: [] };
+        let currentFilters = { status: ["Còn hàng"], type: [], propertyType: [], priceMin: 0, priceMax: 100, areaMin: 0, areaMax: 200, amenities: [] };
         let isSheetOpen = false; let selectedPropertyId = null;
         let map; let googleMarkers = []; let MapMarkerOverlay;
 
@@ -508,6 +537,28 @@
             syncFiltersToUI();
         }
 
+        function syncAreaSliders(type) {
+            const minSlider = document.getElementById('detailAreaSliderMin');
+            const maxSlider = document.getElementById('detailAreaSliderMax');
+            let minVal = parseInt(minSlider.value);
+            let maxVal = parseInt(maxSlider.value);
+            if (maxVal - minVal < 0) { if (type === 'min') minSlider.value = maxVal; else maxSlider.value = minVal; }
+            currentFilters.areaMin = parseInt(minSlider.value);
+            currentFilters.areaMax = parseInt(maxSlider.value);
+            syncFiltersToUI();
+        }
+
+        function syncAreaInputs(type) {
+            const minInput = document.getElementById('detailAreaInputMin');
+            const maxInput = document.getElementById('detailAreaInputMax');
+            let minVal = parseInt(minInput.value) || 0;
+            let maxVal = parseInt(maxInput.value) || 0;
+            if (minVal < 0) minVal = 0; if (minVal > 200) minVal = 200; if (maxVal < 0) maxVal = 0; if (maxVal > 200) maxVal = 200;
+            if (type === 'min' && minVal > maxVal) minVal = maxVal; if (type === 'max' && maxVal < minVal) maxVal = minVal;
+            currentFilters.areaMin = minVal; currentFilters.areaMax = maxVal;
+            syncFiltersToUI();
+        }
+
         function syncSliders(prefix, type) {
             const minSlider = document.getElementById(`${prefix}SliderMin`); const maxSlider = document.getElementById(`${prefix}SliderMax`);
             let minVal = parseInt(minSlider.value); let maxVal = parseInt(maxSlider.value);
@@ -545,6 +596,14 @@
             });
             document.getElementById("lblDetailPriceRange").innerText = `${currentFilters.priceMin} - ${currentFilters.priceMax} Tr`;
             document.getElementById("lblPriceRangeDisplay").innerText = `${currentFilters.priceMin} - ${currentFilters.priceMax} Triệu/tháng`;
+            document.getElementById('detailAreaSliderMin').value = currentFilters.areaMin;
+            document.getElementById('detailAreaSliderMax').value = currentFilters.areaMax;
+            document.getElementById('detailAreaInputMin').value = currentFilters.areaMin;
+            document.getElementById('detailAreaInputMax').value = currentFilters.areaMax;
+            const areaTrack = document.getElementById('detailAreaTrack');
+            areaTrack.style.left = (currentFilters.areaMin / 200 * 100) + '%';
+            areaTrack.style.right = (100 - currentFilters.areaMax / 200 * 100) + '%';
+            document.getElementById("lblDetailAreaRange").innerText = `${currentFilters.areaMin} - ${currentFilters.areaMax} m²`;
             ["detailBasicAmenities", "detailFurnitureAmenities", "quickBasicAmenities", "quickFurnitureAmenities"].forEach(id => {
                 const pool = id.includes("Basic") ? AMENITIES_BASIC : AMENITIES_FURNITURE;
                 pool.forEach(item => {
@@ -555,7 +614,7 @@
         }
 
         function resetFilters() {
-            currentFilters = { status: [], type: [], propertyType: [], priceMin: 0, priceMax: 100, amenities: [] };
+            currentFilters = { status: [], type: [], propertyType: [], priceMin: 0, priceMax: 100, areaMin: 0, areaMax: 200, amenities: [] };
             document.getElementById("labelStatus").innerText = "Trạng thái";
             document.getElementById("labelType").innerText = "Loại phòng";
             document.getElementById("labelPropertyType").innerText = "Loại hình BDS";
@@ -572,6 +631,8 @@
                 if (currentFilters.type.length > 0 && !currentFilters.type.includes(item.roomType)) return false;
                 if (currentFilters.propertyType.length > 0 && !currentFilters.propertyType.includes(item.type)) return false;
                 if (item.price < currentFilters.priceMin || item.price > currentFilters.priceMax) return false;
+                const itemArea = parseInt(item.area) || 0;
+                if (itemArea < currentFilters.areaMin || itemArea > currentFilters.areaMax) return false;
                 if (currentFilters.amenities.length > 0 && !currentFilters.amenities.every(a => item.amenities.includes(a))) return false;
                 return true;
             });

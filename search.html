@@ -212,6 +212,29 @@
               </div>
             </div>
           </div>
+          <!-- Diện tích -->
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <h3 class="text-[14px] font-semibold text-textPrimary">Diện tích (m²)</h3>
+              <span class="text-[12px] text-primary font-medium" id="filterAreaLabel">0 - 200 m²</span>
+            </div>
+            <div class="relative w-full h-6 mt-4 mb-2 flex items-center">
+              <div class="absolute left-0 right-0 h-1.5 bg-slate-200 rounded-full"></div>
+              <div id="filterAreaTrack" class="absolute h-1.5 bg-primary rounded-full" style="left: 0%; right: 0%;"></div>
+              <input type="range" id="filterAreaMin" min="0" max="200" value="0" oninput="syncFilterArea()" class="absolute pointer-events-none appearance-none w-full bg-transparent top-0 h-full z-30">
+              <input type="range" id="filterAreaMax" min="0" max="200" value="200" oninput="syncFilterArea()" class="absolute pointer-events-none appearance-none w-full bg-transparent top-0 h-full z-30">
+            </div>
+            <div class="flex items-center gap-3 mt-4">
+              <div class="flex-1">
+                <label class="text-[11px] text-textSecondary block mb-1">Từ (Min)</label>
+                <input type="number" id="filterAreaInputMin" value="0" min="0" max="200" oninput="syncFilterAreaInput('min')" class="w-full px-3 py-1.5 border border-border text-[13px] rounded-input focus:outline-none focus:border-primary">
+              </div>
+              <div class="flex-1">
+                <label class="text-[11px] text-textSecondary block mb-1">Đến (Max)</label>
+                <input type="number" id="filterAreaInputMax" value="200" min="0" max="200" oninput="syncFilterAreaInput('max')" class="w-full px-3 py-1.5 border border-border text-[13px] rounded-input focus:outline-none focus:border-primary">
+              </div>
+            </div>
+          </div>
           <div>
             <h3 class="text-[14px] font-semibold text-textPrimary mb-2">Tiện ích cơ bản</h3>
             <div class="flex flex-wrap gap-1.5" id="filterBasicAmenities"></div>
@@ -268,7 +291,7 @@
         lucide.createIcons();
     </script>
     <script>
-        let filterState = { status: [], type: [], propertyType: [], priceMin: 0, priceMax: 100, amenities: [] };
+        let filterState = { status: [], type: [], propertyType: [], priceMin: 0, priceMax: 100, areaMin: 0, areaMax: 200, amenities: [] };
 
         const AMENITIES_BASIC = ["Hồ bơi", "Phòng gym", "Bãi đậu xe", "Thang máy", "Bảo vệ", "Lễ tân 24/7", "Balcony", "Cửa sổ", "Dọn phòng", "Nuôi Pet", "Cửa sổ (giếng trời, ngoài trời)"];
         const AMENITIES_FURNITURE = ["Cửa sổ, ban công(thật, giả)", "Thang bộ/Thang máy"];
@@ -385,14 +408,51 @@
             track.style.right = (100 - filterState.priceMax) + '%';
         }
 
+        function syncFilterArea() {
+            const min = parseInt(document.getElementById('filterAreaMin').value);
+            const max = parseInt(document.getElementById('filterAreaMax').value);
+            if (max - min < 0) return;
+            filterState.areaMin = min;
+            filterState.areaMax = max;
+            syncFilterAreaUI();
+        }
+
+        function syncFilterAreaInput(type) {
+            const minInput = document.getElementById('filterAreaInputMin');
+            const maxInput = document.getElementById('filterAreaInputMax');
+            let minVal = parseInt(minInput.value) || 0;
+            let maxVal = parseInt(maxInput.value) || 0;
+            if (minVal < 0) minVal = 0;
+            if (minVal > 200) minVal = 200;
+            if (maxVal < 0) maxVal = 0;
+            if (maxVal > 200) maxVal = 200;
+            if (type === 'min' && minVal > maxVal) minVal = maxVal;
+            if (type === 'max' && maxVal < minVal) maxVal = minVal;
+            filterState.areaMin = minVal;
+            filterState.areaMax = maxVal;
+            syncFilterAreaUI();
+        }
+
+        function syncFilterAreaUI() {
+            document.getElementById('filterAreaMin').value = filterState.areaMin;
+            document.getElementById('filterAreaMax').value = filterState.areaMax;
+            document.getElementById('filterAreaInputMin').value = filterState.areaMin;
+            document.getElementById('filterAreaInputMax').value = filterState.areaMax;
+            document.getElementById('filterAreaLabel').innerText = `${filterState.areaMin} - ${filterState.areaMax} m²`;
+            const track = document.getElementById('filterAreaTrack');
+            track.style.left = (filterState.areaMin / 200 * 100) + '%';
+            track.style.right = (100 - filterState.areaMax / 200 * 100) + '%';
+        }
+
         function resetFilterSheet() {
-            filterState = { status: [], type: [], propertyType: [], priceMin: 0, priceMax: 100, amenities: [] };
+            filterState = { status: [], type: [], propertyType: [], priceMin: 0, priceMax: 100, areaMin: 0, areaMax: 200, amenities: [] };
             document.getElementById('searchLabelStatus').innerText = 'Trạng thái';
             document.getElementById('searchLabelType').innerText = 'Loại phòng';
             document.getElementById('searchLabelPropertyType').innerText = 'Loại hình BDS';
             document.getElementById('searchLabelPrice').innerText = 'Giá thuê';
             renderFilterChips();
             syncFilterPriceUI();
+            syncFilterAreaUI();
         }
 
         function applyFilterSheet() {
