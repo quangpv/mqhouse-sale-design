@@ -102,6 +102,29 @@
         </p>
       </div>
 
+      <!-- Rooms Summary → opens bottom sheet -->
+      <div onclick="openRoomsSheet()" class="p-4 border-b border-borderClr cursor-pointer active:bg-bgMain/50 transition-colors">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-small font-semibold text-textSecondary uppercase tracking-wider">Thông tin phòng</h3>
+          <div class="flex items-center gap-1 text-primary">
+            <span class="text-body font-medium" id="rooms-summary-count">50 phòng</span>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2" id="rooms-summary-chips">
+        </div>
+        <div onclick="event.stopPropagation()">
+          <p class="text-small font-medium text-textPrimary mt-3 mb-2">Loại phòng:</p>
+          <div class="flex flex-wrap gap-2" id="rooms-type-chips">
+          </div>
+        </div>
+        <div onclick="event.stopPropagation()">
+          <p class="text-small font-medium text-textPrimary mt-3 mb-2">Diện tích:</p>
+          <div class="flex flex-wrap gap-2" id="rooms-area-chips">
+          </div>
+        </div>
+      </div>
+
       <!-- Service Charges Badge List -->
       <div class="p-4 border-b border-borderClr">
         <h3 class="text-small font-semibold text-textSecondary uppercase tracking-wider mb-3">Phí dịch vụ</h3>
@@ -149,26 +172,6 @@
         </div>
       </div>
 
-      <!-- Interactive Rooms Grid Layout -->
-      <div class="p-4 border-b border-borderClr">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-h3 text-textPrimary">Sơ đồ phòng</h3>
-          <div class="flex items-center gap-2">
-            <button onclick="parent.switchScreen('addProperty')" class="w-8 h-8 flex items-center justify-center bg-primary text-surface rounded-full hover:bg-primary/90 active:scale-95 transition-all">
-              <i data-lucide="plus" class="w-4 h-4"></i>
-            </button>
-            <div onclick="toggleRoomsGrid()" class="flex items-center gap-2 cursor-pointer select-none">
-              <span class="text-small text-textSecondary" id="active-units-label">6 phòng</span>
-              <i data-lucide="chevron-down" id="rooms-chevron" class="w-4 h-4 text-textSecondary transition-transform duration-200"></i>
-            </div>
-          </div>
-        </div>
-        
-        <div class="grid grid-cols-3 gap-2.5" id="rooms-matrix-display">
-          <!-- Populated dynamic item cards -->
-        </div>
-      </div>
-
       <!-- Contact Layer -->
       <div class="p-4">
         <h3 class="text-small font-semibold text-textSecondary uppercase tracking-wider mb-3">Thông tin liên hệ</h3>
@@ -191,8 +194,12 @@
     </div>
 
     <!-- Persistent Bottom Control Footer -->
-    <div id="bottom-action-bar" class="p-4 bg-surface border-t border-borderClr shadow-md">
-      <button onclick="openApproveDialog()" class="w-full bg-primary text-surface py-3.5 rounded-btn font-semibold text-body shadow-soft hover:bg-primary/90 active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+    <div id="bottom-action-bar" class="p-4 bg-surface border-t border-borderClr shadow-md flex gap-3 items-stretch">
+      <button onclick="openRoomsSheet()" class="flex-1 bg-bgMain border border-borderClr rounded-btn py-3 flex items-center justify-center gap-2 hover:bg-borderClr/30 active:scale-[0.98] transition-all">
+        <i data-lucide="layout-dashboard" class="w-5 h-5 text-textSecondary"></i>
+        <span class="text-body font-medium text-textSecondary">Sơ đồ phòng</span>
+      </button>
+      <button id="approve-bottom-btn" onclick="openApproveDialog()" class="flex-1 bg-primary text-surface rounded-btn py-3 flex items-center justify-center gap-2 font-semibold text-body shadow-soft hover:bg-primary/90 active:scale-[0.98] transition-all">
         <i data-lucide="check-circle" class="w-4 h-4"></i> Duyệt
       </button>
     </div>
@@ -271,10 +278,34 @@
         <!-- Sticky Bottom: actions -->
         <div class="shrink-0 p-6 border-t border-borderClr">
           <div class="flex gap-3">
-            <button onclick="dismissActionSheet()" class="flex-1 bg-bgMain text-textPrimary border border-borderClr py-3 rounded-btn text-body font-medium hover:bg-borderClr/50 transition-colors">Hủy</button>
+            <button onclick="dismissActionSheet(true)" class="flex-1 bg-bgMain text-textPrimary border border-borderClr py-3 rounded-btn text-body font-medium hover:bg-borderClr/50 transition-colors">Hủy</button>
             <button onclick="commitRoomStateModification()" class="flex-1 bg-primary text-surface py-3 rounded-btn text-body font-semibold shadow-soft hover:bg-primary/90 transition-colors">Lưu thay đổi</button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Rooms Overview Bottom Sheet -->
+    <div id="rooms-overview-sheet" class="fixed inset-0 bg-textPrimary/40 z-30 hidden transition-opacity duration-200 opacity-0 pointer-events-none">
+      <div class="absolute bottom-0 left-0 right-0 bg-surface rounded-t-modal shadow-xl transition-transform duration-200 translate-y-full max-h-[85vh] flex flex-col">
+
+        <!-- Sticky Top -->
+        <div class="shrink-0 pt-4 pb-2 px-6">
+          <div class="w-12 h-1 bg-borderClr rounded-full mx-auto mb-3"></div>
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-h3 text-textPrimary">Thông tin phòng</h2>
+            <span class="text-body font-medium text-textSecondary" id="sheet-room-count"></span>
+          </div>
+          <div class="flex flex-wrap gap-2" id="sheet-filter-chips">
+          </div>
+        </div>
+
+        <!-- Scrollable Room List -->
+        <div class="flex-1 overflow-y-auto px-6 pb-4">
+          <div class="space-y-2" id="sheet-room-list">
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -302,28 +333,42 @@
     ];
     let activeSlideIndex = 0;
 
-    // Fully hardcoded compliant state records
-    let datasetRooms = [
-      { id: "P.101", status: "Đang trống", price: "7.200.000" },
-      { id: "P.102", status: "Đã cọc", price: "7.500.000" },
-      { id: "P.201", status: "Đã cho thuê", price: "7.200.000" },
-      { id: "P.202", status: "Sắp trống", price: "7.800.000" },
-      { id: "P.301", status: "Đang trống", price: "8.500.000" },
-      { id: "P.302", status: "Đã cho thuê", price: "8.200.000" }
-    ];
+    function generateMockRooms(count) {
+      const floors = Math.ceil(count / 10);
+      const roomTypes = ['Studio', '1 Phòng ngủ', '2 Phòng ngủ', '3 Phòng ngủ'];
+      const rooms = [];
+      let n = 1;
+      for (let f = 1; f <= floors; f++) {
+        for (let r = 1; r <= 10 && n <= count; r++, n++) {
+          const id = `P.${f}${String(r).padStart(2, '0')}`;
+          const base = 7 + Math.floor(Math.random() * 3);
+          const tail = String(Math.floor(Math.random() * 500) + 200).padStart(3, '0');
+          const price = `${base}.${tail}.000`;
+          const rand = Math.random();
+          let status;
+          if (rand < 0.16) status = 'Đang trống';
+          else if (rand < 0.26) status = 'Đã cọc';
+          else if (rand < 0.92) status = 'Đã cho thuê';
+          else status = 'Sắp trống';
+          const areaSizes = ['20m²', '25m²', '30m²', '35m²', '40m²', '45m²', '50m²'];
+          rooms.push({ id, floor: f, status, price, roomType: roomTypes[Math.floor(Math.random() * 4)], area: areaSizes[Math.floor(Math.random() * areaSizes.length)] });
+        }
+      }
+      return rooms;
+    }
 
+    let datasetRooms = generateMockRooms(50);
     let focusEditingRoomId = null;
-    let roomsExpanded = true;
     let propertyApproved = false;
+    let sheetFilter = null;
 
     function initializeApplication() {
       lucide.createIcons();
-      renderAppMatrixGrid();
       shiftActiveSlide(0);
       updatePropertyStatusBadge();
       updateBottomBar();
+      renderRoomSummary();
 
-      // Customer section: radio toggle
       document.getElementsByName('modalRoomStatusRadio').forEach(radio => {
         radio.addEventListener('change', () => {
           const needsCustomer = radio.value === 'Đã cọc' || radio.value === 'Đã cho thuê';
@@ -331,7 +376,6 @@
         });
       });
 
-      // Customer section: image picker
       document.getElementById('customer-image-preview').addEventListener('click', () => {
         document.getElementById('customer-image-input').click();
       });
@@ -403,8 +447,19 @@
     }
 
     function updateBottomBar() {
-      const bar = document.getElementById('bottom-action-bar');
-      bar.classList.toggle('hidden', propertyApproved);
+      const btn = document.getElementById('approve-bottom-btn');
+      if (propertyApproved) {
+        const hasVacant = datasetRooms.some(r => r.status === 'Đang trống');
+        btn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Đã duyệt`;
+        btn.className = `flex-1 rounded-btn py-3 flex items-center justify-center gap-2 font-semibold text-body transition-all ${hasVacant ? 'bg-success/10 text-success border border-success/20' : 'bg-textSecondary/10 text-textSecondary border border-textSecondary/20'}`;
+        btn.onclick = null;
+        setTimeout(() => lucide.createIcons(), 10);
+      } else {
+        btn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Duyệt`;
+        btn.className = 'flex-1 bg-primary text-surface rounded-btn py-3 flex items-center justify-center gap-2 font-semibold text-body shadow-soft hover:bg-primary/90 active:scale-[0.98] transition-all';
+        btn.onclick = openApproveDialog;
+        setTimeout(() => lucide.createIcons(), 10);
+      }
     }
 
     function openApproveDialog() {
@@ -440,44 +495,108 @@
       }
     }
 
-    function renderAppMatrixGrid() {
-      const targetWrap = document.getElementById('rooms-matrix-display');
-      targetWrap.innerHTML = '';
-      
-      datasetRooms.forEach(roomObject => {
-        const statusColor = getStatusColor(roomObject.status);
-        const elementCard = document.createElement('div');
-        elementCard.className = "bg-surface border border-borderClr p-2.5 rounded-card shadow-soft cursor-pointer active:scale-[0.98] transition-all duration-150 aspect-square flex flex-col items-center justify-center text-center";
-        elementCard.onclick = () => exposeQuickActionSheet(roomObject.id);
-        
-        elementCard.innerHTML = `
-          <div class="text-[11px] font-semibold text-textPrimary mb-1">${roomObject.id}</div>
-          <span class="text-[10px] font-medium px-1.5 py-0.5 rounded-md bg-${statusColor}/10 text-${statusColor}">${roomObject.status}</span>
-          <div class="mt-auto pt-1.5">
-            <p class="text-[12px] font-semibold text-primary">${roomObject.price} <span class="text-[10px] font-normal text-textSecondary">đ/th</span></p>
-          </div>
-        `;
-        targetWrap.appendChild(elementCard);
+    function renderRoomSummary() {
+      const chips = document.getElementById('rooms-summary-chips');
+      const countEl = document.getElementById('rooms-summary-count');
+      countEl.innerText = `${datasetRooms.length} phòng`;
+
+      const statuses = ['Đang trống', 'Đã cọc', 'Đã cho thuê', 'Sắp trống'];
+      const counts = {};
+      statuses.forEach(s => counts[s] = datasetRooms.filter(r => r.status === s).length);
+
+      chips.innerHTML = '';
+      statuses.forEach(s => {
+        const color = getStatusColor(s);
+        const chip = document.createElement('span');
+        chip.className = `text-small font-medium px-2.5 py-1 rounded-md bg-${color}/10 text-${color}`;
+        chip.innerText = `${counts[s]} ${s}`;
+        chips.appendChild(chip);
       });
 
-      document.getElementById('active-units-label').innerText = `${datasetRooms.length} phòng`;
+      const addChip = document.createElement('span');
+      addChip.className = 'text-small text-primary px-2.5 py-1 rounded-md border border-dashed border-primary/40 cursor-pointer hover:bg-primary/5 transition-colors flex items-center gap-1';
+      addChip.innerHTML = '<i data-lucide="plus" class="w-3.5 h-3.5"></i> Thêm phòng';
+      addChip.onclick = (e) => { e.stopPropagation(); parent.switchScreen('addProperty'); };
+      chips.appendChild(addChip);
+
+      const typeChips = document.getElementById('rooms-type-chips');
+      const typeCounts = {};
+      datasetRooms.forEach(r => { typeCounts[r.roomType] = (typeCounts[r.roomType] || 0) + 1; });
+      typeChips.innerHTML = '';
+      Object.entries(typeCounts).forEach(([type, count]) => {
+        const chip = document.createElement('span');
+        chip.className = 'text-small text-textSecondary bg-bgMain px-2.5 py-1 rounded-md border border-borderClr';
+        chip.innerText = `${count} ${type}`;
+        typeChips.appendChild(chip);
+      });
+
+      const areaChips = document.getElementById('rooms-area-chips');
+      const uniqueAreas = [...new Set(datasetRooms.map(r => r.area))];
+      areaChips.innerHTML = uniqueAreas.map(a =>
+        `<span class="text-small text-textSecondary bg-bgMain px-2.5 py-1 rounded-md border border-borderClr">${a}</span>`
+      ).join('');
+
+      lucide.createIcons();
     }
 
-    function toggleRoomsGrid() {
-      roomsExpanded = !roomsExpanded;
-      const grid = document.getElementById('rooms-matrix-display');
-      const chevron = document.getElementById('rooms-chevron');
-      const label = document.getElementById('active-units-label');
-      
-      if (roomsExpanded) {
-        grid.classList.remove('hidden');
-        chevron.classList.remove('-rotate-90');
-        label.innerText = `${datasetRooms.length} phòng`;
+    function renderSheetRoomList(filter) {
+      sheetFilter = filter;
+      const list = document.getElementById('sheet-room-list');
+      const sheetTitle = document.querySelector('#rooms-overview-sheet h2');
+      const filtered = filter ? datasetRooms.filter(r => r.status === filter) : datasetRooms;
+
+      if (filter) {
+        sheetTitle.innerText = `Thông tin phòng · ${filter}`;
+        document.getElementById('sheet-room-count').innerText = `${filtered.length} phòng`;
       } else {
-        grid.classList.add('hidden');
-        chevron.classList.add('-rotate-90');
-        label.innerText = `Xem ${datasetRooms.length} phòng`;
+        sheetTitle.innerText = 'Thông tin phòng';
+        document.getElementById('sheet-room-count').innerText = `${datasetRooms.length} phòng`;
       }
+
+      list.innerHTML = '';
+      list.className = 'grid grid-cols-4 gap-2';
+      filtered.forEach(room => {
+        const color = getStatusColor(room.status);
+        const cell = document.createElement('div');
+        cell.className = `flex flex-col items-center justify-center p-2 rounded-card bg-${color}/15 border border-${color}/40 cursor-pointer active:scale-[0.98] transition-all aspect-square`;
+        cell.onclick = () => { dismissRoomsSheet(); setTimeout(() => exposeQuickActionSheet(room.id), 250); };
+        cell.innerHTML = `
+          <span class="text-[13px] font-semibold text-${color}">${room.id}</span>
+          <span class="text-[10px] font-medium text-${color}/70 mt-1">${room.price}</span>
+        `;
+        list.appendChild(cell);
+      });
+
+      const chips = document.getElementById('sheet-filter-chips');
+      const statuses = ['Đang trống', 'Đã cọc', 'Đã cho thuê', 'Sắp trống'];
+      chips.innerHTML = '';
+      statuses.forEach(s => {
+        const color = getStatusColor(s);
+        const active = s === filter;
+        const chip = document.createElement('span');
+        chip.className = `text-small font-medium px-3 py-1.5 rounded-btn cursor-pointer transition-all ${active ? `bg-${color} text-surface` : `bg-${color}/10 text-${color} hover:bg-${color}/20`}`;
+        chip.innerText = s;
+        chip.onclick = (e) => { e.stopPropagation(); renderSheetRoomList(active ? null : s); };
+        chips.appendChild(chip);
+      });
+    }
+
+    function openRoomsSheet() {
+      renderSheetRoomList(sheetFilter);
+      const sheet = document.getElementById('rooms-overview-sheet');
+      sheet.onclick = (e) => { if (e.target === sheet) dismissRoomsSheet(); };
+      sheet.classList.remove('hidden');
+      setTimeout(() => {
+        sheet.classList.remove('opacity-0', 'pointer-events-none');
+        sheet.firstElementChild.classList.remove('translate-y-full');
+      }, 10);
+    }
+
+    function dismissRoomsSheet() {
+      const sheet = document.getElementById('rooms-overview-sheet');
+      sheet.firstElementChild.classList.add('translate-y-full');
+      sheet.classList.add('opacity-0', 'pointer-events-none');
+      setTimeout(() => sheet.classList.add('hidden'), 200);
     }
 
     function exposeQuickActionSheet(roomId) {
@@ -522,11 +641,14 @@
       }, 10);
     }
 
-    function dismissActionSheet() {
+    function dismissActionSheet(returnToRooms) {
       const containerNode = document.getElementById('quick-action-sheet');
       containerNode.firstElementChild.classList.add('translate-y-full');
       containerNode.classList.add('opacity-0', 'pointer-events-none');
-      setTimeout(() => containerNode.classList.add('hidden'), 200);
+      setTimeout(() => {
+        containerNode.classList.add('hidden');
+        if (returnToRooms) openRoomsSheet();
+      }, 200);
     }
 
     function commitRoomStateModification() {
@@ -556,9 +678,9 @@
         return item;
       });
 
-      renderAppMatrixGrid();
+      renderRoomSummary();
       updatePropertyStatusBadge();
-      dismissActionSheet();
+      dismissActionSheet(true);
     }
 
 

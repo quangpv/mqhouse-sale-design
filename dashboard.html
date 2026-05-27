@@ -120,6 +120,53 @@
                 <button onclick="parent.switchScreen('search')" class="px-4 py-2 bg-surface border border-border text-textPrimary text-body font-medium rounded-button shadow-soft hover:border-border whitespace-nowrap transition-colors duration-150" style="margin-right: 16px;">Bình Thạnh</button>
             </div>
 
+            <div class="mx-4 mt-3 rounded-card overflow-hidden relative h-[148px]">
+                <div id="banner-slide-0" onclick="parent.switchScreen('search')" class="absolute inset-0 transition-all duration-500 ease-in-out cursor-pointer bg-gradient-to-r from-primary to-blue-500" style="transform: translateX(0); z-index: 20;">
+                    <div class="absolute inset-0 bg-cover bg-center opacity-20" style="background-image: url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80')"></div>
+                    <div class="relative p-4 flex items-center justify-between">
+                        <div class="space-y-1">
+                            <p class="text-small font-medium text-white/80">Quảng cáo</p>
+                            <h4 class="text-body font-semibold text-white">Dịch vụ đăng tin BĐS chuyên nghiệp</h4>
+                            <span class="inline-block mt-1 px-3 py-1 bg-white/20 rounded-button text-small font-medium text-white">Tìm hiểu thêm</span>
+                        </div>
+                        <div class="w-14 h-14 bg-white/15 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="megaphone" class="w-7 h-7 text-white"></i>
+                        </div>
+                    </div>
+                </div>
+                <div id="banner-slide-1" onclick="parent.switchScreen('search')" class="absolute inset-0 transition-all duration-500 ease-in-out cursor-pointer bg-gradient-to-r from-violet-600 to-indigo-500" style="transform: translateX(100%); z-index: 10;">
+                    <div class="absolute inset-0 bg-cover bg-center opacity-20" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80')"></div>
+                    <div class="relative p-4 flex items-center justify-between">
+                        <div class="space-y-1">
+                            <p class="text-small font-medium text-white/80">Quảng cáo</p>
+                            <h4 class="text-body font-semibold text-white">Cho thuê văn phòng & mặt bằng</h4>
+                            <span class="inline-block mt-1 px-3 py-1 bg-white/20 rounded-button text-small font-medium text-white">Khám phá ngay</span>
+                        </div>
+                        <div class="w-14 h-14 bg-white/15 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="building-2" class="w-7 h-7 text-white"></i>
+                        </div>
+                    </div>
+                </div>
+                <div id="banner-slide-2" onclick="parent.switchScreen('search')" class="absolute inset-0 transition-all duration-500 ease-in-out cursor-pointer bg-gradient-to-r from-emerald-600 to-teal-500" style="transform: translateX(100%); z-index: 10;">
+                    <div class="absolute inset-0 bg-cover bg-center opacity-20" style="background-image: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80')"></div>
+                    <div class="relative p-4 flex items-center justify-between">
+                        <div class="space-y-1">
+                            <p class="text-small font-medium text-white/80">Quảng cáo</p>
+                            <h4 class="text-body font-semibold text-white">Nhà đất giá tốt mỗi ngày</h4>
+                            <span class="inline-block mt-1 px-3 py-1 bg-white/20 rounded-button text-small font-medium text-white">Xem chi tiết</span>
+                        </div>
+                        <div class="w-14 h-14 bg-white/15 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="home" class="w-7 h-7 text-white"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-30">
+                    <button id="banner-dot-0" onclick="goToBannerSlide(0)" class="w-2 h-2 rounded-full bg-white transition-all duration-300"></button>
+                    <button id="banner-dot-1" onclick="goToBannerSlide(1)" class="w-1.5 h-1.5 rounded-full bg-white/60 transition-all duration-300"></button>
+                    <button id="banner-dot-2" onclick="goToBannerSlide(2)" class="w-1.5 h-1.5 rounded-full bg-white/60 transition-all duration-300"></button>
+                </div>
+            </div>
+
             <div class="py-4 space-y-3">
                 <div class="px-4 flex items-center justify-between">
                     <h3 class="text-h3 font-semibold text-textPrimary">Nổi bật</h3>
@@ -282,7 +329,42 @@
 
             // Initialize Lucide icons package properly for runtime injects
             lucide.createIcons();
+
+            // Start banner auto-slide
+            bannerInterval = setInterval(() => goToBannerSlide((currentBannerSlide + 1) % totalBannerSlides), 4000);
         });
+
+        // Banner slider — global for inline onclick
+        let currentBannerSlide = 0;
+        const totalBannerSlides = 3;
+        let bannerInterval;
+
+        function goToBannerSlide(index) {
+            const prev = currentBannerSlide;
+            if (prev === index) return;
+            currentBannerSlide = index;
+
+            const prevEl = document.getElementById(`banner-slide-${prev}`);
+            prevEl.style.transform = 'translateX(-100%)';
+            prevEl.style.zIndex = '10';
+
+            const nextEl = document.getElementById(`banner-slide-${index}`);
+            nextEl.style.transition = 'none';
+            nextEl.style.transform = 'translateX(100%)';
+            nextEl.style.zIndex = '20';
+            nextEl.offsetHeight;
+            nextEl.style.transition = '';
+            nextEl.style.transform = 'translateX(0)';
+
+            document.querySelectorAll('[id^="banner-dot-"]').forEach((dot, i) => {
+                dot.className = i === index
+                    ? 'w-2 h-2 rounded-full bg-white transition-all duration-300'
+                    : 'w-1.5 h-1.5 rounded-full bg-white/60 transition-all duration-300';
+            });
+
+            clearInterval(bannerInterval);
+            bannerInterval = setInterval(() => goToBannerSlide((currentBannerSlide + 1) % totalBannerSlides), 4000);
+        }
     </script>
 </body>
 </html>
