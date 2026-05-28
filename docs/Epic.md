@@ -25,7 +25,7 @@
 | Tìm kiếm | R | R | R | R | R | R |
 | Bản đồ | R | R | R | R | R | R |
 | Quản lý BĐS | CRUD | CRUD+Duyệt | CRUD (KV) | CRUD (của mình) | R | R |
-| Quản lý Phòng | CRUD | CRUD+Duyệt | CRUD (KV) | CRUD (của mình) | R+đổi TT (cần duyệt) | R |
+| Quản lý Phòng | CRUD | CRUD+Duyệt | CRUD (KV)+đổi TT trực tiếp | CRUD (của mình)+đổi TT trực tiếp | R+đổi TT bất kỳ (qua chờ duyệt) | R |
 | Người dùng & Phân quyền | CRUD | CRUD (cấp dưới) | R | R | R | - |
 | Danh mục (Catalog) | CRUD | R | R | R | R | - |
 | Hồ sơ cá nhân | CRUD | CRUD | CRUD | CRUD | CRUD | - |
@@ -407,7 +407,7 @@ Epic 13: Điều hướng & Giao diện ─── phụ thuộc: tất cả epic
 **Priority:** Medium
 
 **Acceptance Criteria:**
-- [ ] Biểu đồ tròn phân loại phòng theo trạng thái (đang trống, đã cọc, đã thuê, sắp trống)
+- [ ] Biểu đồ tròn phân loại phòng theo trạng thái (đang trống, đã cọc, đã thuê, sắp trống, chờ duyệt cọc, chờ duyệt thuê, chờ duyệt sắp trống, chờ duyệt đang trống)
 - [ ] Số liệu tổng số phòng, phòng trống, phòng đã cho thuê
 - [ ] Tỷ lệ lấp đầy (occupancy rate)
 - [ ] Lọc theo BĐS hoặc khu vực
@@ -780,7 +780,13 @@ Epic 13: Điều hướng & Giao diện ─── phụ thuộc: tất cả epic
 - [ ] Bản đồ nhỏ hiển thị vị trí BĐS
 - [ ] Danh sách phòng trực thuộc (grid)
 - [ ] Nút yêu thích, chia sẻ
-- [ ] BĐS hiển thị trạng thái: "Còn phòng" / "Đã cho thuê hết"
+- [ ] BĐS hiển thị trạng thái theo logic:
+    - Chưa duyệt → "Chưa duyệt"
+    - Hết hạn → "Hết hạn"
+    - Đã duyệt:
+        - Có phòng "đang trống" → "Còn trống"
+        - Không có phòng "đang trống" nhưng có phòng "sắp trống" → "Sắp có phòng"
+        - Còn lại → "Hết phòng"
 
 **Technical Tasks:**
 
@@ -1039,7 +1045,7 @@ Epic 13: Điều hướng & Giao diện ─── phụ thuộc: tất cả epic
 - [ ] Gallery hình ảnh phòng
 - [ ] Danh sách nội thất, tiện ích
 - [ ] Danh sách dịch vụ kèm (giá, đơn vị)
-- [ ] Trạng thái phòng hiện tại (đang trống, đã cọc, đã thuê, sắp trống)
+- [ ] Trạng thái phòng hiện tại (đang trống, đã cọc, đã thuê, sắp trống, chờ duyệt cọc, chờ duyệt thuê, chờ duyệt sắp trống, chờ duyệt đang trống)
 - [ ] Nút yêu thích, chia sẻ
 - [ ] Thông tin khách thuê hiện tại (nếu đã thuê)
 
@@ -1117,10 +1123,12 @@ Epic 13: Điều hướng & Giao diện ─── phụ thuộc: tất cả epic
 **Priority:** High
 
 **Acceptance Criteria:**
-- [ ] 4 trạng thái: đang trống, đã cọc, đã thuê, sắp trống
-- [ ] Radio button chọn trạng thái (room-detail.html)
-- [ ] Admin/Manager/HouseHolder/Super Admin đổi trực tiếp không cần duyệt
-- [ ] Sale đổi trạng thái cần Admin/HouseHolder/Manager duyệt
+- [ ] 8 trạng thái: đang trống, đã cọc, đã thuê, sắp trống, chờ duyệt cọc, chờ duyệt thuê, chờ duyệt sắp trống, chờ duyệt đang trống
+- [ ] Radio button / dropdown 8 trạng thái (room-detail.html)
+- [ ] Admin|SuperAdmin|Manager|HouseHolder đổi trực tiếp (bất kỳ → bất kỳ)
+- [ ] Sale đổi X → Y bất kỳ → phòng chuyển sang "chờ duyệt Y", cần duyệt
+- [ ] Duyệt (bởi HouseHolder|Manager|Admin|SuperAdmin) → chuyển "chờ duyệt Y" → "Y"
+- [ ] Từ chối → chuyển về trạng thái cũ
 - [ ] Khi đổi sang "đã cọc" hoặc "đã thuê" → cần nhập thông tin khách
 - [ ] Khi đổi sang "đang trống" → xóa thông tin khách hiện tại
 - [ ] Ghi lại lịch sử thay đổi trạng thái
@@ -1129,44 +1137,50 @@ Epic 13: Điều hướng & Giao diện ─── phụ thuộc: tất cả epic
 
 | Nhóm | Task |
 |------|------|
-| **Database** | Cập nhật trường `trang_thai` trong bảng `phong` |
+| **Database** | Mở rộng enum trạng thái phòng: thêm `chờ duyệt cọc, chờ duyệt thuê, chờ duyệt sắp trống, chờ duyệt đang trống` |
 | **Database** | Bảng `lich_su_trang_thai_phong` (id, phong_id, trang_thai_cu, trang_thai_moi, nguoi_thay_doi, thoi_gian) |
-| **Backend API** | `PUT /api/rooms/:id/status` - đổi trạng thái |
+| **Database** | Bảng `yeu_cau_doi_trang_thai` (id, phong_id, nguoi_yeu_cau, trang_thai_cu, trang_thai_moi, ly_do, trang_thai_duyet, nguoi_duyet, thoi_gian) |
+| **Backend API** | `PUT /api/rooms/:id/status` - đổi trạng thái trực tiếp (Admin|SuperAdmin|Manager|HouseHolder) |
+| **Backend API** | `POST /api/rooms/:id/request-status-change` - Sale gửi yêu cầu đổi trạng thái |
 | **Backend API** | `GET /api/rooms/:id/status-history` - lịch sử |
-| **Frontend UI** | Radio button / dropdown trạng thái |
+| **Backend API** | `GET /api/rooms/:id/request-status` - kiểm tra trạng thái yêu cầu hiện tại |
+| **Frontend UI** | Radio button / dropdown 8 trạng thái |
 | **Frontend UI** | Customer info form (khi đổi sang đã cọc/đã thuê) |
-| **Permission** | Sale → tạo yêu cầu duyệt; Admin → trực tiếp |
-| **Testing** | Test đổi trạng thái từng bước, check lịch sử |
+| **Frontend UI** | Badge màu khác cho trạng thái chờ duyệt |
+| **Permission** | Kiểm tra role: Admin|SuperAdmin|Manager|HouseHolder → trực tiếp; Sale → chờ duyệt |
+| **Testing** | Test đổi trạng thái trực tiếp, qua duyệt, từ chối, check lịch sử |
 
 ---
 
 ## PHONG-06: Duyệt đổi trạng thái phòng (Sale)
 
 - **Tên:** Duyệt yêu cầu đổi trạng thái phòng
-- **Role:** Admin, HouseHolder (chủ phòng), Manager
-- **Mô tả:** As a **Admin/HouseHolder/Manager**, I want **duyệt hoặc từ chối yêu cầu đổi trạng thái phòng từ Sale**, So that **kiểm soát việc thay đổi trạng thái**
+- **Role:** Admin, SuperAdmin, HouseHolder (chủ phòng), Manager (quản lý phòng)
+- **Mô tả:** As a **Admin/SuperAdmin/HouseHolder/Manager**, I want **duyệt hoặc từ chối yêu cầu đổi trạng thái phòng từ Sale**, So that **kiểm soát việc thay đổi trạng thái**
 
 **Priority:** High
 
 **Acceptance Criteria:**
 - [ ] Danh sách yêu cầu đổi trạng thái từ Sale
-- [ ] Hiển thị: phòng, trạng thái yêu cầu, người yêu cầu, thời gian
-- [ ] Nút "Duyệt" / "Từ chối"
-- [ ] Từ chối → nhập lý do
+- [ ] Hiển thị: phòng, trạng thái cũ, trạng thái yêu cầu (chờ duyệt Y), người yêu cầu, thời gian
+- [ ] Nút "Duyệt" → chuyển từ "chờ duyệt Y" → "Y" (cập nhật thông tin khách nếu có)
+- [ ] Nút "Từ chối" → nhập lý do → chuyển về trạng thái cũ
 - [ ] Thông báo cho Sale kết quả duyệt
+- [ ] HouseHolder chỉ duyệt được yêu cầu cho phòng thuộc BĐS của mình
+- [ ] Manager chỉ duyệt được yêu cầu trong khu vực quản lý
 
 **Technical Tasks:**
 
 | Nhóm | Task |
 |------|------|
-| **Database** | Bảng `yeu_cau_doi_trang_thai` (id, phong_id, nguoi_yeu_cau, trang_thai_moi, ly_do, trang_thai_duyet, nguoi_duyet, thoi_gian) |
-| **Backend API** | `GET /api/requests/status-changes` - danh sách yêu cầu |
-| **Backend API** | `PUT /api/requests/status-changes/:id/approve` |
-| **Backend API** | `PUT /api/requests/status-changes/:id/reject` |
-| **Frontend UI** | Danh sách yêu cầu + approve/reject dialog |
-| **Permission** | Admin/HouseHolder/Manager |
+| **Database** | Bảng `yeu_cau_doi_trang_thai` (id, phong_id, nguoi_yeu_cau, trang_thai_cu, trang_thai_moi, ly_do, trang_thai_duyet, nguoi_duyet, thoi_gian) |
+| **Backend API** | `GET /api/requests/status-changes` - danh sách yêu cầu (có filter theo người duyệt) |
+| **Backend API** | `PUT /api/requests/status-changes/:id/approve` - duyệt + cập nhật trạng thái phòng |
+| **Backend API** | `PUT /api/requests/status-changes/:id/reject` - từ chối + lý do |
+| **Frontend UI** | Danh sách yêu cầu + approve/reject dialog + hiển thị trạng thái cũ→mới |
+| **Permission** | Admin|SuperAdmin: tất cả; HouseHolder: phòng BĐS mình; Manager: trong KV |
 | **Notification** | Gửi TB cho Sale khi được duyệt/từ chối |
-| **Testing** | Test gửi yêu cầu, duyệt, từ chối |
+| **Testing** | Test gửi yêu cầu, duyệt thành công, từ chối, kiểm tra quyền duyệt |
 
 ---
 
