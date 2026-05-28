@@ -23,7 +23,7 @@
             <p class="text-xs text-gray-500">Tài liệu dự án</p>
           </div>
         </div>
-        <span class="text-xs text-gray-400 hidden sm:block">13 Epics · 76 Stories</span>
+        <span class="text-xs text-gray-400 hidden sm:block">13 Epics · 76 Câu chuyện</span>
       </div>
     </div>
     <!-- Tabs -->
@@ -37,7 +37,7 @@
 
   <!-- Footer -->
   <footer class="border-t border-gray-200 bg-white py-4 text-center text-xs text-gray-400">
-    MQ Sale Project &middot; 01/06/2026 &ndash; 27/11/2026
+    Dự án MQ Sale &middot; 01/06/2026 &ndash; 27/11/2026
   </footer>
 </div>
 
@@ -50,7 +50,7 @@ const roles = [
   { id:'R01', name:'Super Admin (Root)', desc:'Quản trị viên cao nhất, toàn quyền hệ thống' },
   { id:'R02', name:'Admin', desc:'Quản trị viên cấp công ty' },
   { id:'R03', name:'Manager', desc:'Quản lý khu vực' },
-  { id:'R04', name:'HouseHolder', desc:'Chủ nhà / chủ BĐS' },
+  { id:'R04', name:'HouseHolder', desc:'Chủ nhà / chủ bất động sản' },
   { id:'R05', name:'Sale', desc:'Nhân viên kinh doanh' },
   { id:'R06', name:'Khách hàng', desc:'Người thuê / người xem tin' }
 ]
@@ -58,12 +58,12 @@ const roles = [
 const epicMatrix = {
   headers:['Epic','Super Admin','Admin','Manager','HouseHolder','Sale','Khách hàng'],
   rows:[
-    ['Xác thực & Bảo mật','CRUD','C','C','C','C','C (ĐK)'],
+    ['Xác thực & Bảo mật','CRUD','C','C','C','C','C (đăng ký)'],
     ['Dashboard & Thống kê','R','R','R','R','R','-'],
     ['Tìm kiếm','R','R','R','R','R','R'],
     ['Bản đồ','R','R','R','R','R','R'],
-    ['Quản lý BĐS','CRUD','CRUD+Duyệt','CRUD (KV)','CRUD (của mình)','R','R'],
-    ['Quản lý Phòng','CRUD','CRUD+Duyệt','CRUD (KV)+đổi TT trực tiếp','CRUD (của mình)+đổi TT trực tiếp','R+đổi TT bất kỳ (qua chờ duyệt)','R'],
+    ['Quản lý bất động sản','CRUD','CRUD+Duyệt','CRUD (khu vực)','CRUD (của mình)','R','R'],
+    ['Quản lý Phòng','CRUD','CRUD+Duyệt','CRUD (khu vực)+đổi TT trực tiếp','CRUD (của mình)+đổi TT trực tiếp','R+đổi TT bất kỳ (qua chờ duyệt)','R'],
     ['Người dùng & Phân quyền','CRUD','CRUD (cấp dưới)','R','R','R','-'],
     ['Danh mục (Catalog)','CRUD','R','R','R','R','-'],
     ['Hồ sơ cá nhân','CRUD','CRUD','CRUD','CRUD','CRUD','-'],
@@ -78,55 +78,55 @@ const epics = [
   { id:'AUTH', name:'Xác thực & Bảo mật', desc:'Đảm bảo chỉ người dùng hợp lệ mới truy cập được hệ thống.', dep:'-', phase:1,
     stories:[
       { id:'AUTH-01', name:'Đăng nhập hệ thống', role:'Người dùng', priority:'High', desc:'As a người dùng, tôi muốn đăng nhập bằng tên đăng nhập và mật khẩu để truy cập hệ thống.',
-        ac:['Form đăng nhập: tên đăng nhập, mật khẩu, ghi nhớ','Validate không để trống','Hiển thị lỗi sai tên/MK hoặc tài khoản bị khóa','Đăng nhập thành công → Dashboard','Ghi nhớ đăng nhập, eye toggle','Link "Quên mật khẩu?"'],
-        tasks:[['Database','Bảng nguoi_dung'],['Backend','POST /api/auth/login, logout'],['Backend','JWT middleware'],['Frontend','Màn hình login'],['Validation','Định dạng username, MK ≥6 ký tự']] },
+        ac:['Form đăng nhập: tên đăng nhập, mật khẩu, ghi nhớ','Validate không để trống','Hiển thị lỗi sai tên/mật khẩu hoặc tài khoản bị khóa','Đăng nhập thành công → Dashboard','Ghi nhớ đăng nhập, eye toggle','Link "Quên mật khẩu?"'],
+        tasks:[['Database','Bảng nguoi_dung'],['Backend','POST /api/auth/login, logout'],['Backend','JWT middleware'],['Frontend','Màn hình login'],['Validation','Định dạng username, mật khẩu ≥6 ký tự']] },
       { id:'AUTH-02', name:'Đăng ký tài khoản', role:'Khách hàng, Sale, HouseHolder', priority:'High', desc:'As a người dùng mới, tôi muốn đăng ký tài khoản để sử dụng hệ thống.',
-        ac:['Form: tên ĐN, MK, XN MK, họ tên, email, SĐT','Validate các trường bắt buộc','MK và XN MK khớp nhau','Kiểm tra tên ĐN đã tồn tại','Đăng ký thành công → về màn hình ĐN'],
-        tasks:[['Backend','POST /api/auth/register, check-username'],['Frontend','register.html, strength meter'],['Validation','Email, SĐT, MK']] },
-      { id:'AUTH-03', name:'Quên mật khẩu', role:'Tất cả', priority:'Medium', desc:'As a người quên MK, tôi muốn nhập email/SĐT để nhận OTP.',
-        ac:['Form nhập email/SĐT đã đăng ký','Validate không để trống','Kiểm tra email/SĐT tồn tại','Gửi OTP → chuyển OTP screen','Nút quay lại ĐN'],
+        ac:['Form: tên đăng nhập, mật khẩu, xác nhận mật khẩu, họ tên, email, số điện thoại','Validate các trường bắt buộc','mật khẩu và xác nhận mật khẩu khớp nhau','Kiểm tra tên đăng nhập đã tồn tại','Đăng ký thành công → về màn hình đăng nhập'],
+        tasks:[['Backend','POST /api/auth/register, check-username'],['Frontend','register.html, strength meter'],['Validation','Email, số điện thoại, mật khẩu']] },
+      { id:'AUTH-03', name:'Quên mật khẩu', role:'Tất cả', priority:'Medium', desc:'As a người quên mật khẩu, tôi muốn nhập email/số điện thoại để nhận OTP.',
+        ac:['Form nhập email/số điện thoại đã đăng ký','Validate không để trống','Kiểm tra email/số điện thoại tồn tại','Gửi OTP → chuyển OTP screen','Nút quay lại đăng nhập'],
         tasks:[['Backend','POST /api/auth/forgot-password'],['Frontend','forgot-password.html'],['Notification','Gửi email/SMS OTP']] },
       { id:'AUTH-04', name:'Xác thực OTP', role:'Tất cả', priority:'Medium', desc:'As a người dùng, tôi muốn nhập mã OTP để xác thực danh tính.',
-        ac:['6 ô nhập OTP, auto-focus','Hiển thị email/SĐT dạng ẩn','Validate 6 số, kiểm tra hiệu lực','Gửi lại OTP (countdown 60s)','OTP đúng → chuyển đặt lại MK'],
+        ac:['6 ô nhập OTP, auto-focus','Hiển thị email/số điện thoại dạng ẩn','Validate 6 số, kiểm tra hiệu lực','Gửi lại OTP (countdown 60s)','OTP đúng → chuyển đặt lại mật khẩu'],
         tasks:[['Database','Bảng otp'],['Backend','POST /api/auth/verify-otp, resend-otp'],['Frontend','otp.html, countdown timer']] },
-      { id:'AUTH-05', name:'Đặt lại mật khẩu', role:'Tất cả', priority:'Medium', desc:'As a người đã xác thực OTP, tôi muốn đặt MK mới.',
-        ac:['Form MK mới + XN MK mới','MK ≥6 ký tự, khớp XN','MK mới ≠ MK cũ','Thành công → về ĐN','Vô hiệu token OTP'],
+      { id:'AUTH-05', name:'Đặt lại mật khẩu', role:'Tất cả', priority:'Medium', desc:'As a người đã xác thực OTP, tôi muốn đặt mật khẩu mới.',
+        ac:['Form mật khẩu mới + xác nhận mật khẩu mới','mật khẩu ≥6 ký tự, khớp XN','mật khẩu mới ≠ mật khẩu cũ','Thành công → về đăng nhập','Vô hiệu token OTP'],
         tasks:[['Backend','POST /api/auth/reset-password'],['Frontend','reset-password.html, strength meter']] },
-      { id:'AUTH-06', name:'Đổi mật khẩu', role:'Người dùng đã ĐN', priority:'Medium', desc:'As a người dùng, tôi muốn đổi MK khi biết MK cũ.',
-        ac:['Form: MK cũ, MK mới, XN MK mới','Kiểm tra MK cũ đúng','MK mới ≠ MK cũ','Thành công → thông báo','Không đổi được nếu tài khoản bị khóa'],
+      { id:'AUTH-06', name:'Đổi mật khẩu', role:'Người dùng đã đăng nhập', priority:'Medium', desc:'As a người dùng, tôi muốn đổi mật khẩu khi biết mật khẩu cũ.',
+        ac:['Form: mật khẩu cũ, mật khẩu mới, xác nhận mật khẩu mới','Kiểm tra mật khẩu cũ đúng','mật khẩu mới ≠ mật khẩu cũ','Thành công → thông báo','Không đổi được nếu tài khoản bị khóa'],
         tasks:[['Backend','PUT /api/auth/change-password'],['Frontend','change-password.html']] }
     ]},
-  { id:'DASH', name:'Dashboard & Thống kê', desc:'Cung cấp cái nhìn tổng quan về hoạt động kinh doanh BĐS.', dep:'AUTH, BDS, PHONG', phase:3,
+  { id:'DASH', name:'Dashboard & Thống kê', desc:'Cung cấp cái nhìn tổng quan về hoạt động kinh doanh bất động sản.', dep:'AUTH, BDS, PHONG', phase:3,
     stories:[
-      { id:'DASH-01', name:'Xem tổng quan BĐS', role:'Admin, Manager, HouseHolder', priority:'High', desc:'Xem tổng quan số liệu BĐS trên Dashboard.',
-        ac:['Thẻ: Tổng BĐS, Đã duyệt, Chờ duyệt, Hết hạn','Biểu đồ tròn phân loại trạng thái','Biểu đồ cột BĐS mới theo tháng','DS BĐS gần hết hạn','Lọc theo khu vực'],
-        tasks:[['Backend','GET /api/dashboard/property-*'],['Frontend','Dashboard charts (Chart.js)'],['Permission','Manager chỉ xem KV mình']] },
+      { id:'DASH-01', name:'Xem tổng quan bất động sản', role:'Admin, Manager, HouseHolder', priority:'High', desc:'Xem tổng quan số liệu bất động sản trên Dashboard.',
+        ac:['Thẻ: Tổng bất động sản, Đã duyệt, Chờ duyệt, Hết hạn','Biểu đồ tròn phân loại trạng thái','Biểu đồ cột bất động sản mới theo tháng','danh sách bất động sản gần hết hạn','Lọc theo khu vực'],
+        tasks:[['Backend','GET /api/dashboard/property-*'],['Frontend','Dashboard charts (Chart.js)'],['Permission','Manager chỉ xem khu vực mình']] },
       { id:'DASH-02', name:'Xem thống kê phòng', role:'Admin, Manager, HouseHolder', priority:'Medium', desc:'Xem thống kê trạng thái phòng.',
-        ac:['Biểu đồ tròn trạng thái phòng','Tổng phòng, phòng trống, đã thuê','Tỷ lệ lấp đầy','Lọc theo BĐS/KV','Click → lọc DS phòng'],
+        ac:['Biểu đồ tròn trạng thái phòng','Tổng phòng, phòng trống, đã thuê','Tỷ lệ lấp đầy','Lọc theo bất động sản/khu vực','Click → lọc danh sách phòng'],
         tasks:[['Backend','GET /api/dashboard/room-*'],['Frontend','Biểu đồ tròn, click filter']] },
       { id:'DASH-03', name:'Xem doanh thu', role:'Admin, Super Admin', priority:'Low', desc:'Xem doanh thu từ cho thuê phòng.',
-        ac:['Tổng doanh thu tháng/năm','Biểu đồ đường','Top BĐS doanh thu cao','Doanh thu theo KV','Lọc thời gian'],
+        ac:['Tổng doanh thu tháng/năm','Biểu đồ đường','Top bất động sản doanh thu cao','Doanh thu theo khu vực','Lọc thời gian'],
         tasks:[['Backend','GET /api/dashboard/revenue-*'],['Frontend','Biểu đồ, date range picker'],['Permission','Chỉ Admin/Super Admin']] }
     ]},
-  { id:'SEARCH', name:'Tìm kiếm BĐS/Phòng', desc:'Giúp người dùng nhanh chóng tìm được BĐS/phòng phù hợp.', dep:'BDS, PHONG', phase:3,
+  { id:'SEARCH', name:'Tìm kiếm bất động sản/Phòng', desc:'Giúp người dùng nhanh chóng tìm được bất động sản/phòng phù hợp.', dep:'BDS, PHONG', phase:3,
     stories:[
-      { id:'SEARCH-01', name:'Tìm kiếm cơ bản', role:'Tất cả', priority:'High', desc:'Tìm BĐS/phòng bằng từ khóa.',
-        ac:['Ô tìm kiếm header','Gợi ý khi gõ (autocomplete)','Tìm theo tên BĐS, địa chỉ, tên phòng','Kết quả phân trang','Debounce 300ms'],
+      { id:'SEARCH-01', name:'Tìm kiếm cơ bản', role:'Tất cả', priority:'High', desc:'Tìm bất động sản/phòng bằng từ khóa.',
+        ac:['Ô tìm kiếm header','Gợi ý khi gõ (autocomplete)','Tìm theo tên bất động sản, địa chỉ, tên phòng','Kết quả phân trang','Debounce 300ms'],
         tasks:[['Database','Full-text search index'],['Backend','GET /api/search, /search/suggest'],['Frontend','Search bar, autocomplete']] },
       { id:'SEARCH-02', name:'Tìm kiếm nâng cao', role:'Tất cả', priority:'High', desc:'Lọc theo nhiều tiêu chí.',
-        ac:['Lọc: loại BĐS, loại phòng, giá, diện tích','Lọc: nội thất, tiện ích, dịch vụ','Lọc: khu vực (Tỉnh/Quận/Phường)','Lọc: trạng thái phòng','Kết hợp nhiều bộ lọc, reset'],
+        ac:['Lọc: loại bất động sản, loại phòng, giá, diện tích','Lọc: nội thất, tiện ích, dịch vụ','Lọc: khu vực (Tỉnh/Quận/Phường)','Lọc: trạng thái phòng','Kết hợp nhiều bộ lọc, reset'],
         tasks:[['Backend','GET /api/search/advanced, /filters'],['Frontend','Filter panel, range slider, cascading dropdown']] },
-      { id:'SEARCH-03', name:'Lưu bộ lọc', role:'Người dùng đã ĐN', priority:'Low', desc:'Lưu bộ lọc tìm kiếm để dùng lại.',
-        ac:['Nút "Lưu bộ lọc"','Đặt tên cho bộ lọc','DS bộ lọc đã lưu','Click → áp dụng','Xóa bộ lọc'],
-        tasks:[['Backend','CRUD /api/search/saved-filters'],['Frontend','Dialog lưu, DS đã lưu']] },
+      { id:'SEARCH-03', name:'Lưu bộ lọc', role:'Người dùng đã đăng nhập', priority:'Low', desc:'Lưu bộ lọc tìm kiếm để dùng lại.',
+        ac:['Nút "Lưu bộ lọc"','Đặt tên cho bộ lọc','danh sách bộ lọc đã lưu','Click → áp dụng','Xóa bộ lọc'],
+        tasks:[['Backend','CRUD /api/search/saved-filters'],['Frontend','Dialog lưu, danh sách đã lưu']] },
       { id:'SEARCH-04', name:'Gợi ý thông minh', role:'Tất cả', priority:'Low', desc:'Gợi ý dựa trên hành vi và xu hướng.',
-        ac:['Gợi ý BĐS nổi bật','Gợi ý BĐS xem nhiều','Gợi ý BĐS mới đăng','Gợi ý theo khu vực'],
+        ac:['Gợi ý bất động sản nổi bật','Gợi ý bất động sản xem nhiều','Gợi ý bất động sản mới đăng','Gợi ý theo khu vực'],
         tasks:[['Backend','GET /api/search/trending, /suggestions'],['Frontend','Suggestions panel']] }
     ]},
-  { id:'MAP', name:'Bản đồ tương tác', desc:'Trực quan hóa BĐS trên bản đồ.', dep:'BDS', phase:3,
+  { id:'MAP', name:'Bản đồ tương tác', desc:'Trực quan hóa bất động sản trên bản đồ.', dep:'BDS', phase:3,
     stories:[
-      { id:'MAP-01', name:'Xem bản đồ BĐS', role:'Tất cả', priority:'High', desc:'Xem bản đồ với marker BĐS.',
-        ac:['Tích hợp Google Maps','Marker BĐS đã duyệt','Zoom in/out, touch','Marker cluster','Map & Satellite mode'],
+      { id:'MAP-01', name:'Xem bản đồ bất động sản', role:'Tất cả', priority:'High', desc:'Xem bản đồ với marker bất động sản.',
+        ac:['Tích hợp Google Maps','Marker bất động sản đã duyệt','Zoom in/out, touch','Marker cluster','Map & Satellite mode'],
         tasks:[['Backend','GET /api/map/properties (bounds)'],['Frontend','Google Maps, MarkerClusterer']] },
       { id:'MAP-02', name:'Marker & popup', role:'Tất cả', priority:'High', desc:'Click marker → xem info popup.',
         ac:['Click → info window','Hiển thị: tên, giá, địa chỉ, thumbnail','Nút "Xem chi tiết"','Marker active khi click','Đóng khi click ngoài'],
@@ -134,77 +134,77 @@ const epics = [
       { id:'MAP-03', name:'Tìm theo bán kính', role:'Tất cả', priority:'Medium', desc:'Chọn bán kính tìm kiếm quanh điểm.',
         ac:['Range slider 1-50km','Vẽ vòng tròn bán kính','Tự động cập nhật marker','Hiển thị số lượng tìm thấy','Kéo center để thay đổi'],
         tasks:[['Backend','GET /api/map/radius?lat&lng&radius'],['Frontend','Circle, range slider']] },
-      { id:'MAP-04', name:'Bottom sheet', role:'Tất cả', priority:'Medium', desc:'Bottom sheet DS BĐS trong khu vực.',
-        ac:['Draggable bottom sheet','DS BĐS trong khung bản đồ','Click → focus marker','2 trạng thái: collapsed/expanded','Pull-to-refresh'],
+      { id:'MAP-04', name:'Bottom sheet', role:'Tất cả', priority:'Medium', desc:'Bottom sheet danh sách bất động sản trong khu vực.',
+        ac:['Draggable bottom sheet','danh sách bất động sản trong khung bản đồ','Click → focus marker','2 trạng thái: collapsed/expanded','Pull-to-refresh'],
         tasks:[['Frontend','Bottom sheet component'],['Frontend','Sync sheet ↔ marker']] }
     ]},
-  { id:'BDS', name:'Quản lý Bất động sản', desc:'Quản lý toàn bộ vòng đời BĐS từ tạo mới đến hết hạn.', dep:'AUTH, USER, CAT', phase:2,
+  { id:'BDS', name:'Quản lý Bất động sản', desc:'Quản lý toàn bộ vòng đời bất động sản từ tạo mới đến hết hạn.', dep:'AUTH, USER, CAT', phase:2,
     stories:[
-      { id:'BDS-01', name:'Tạo BĐS', role:'HouseHolder, Manager, Admin, Super Admin', priority:'High', desc:'Thêm mới BĐS với đầy đủ thông tin.',
-        ac:['Form 2 tab: BĐS và Phòng','Thông tin: tên, mô tả, địa chỉ, loại, diện tích, giá','Nội thất group-item, tiện ích','Chọn tọa độ trên bản đồ','Upload 10 hình, xem trước','Tự động lưu nháp','HouseHolder/Manager → chờ duyệt; Admin → đã duyệt'],
+      { id:'BDS-01', name:'Tạo bất động sản', role:'HouseHolder, Manager, Admin, Super Admin', priority:'High', desc:'Thêm mới bất động sản với đầy đủ thông tin.',
+        ac:['Form 2 tab: bất động sản và Phòng','Thông tin: tên, mô tả, địa chỉ, loại, diện tích, giá','Nội thất group-item, tiện ích','Chọn tọa độ trên bản đồ','Upload 10 hình, xem trước','Tự động lưu nháp','HouseHolder/Manager → chờ duyệt; Admin → đã duyệt'],
         tasks:[['Backend','POST /api/properties, /upload'],['Frontend','add-property.html, Google Maps picker'],['Validation','Diện tích >0, giá >0, tọa độ hợp lệ']] },
-      { id:'BDS-02', name:'Xem chi tiết BĐS', role:'Tất cả', priority:'High', desc:'Xem chi tiết BĐS với đầy đủ thông tin.',
-        ac:['Tên, giá, địa chỉ, mô tả','Gallery hình ảnh','DS nội thất, tiện ích','Bản đồ nhỏ','DS phòng trực thuộc','Trạng thái: còn trống / sắp có phòng / hết phòng'],
+      { id:'BDS-02', name:'Xem chi tiết bất động sản', role:'Tất cả', priority:'High', desc:'Xem chi tiết bất động sản với đầy đủ thông tin.',
+        ac:['Tên, giá, địa chỉ, mô tả','Gallery hình ảnh','danh sách nội thất, tiện ích','Bản đồ nhỏ','danh sách phòng trực thuộc','Trạng thái: còn trống / sắp có phòng / hết phòng'],
         tasks:[['Backend','GET /api/properties/:id'],['Frontend','property-detail.html, gallery, mini map']] },
-      { id:'BDS-03', name:'Sửa BĐS', role:'HouseHolder, Manager, Admin, Super Admin', priority:'High', desc:'Cập nhật thông tin BĐS.',
+      { id:'BDS-03', name:'Sửa bất động sản', role:'HouseHolder, Manager, Admin, Super Admin', priority:'High', desc:'Cập nhật thông tin bất động sản.',
         ac:['Form sửa với data hiện tại','Sửa tất cả trường','Thêm/xóa/sắp xếp ảnh','HouseHolder/Manager sửa → chờ duyệt','Admin sửa → giữ nguyên'],
         tasks:[['Backend','PUT /api/properties/:id'],['Frontend','Form sửa (dùng chung)'],['Permission','Kiểm tra quyền']] },
-      { id:'BDS-04', name:'Xóa BĐS', role:'Admin, Super Admin', priority:'Medium', desc:'Xóa BĐS không còn sử dụng.',
-        ac:['Chỉ Admin/Super Admin','Confirm dialog','Xóa mềm','Xóa kéo theo phòng, ảnh, HĐ','Không xóa BĐS đang có HĐ hiệu lực'],
-        tasks:[['Backend','DELETE /api/properties/:id'],['Frontend','Confirm dialog'],['Notification','Gửi TB cho chủ BĐS']] },
-      { id:'BDS-05', name:'Duyệt BĐS', role:'Admin, Super Admin', priority:'High', desc:'Duyệt hoặc từ chối BĐS.',
-        ac:['DS BĐS chờ duyệt','Xem chi tiết trong luồng duyệt','Nút Duyệt / Từ chối + lý do','Tự động gửi TB','Duyệt nhiều cùng lúc'],
+      { id:'BDS-04', name:'Xóa bất động sản', role:'Admin, Super Admin', priority:'Medium', desc:'Xóa bất động sản không còn sử dụng.',
+        ac:['Chỉ Admin/Super Admin','Confirm dialog','Xóa mềm','Xóa kéo theo phòng, ảnh, hợp đồng','Không xóa bất động sản đang có hợp đồng hiệu lực'],
+        tasks:[['Backend','DELETE /api/properties/:id'],['Frontend','Confirm dialog'],['Notification','Gửi thông báo cho chủ bất động sản']] },
+      { id:'BDS-05', name:'Duyệt bất động sản', role:'Admin, Super Admin', priority:'High', desc:'Duyệt hoặc từ chối bất động sản.',
+        ac:['danh sách bất động sản chờ duyệt','Xem chi tiết trong luồng duyệt','Nút Duyệt / Từ chối + lý do','Tự động gửi thông báo','Duyệt nhiều cùng lúc'],
         tasks:[['Backend','PUT /api/properties/:id/approve, /reject, /bulk-approve'],['Frontend','Pending tab, approve dialog']] },
-      { id:'BDS-06', name:'Quản lý hết hạn', role:'Admin, Super Admin', priority:'Medium', desc:'Xem và quản lý BĐS sắp/hết hạn.',
-        ac:['DS sắp hết hạn (7 ngày)','DS đã hết hạn','Nút "Gia hạn"','Tự động chuyển trạng thái','Filter: Tất cả/Sắp/Hết hạn'],
+      { id:'BDS-06', name:'Quản lý hết hạn', role:'Admin, Super Admin', priority:'Medium', desc:'Xem và quản lý bất động sản sắp/hết hạn.',
+        ac:['danh sách sắp hết hạn (7 ngày)','danh sách đã hết hạn','Nút "Gia hạn"','Tự động chuyển trạng thái','Filter: Tất cả/Sắp/Hết hạn'],
         tasks:[['Backend','Cron job, GET/PUT /api/properties/expiring, /renew'],['Frontend','Tab quản lý hết hạn']] },
-      { id:'BDS-07', name:'Đánh dấu nổi bật', role:'Admin, Super Admin', priority:'Low', desc:'Đánh dấu BĐS nổi bật.',
+      { id:'BDS-07', name:'Đánh dấu nổi bật', role:'Admin, Super Admin', priority:'Low', desc:'Đánh dấu bất động sản nổi bật.',
         ac:['Nút bật/tắt nổi bật','Badge vàng','Ưu tiên hiển thị','Xuất hiện trong gợi ý'],
         tasks:[['Backend','PUT /api/properties/:id/feature'],['Frontend','Featured toggle, badge']] },
-      { id:'BDS-08', name:'DS BĐS của tôi', role:'HouseHolder, Manager, Admin, Super Admin', priority:'High', desc:'Xem DS BĐS đã tạo/quản lý.',
+      { id:'BDS-08', name:'danh sách bất động sản của tôi', role:'HouseHolder, Manager, Admin, Super Admin', priority:'High', desc:'Xem danh sách bất động sản đã tạo/quản lý.',
         ac:['Grid/card: ảnh, tên, giá, trạng thái','Filter: Tất cả/Đã duyệt/Chờ duyệt/Hết hạn/Nháp','Nút: Sửa, Xóa, Xem','Tìm kiếm, phân trang'],
         tasks:[['Backend','GET /api/properties/my-properties, /managed, /all'],['Frontend','my-properties.html']] }
     ]},
   { id:'PHONG', name:'Quản lý Phòng', desc:'Quản lý chi tiết từng phòng, trạng thái, đặt cọc và hợp đồng.', dep:'AUTH, BDS', phase:2,
     stories:[
-      { id:'PHONG-01', name:'Tạo phòng', role:'HouseHolder, Manager, Admin, Super Admin', priority:'High', desc:'Thêm phòng mới vào BĐS.',
+      { id:'PHONG-01', name:'Tạo phòng', role:'HouseHolder, Manager, Admin, Super Admin', priority:'High', desc:'Thêm phòng mới vào bất động sản.',
         ac:['Form: tên, mô tả, loại phòng, diện tích, giá, cọc','Chọn nội thất, tiện ích','Chọn dịch vụ kèm (giá, đơn vị, chỉ số đầu)','Upload 10 hình','Thêm nhiều phòng cùng lúc'],
         tasks:[['Backend','POST /api/properties/:id/rooms'],['Frontend','Room form, service dialog']] },
-      { id:'PHONG-02', name:'Xem chi tiết phòng', role:'Tất cả', priority:'High', desc:'Xem chi tiết phòng trong BĐS.',
-        ac:['Hiển thị: tên, giá, cọc, diện tích, loại','Gallery ảnh','DS nội thất, tiện ích, dịch vụ','Trạng thái phòng (8 trạng thái)','Thông tin khách thuê hiện tại'],
+      { id:'PHONG-02', name:'Xem chi tiết phòng', role:'Tất cả', priority:'High', desc:'Xem chi tiết phòng trong bất động sản.',
+        ac:['Hiển thị: tên, giá, cọc, diện tích, loại','Gallery ảnh','danh sách nội thất, tiện ích, dịch vụ','Trạng thái phòng (8 trạng thái)','Thông tin khách thuê hiện tại'],
         tasks:[['Backend','GET /api/rooms/:id'],['Frontend','room-detail.html, gallery, status badge']] },
       { id:'PHONG-03', name:'Sửa phòng', role:'HouseHolder, Manager, Admin, Super Admin', priority:'High', desc:'Cập nhật thông tin phòng.',
         ac:['Form sửa với data hiện tại','Sửa: giá, nội thất, dịch vụ, ảnh','Ghi lại lịch sử giá khi sửa giá'],
         tasks:[['Backend','PUT /api/rooms/:id'],['Frontend','Form sửa phòng']] },
       { id:'PHONG-04', name:'Xóa phòng', role:'Admin, Super Admin', priority:'Medium', desc:'Xóa phòng.',
-        ac:['Chỉ Admin/Super Admin','Confirm dialog','Xóa mềm','Không xóa phòng có HĐ hiệu lực'],
+        ac:['Chỉ Admin/Super Admin','Confirm dialog','Xóa mềm','Không xóa phòng có hợp đồng hiệu lực'],
         tasks:[['Backend','DELETE /api/rooms/:id'],['Frontend','Confirm dialog']] },
       { id:'PHONG-05', name:'Đổi trạng thái phòng', role:'HouseHolder, Manager, Admin, Super Admin, Sale', priority:'High', desc:'Thay đổi trạng thái phòng.',
         ac:['8 trạng thái: đang trống, đã cọc, đã thuê, sắp trống, chờ duyệt cọc/thuê/sắp trống/đang trống','Admin|SuperAdmin|Manager|HouseHolder đổi trực tiếp','Sale → chờ duyệt tương ứng','Đổi sang đã cọc/đã thuê → nhập thông tin khách','Ghi lại lịch sử'],
         tasks:[['Backend','PUT /api/rooms/:id/status, POST /api/rooms/:id/request-status-change'],['Frontend','Radio 8 trạng thái, customer info form']] },
       { id:'PHONG-06', name:'Duyệt đổi trạng thái', role:'Admin, SuperAdmin, HouseHolder, Manager', priority:'High', desc:'Duyệt/từ chối yêu cầu từ Sale.',
-        ac:['DS yêu cầu đổi trạng thái','Duyệt → chuyển từ chờ duyệt Y → Y','Từ chối → nhập lý do → về trạng thái cũ','TB cho Sale kết quả'],
+        ac:['danh sách yêu cầu đổi trạng thái','Duyệt → chuyển từ chờ duyệt Y → Y','Từ chối → nhập lý do → về trạng thái cũ','thông báo cho Sale kết quả'],
         tasks:[['Backend','GET /api/requests/status-changes, PUT approve/reject'],['Frontend','Request list, approve/reject dialog']] },
       { id:'PHONG-07', name:'Xác nhận đặt cọc', role:'Admin, Manager, HouseHolder, Sale', priority:'High', desc:'Xác nhận đặt cọc với thông tin khách.',
-        ac:['Form: tên KH, SĐT, hình ảnh','Upload/chụp ảnh khách','Lưu vào bảng khách hàng','Hiển thị trên chi tiết phòng'],
+        ac:['Form: tên khách hàng, số điện thoại, hình ảnh','Upload/chụp ảnh khách','Lưu vào bảng khách hàng','Hiển thị trên chi tiết phòng'],
         tasks:[['Backend','POST /api/rooms/:id/deposit, /api/customers'],['Frontend','Customer info form']] },
       { id:'PHONG-08', name:'Quản lý hợp đồng', role:'Admin, Super Admin', priority:'Medium', desc:'Quản lý hợp đồng thuê phòng.',
-        ac:['DS hợp đồng (hiệu lực/hết hạn/hủy)','Tạo HĐ: phòng, KH, ngày, giá, cọc','Upload file PDF','Gia hạn, hủy HĐ'],
+        ac:['danh sách hợp đồng (hiệu lực/hết hạn/hủy)','Tạo hợp đồng: phòng, khách hàng, ngày, giá, cọc','Upload file PDF','Gia hạn, hủy hợp đồng'],
         tasks:[['Backend','CRUD /api/contracts, renew, cancel'],['Frontend','Contract management screen']] },
-      { id:'PHONG-09', name:'DS phòng theo BĐS', role:'Tất cả', priority:'High', desc:'DS phòng dạng grid.',
+      { id:'PHONG-09', name:'danh sách phòng theo bất động sản', role:'Tất cả', priority:'High', desc:'danh sách phòng dạng grid.',
         ac:['Grid: ảnh, tên, giá, diện tích, trạng thái','Badge màu theo trạng thái','Lọc trạng thái','Quick action: sửa, đổi trạng thái'],
         tasks:[['Backend','GET /api/properties/:id/rooms'],['Frontend','Room grid, status badge, quick-update']] }
     ]},
   { id:'USER', name:'Người dùng & Phân quyền', desc:'Quản lý người dùng và phân quyền.', dep:'AUTH, CAT', phase:1,
     stories:[
-      { id:'USER-01', name:'DS người dùng', role:'Admin, Super Admin, Manager', priority:'High', desc:'Xem DS người dùng.',
-        ac:['Bảng: avatar, tên, tên ĐN, vai trò, email, SĐT, trạng thái','Phân trang, tìm kiếm, filter','Manager chỉ xem user trong KV'],
+      { id:'USER-01', name:'danh sách người dùng', role:'Admin, Super Admin, Manager', priority:'High', desc:'Xem danh sách người dùng.',
+        ac:['Bảng: avatar, tên, tên đăng nhập, vai trò, email, số điện thoại, trạng thái','Phân trang, tìm kiếm, filter','Manager chỉ xem user trong khu vực'],
         tasks:[['Backend','GET /api/users'],['Frontend','members.html, search, filter']] },
       { id:'USER-02', name:'Tạo người dùng', role:'Admin, Super Admin', priority:'High', desc:'Tạo tài khoản mới.',
-        ac:['Dialog: tên ĐN, MK, họ tên, email, SĐT','Chọn vai trò','Chọn KV (nếu Manager)','Upload avatar'],
+        ac:['Dialog: tên đăng nhập, mật khẩu, họ tên, email, số điện thoại','Chọn vai trò','Chọn khu vực (nếu Manager)','Upload avatar'],
         tasks:[['Backend','POST /api/users'],['Frontend','User dialog, cascading location']] },
       { id:'USER-03', name:'Sửa người dùng', role:'Admin, Super Admin', priority:'Medium', desc:'Cập nhật thông tin.',
-        ac:['Dialog sửa với data hiện tại','Sửa: họ tên, email, SĐT, vai trò, KV','Không sửa tên ĐN'],
+        ac:['Dialog sửa với data hiện tại','Sửa: họ tên, email, số điện thoại, vai trò, khu vực','Không sửa tên đăng nhập'],
         tasks:[['Backend','PUT /api/users/:id'],['Frontend','Dialog sửa (dùng chung)']] },
       { id:'USER-04', name:'Khóa/Mở khóa', role:'Admin, Super Admin', priority:'High', desc:'Khóa/mở khóa tài khoản.',
         ac:['Nút Khóa/Mở khóa','Confirm dialog','Khóa → không đăng nhập được','Không khóa Super Admin'],
@@ -212,11 +212,11 @@ const epics = [
       { id:'USER-05', name:'Phân quyền theo vai trò', role:'Super Admin', priority:'High', desc:'Cấu hình quyền cho từng role.',
         ac:['3 tab: Admin, Manager, HouseHolder','Checkbox grid 20 quyền','Select all/Deselect all','Lưu → hiệu lực ngay'],
         tasks:[['Backend','GET/PUT /api/permissions/:roleId'],['Frontend','permission.html, checkbox grid']] },
-      { id:'USER-06', name:'Gán khu vực', role:'Admin, Super Admin', priority:'Medium', desc:'Gán KV cho Manager.',
-        ac:['Cascading dropdown Tỉnh→Quận→Phường','Chọn nhiều KV','Hiển thị dạng tag','Manager chỉ thấy BĐS trong KV'],
+      { id:'USER-06', name:'Gán khu vực', role:'Admin, Super Admin', priority:'Medium', desc:'Gán khu vực cho Manager.',
+        ac:['Cascading dropdown Tỉnh→Quận→Phường','Chọn nhiều khu vực','Hiển thị dạng tag','Manager chỉ thấy bất động sản trong khu vực'],
         tasks:[['Backend','POST/DELETE /api/users/:id/areas'],['Frontend','Cascading dropdown, tag/chip']] },
       { id:'USER-07', name:'Quản lý vai trò', role:'Super Admin', priority:'Low', desc:'Thêm/sửa/xóa vai trò.',
-        ac:['DS vai trò','Thêm: tên, mô tả','Sửa, Xóa (không xóa role mặc định)'],
+        ac:['danh sách vai trò','Thêm: tên, mô tả','Sửa, Xóa (không xóa role mặc định)'],
         tasks:[['Backend','CRUD /api/roles'],['Frontend','Role dialog']] }
     ]},
   { id:'CAT', name:'Danh mục hệ thống', desc:'Quản lý danh mục dùng chung.', dep:'AUTH', phase:1,
@@ -224,59 +224,59 @@ const epics = [
       { id:'CAT-01', name:'Địa giới hành chính', role:'Super Admin (ghi), tất cả (xem)', priority:'High', desc:'Cây 3 cấp Tỉnh/Quận/Phường.',
         ac:['Tree: Tỉnh→Quận→Phường','Expand/collapse','Thêm/sửa/xóa node','Tìm kiếm trong cây'],
         tasks:[['Backend','CRUD /api/locations, tree, children'],['Frontend','Tree component']] },
-      { id:'CAT-02', name:'Loại BĐS', role:'Super Admin (ghi), tất cả (xem)', priority:'Medium', desc:'DS loại BĐS.',
-        ac:['Bảng: tên, mô tả, trạng thái','CRUD','Xóa (nếu không có BĐS nào dùng)'], tasks:[['Backend','CRUD /api/catalog/property-types'],['Frontend','Table + dialog']] },
-      { id:'CAT-03', name:'Loại phòng', role:'Super Admin (ghi), tất cả (xem)', priority:'Medium', desc:'DS loại phòng.',
+      { id:'CAT-02', name:'Loại bất động sản', role:'Super Admin (ghi), tất cả (xem)', priority:'Medium', desc:'danh sách loại bất động sản.',
+        ac:['Bảng: tên, mô tả, trạng thái','CRUD','Xóa (nếu không có bất động sản nào dùng)'], tasks:[['Backend','CRUD /api/catalog/property-types'],['Frontend','Table + dialog']] },
+      { id:'CAT-03', name:'Loại phòng', role:'Super Admin (ghi), tất cả (xem)', priority:'Medium', desc:'danh sách loại phòng.',
         ac:['Tương tự CAT-02'], tasks:[['Backend','CRUD /api/catalog/room-types'],['Frontend','Table + dialog']] },
-      { id:'CAT-04', name:'Nội thất', role:'Super Admin, Admin, Manager, HouseHolder (ghi)', priority:'Medium', desc:'DS nội thất với icon.',
-        ac:['DS: tên, mô tả, icon','Super Admin tạo mặc định','Manager/HouseHolder tạo → chỉ sửa/xóa của mình'],
+      { id:'CAT-04', name:'Nội thất', role:'Super Admin, Admin, Manager, HouseHolder (ghi)', priority:'Medium', desc:'danh sách nội thất với icon.',
+        ac:['danh sách: tên, mô tả, icon','Super Admin tạo mặc định','Manager/HouseHolder tạo → chỉ sửa/xóa của mình'],
         tasks:[['Backend','CRUD /api/catalog/furniture'],['Frontend','Icon picker']] },
-      { id:'CAT-05', name:'Tiện ích', role:'Super Admin, Admin, Manager, HouseHolder (ghi)', priority:'Medium', desc:'DS tiện ích với icon + khoảng cách.',
+      { id:'CAT-05', name:'Tiện ích', role:'Super Admin, Admin, Manager, HouseHolder (ghi)', priority:'Medium', desc:'danh sách tiện ích với icon + khoảng cách.',
         ac:['Tương tự CAT-04 + thêm khoảng cách (m)'], tasks:[['Backend','CRUD /api/catalog/utilities'],['Frontend','Table + dialog']] },
-      { id:'CAT-06', name:'Dịch vụ', role:'Super Admin, Admin, Manager, HouseHolder (ghi)', priority:'Medium', desc:'DS dịch vụ kèm giá, đơn vị.',
-        ac:['DS: tên, giá, đơn vị (tháng/năm/m²), chu kỳ','Loại: bắt buộc/tự chọn','Chỉ số đầu (điện/nước)'],
+      { id:'CAT-06', name:'Dịch vụ', role:'Super Admin, Admin, Manager, HouseHolder (ghi)', priority:'Medium', desc:'danh sách dịch vụ kèm giá, đơn vị.',
+        ac:['danh sách: tên, giá, đơn vị (tháng/năm/m²), chu kỳ','Loại: bắt buộc/tự chọn','Chỉ số đầu (điện/nước)'],
         tasks:[['Backend','CRUD /api/catalog/services'],['Frontend','Table + dialog']] },
       { id:'CAT-07', name:'File', role:'Manager, HouseHolder, Admin, Super Admin (ghi)', priority:'Low', desc:'Quản lý file ảnh/tài liệu.',
-        ac:['Upload (jpg/png/webp/PDF)','DS file, xóa','Gán entityType'],
+        ac:['Upload (jpg/png/webp/PDF)','danh sách file, xóa','Gán entityType'],
         tasks:[['Backend','POST /api/upload, DELETE /api/files/:id'],['Frontend','Upload component drag & drop']] }
     ]},
   { id:'PROFILE', name:'Hồ sơ cá nhân', desc:'Cho phép người dùng quản lý thông tin cá nhân.', dep:'AUTH', phase:4,
     stories:[
-      { id:'PROFILE-01', name:'Xem hồ sơ', role:'Người dùng đã ĐN', priority:'Medium', desc:'Xem thông tin hồ sơ.',
-        ac:['Avatar, họ tên, tên ĐN, email, SĐT','Vai trò, KV quản lý','Nút: Sửa, Đổi MK, Đăng xuất'],
+      { id:'PROFILE-01', name:'Xem hồ sơ', role:'Người dùng đã đăng nhập', priority:'Medium', desc:'Xem thông tin hồ sơ.',
+        ac:['Avatar, họ tên, tên đăng nhập, email, số điện thoại','Vai trò, khu vực quản lý','Nút: Sửa, Đổi mật khẩu, Đăng xuất'],
         tasks:[['Backend','GET /api/profile'],['Frontend','profile.html']] },
-      { id:'PROFILE-02', name:'Sửa hồ sơ', role:'Người dùng đã ĐN', priority:'Medium', desc:'Cập nhật hồ sơ.',
-        ac:['Form: họ tên, email, SĐT','Không sửa tên ĐN','Lưu → cập nhật giao diện'],
+      { id:'PROFILE-02', name:'Sửa hồ sơ', role:'Người dùng đã đăng nhập', priority:'Medium', desc:'Cập nhật hồ sơ.',
+        ac:['Form: họ tên, email, số điện thoại','Không sửa tên đăng nhập','Lưu → cập nhật giao diện'],
         tasks:[['Backend','PUT /api/profile'],['Frontend','Form sửa']] },
-      { id:'PROFILE-03', name:'Đổi avatar', role:'Người dùng đã ĐN', priority:'Low', desc:'Đổi ảnh đại diện.',
+      { id:'PROFILE-03', name:'Đổi avatar', role:'Người dùng đã đăng nhập', priority:'Low', desc:'Đổi ảnh đại diện.',
         ac:['Click avatar → upload','Crop/Resize','Xem trước','Lưu → cập nhật'],
         tasks:[['Backend','PUT /api/profile/avatar'],['Frontend','Upload + crop component']] },
-      { id:'PROFILE-04', name:'Xem thông tin tài khoản', role:'Người dùng đã ĐN', priority:'Low', desc:'Xem quyền hạn và thông tin ĐN.',
-        ac:['Tên tài khoản, mã TK','Vai trò, quyền hạn','KV quản lý (Manager)','Lần ĐN cuối'],
+      { id:'PROFILE-04', name:'Xem thông tin tài khoản', role:'Người dùng đã đăng nhập', priority:'Low', desc:'Xem quyền hạn và thông tin đăng nhập.',
+        ac:['Tên tài khoản, mã TK','Vai trò, quyền hạn','khu vực quản lý (Manager)','Lần đăng nhập cuối'],
         tasks:[['Backend','GET /api/profile/account-info'],['Frontend','user-info.html']] }
     ]},
   { id:'NOTIF', name:'Thông báo', desc:'Quản lý và theo dõi các thông báo hệ thống.', dep:'AUTH', phase:4,
     stories:[
-      { id:'NOTIF-01', name:'DS thông báo', role:'Tất cả đã ĐN', priority:'High', desc:'Xem DS thông báo.',
-        ac:['DS theo thời gian','Mỗi item: icon, tiêu đề, tóm tắt, thời gian','Badge chưa đọc','Phân trang/infinite scroll','Filter loại TB'],
+      { id:'NOTIF-01', name:'danh sách thông báo', role:'Tất cả đã đăng nhập', priority:'High', desc:'Xem danh sách thông báo.',
+        ac:['danh sách theo thời gian','Mỗi item: icon, tiêu đề, tóm tắt, thời gian','Badge chưa đọc','Phân trang/infinite scroll','Filter loại thông báo'],
         tasks:[['Backend','GET /api/notifications, /unread-count'],['Frontend','notifications.html, badge']] },
-      { id:'NOTIF-02', name:'Xem chi tiết TB', role:'Tất cả đã ĐN', priority:'Medium', desc:'Xem chi tiết thông báo.',
+      { id:'NOTIF-02', name:'Xem chi tiết thông báo', role:'Tất cả đã đăng nhập', priority:'Medium', desc:'Xem chi tiết thông báo.',
         ac:['Tiêu đề, nội dung, thời gian','Link đến entity','Tự động mark đã đọc'],
         tasks:[['Backend','GET /api/notifications/:id'],['Frontend','Notification detail']] },
-      { id:'NOTIF-03', name:'Đánh dấu đã đọc', role:'Tất cả đã ĐN', priority:'Medium', desc:'Mark read.',
-        ac:['Mark 1 TB','Mark tất cả','Swipe (mobile)','Badge cập nhật'],
+      { id:'NOTIF-03', name:'Đánh dấu đã đọc', role:'Tất cả đã đăng nhập', priority:'Medium', desc:'Mark read.',
+        ac:['Mark 1 thông báo','Mark tất cả','Swipe (mobile)','Badge cập nhật'],
         tasks:[['Backend','PUT /api/notifications/:id/read, /read-all'],['Frontend','Swipe action']] },
-      { id:'NOTIF-04', name:'Tạo TB hệ thống', role:'Admin, Super Admin', priority:'Medium', desc:'Tạo thông báo gửi người dùng.',
+      { id:'NOTIF-04', name:'Tạo thông báo hệ thống', role:'Admin, Super Admin', priority:'Medium', desc:'Tạo thông báo gửi người dùng.',
         ac:['Form: loại, tiêu đề, nội dung','Chọn người nhận','Gửi ngay / hẹn giờ','Xem trước'],
-        tasks:[['Backend','POST /api/notifications/system, /schedule'],['Frontend','Form tạo TB, user picker']] },
-      { id:'NOTIF-05', name:'Tự động gửi TB duyệt', role:'Hệ thống', priority:'High', desc:'Tự động gửi TB khi duyệt.',
-        ac:['Duyệt BĐS → TB','Từ chối → TB lý do','Duyệt trạng thái phòng → TB','BĐS sắp hết hạn → TB nhắc'],
+        tasks:[['Backend','POST /api/notifications/system, /schedule'],['Frontend','Form tạo thông báo, user picker']] },
+      { id:'NOTIF-05', name:'Tự động gửi thông báo duyệt', role:'Hệ thống', priority:'High', desc:'Tự động gửi thông báo khi duyệt.',
+        ac:['Duyệt bất động sản → thông báo','Từ chối → thông báo lý do','Duyệt trạng thái phòng → thông báo','bất động sản sắp hết hạn → thông báo nhắc'],
         tasks:[['Backend','Trigger notification service'],['Backend','Cron job hết hạn']] },
       { id:'NOTIF-06', name:'Xóa thông báo', role:'Người nhận, Admin', priority:'Low', desc:'Xóa thông báo.',
-        ac:['Xóa 1 TB','Xóa nhiều','Xóa tất cả'],
+        ac:['Xóa 1 thông báo','Xóa nhiều','Xóa tất cả'],
         tasks:[['Backend','DELETE /api/notifications/:id, /bulk'],['Frontend','Delete action, bulk select']] }
     ]},
-  { id:'SHARE', name:'Chia sẻ', desc:'Chia sẻ thông tin BĐS/phòng qua nhiều kênh.', dep:'BDS, PHONG', phase:4,
+  { id:'SHARE', name:'Chia sẻ', desc:'Chia sẻ thông tin bất động sản/phòng qua nhiều kênh.', dep:'BDS, PHONG', phase:4,
     stories:[
       { id:'SHARE-01', name:'Chia sẻ Zalo', role:'Tất cả', priority:'Medium', desc:'Chia sẻ qua Zalo.',
         ac:['Nút Zalo trên chi tiết','Mở Zalo với nội dung soạn sẵn','Chọn nội dung chia sẻ'],
@@ -284,33 +284,33 @@ const epics = [
       { id:'SHARE-02', name:'Chia sẻ Facebook', role:'Tất cả', priority:'Medium', desc:'Chia sẻ qua Facebook.',
         ac:['Nút Facebook','Facebook Share dialog','OG tags cho link'],
         tasks:[['Frontend','FB SDK, OG meta tags']] },
-      { id:'SHARE-03', name:'Sao chép link', role:'Tất cả', priority:'Medium', desc:'Copy link BĐS/phòng.',
+      { id:'SHARE-03', name:'Sao chép link', role:'Tất cả', priority:'Medium', desc:'Copy link bất động sản/phòng.',
         ac:['Nút "Sao chép link"','Copy clipboard','Toast "Đã sao chép"'],
         tasks:[['Frontend','navigator.clipboard + toast']] },
-      { id:'SHARE-04', name:'Chia sẻ hình ảnh', role:'Tất cả', priority:'Low', desc:'Chia sẻ ảnh BĐS/phòng.',
+      { id:'SHARE-04', name:'Chia sẻ hình ảnh', role:'Tất cả', priority:'Low', desc:'Chia sẻ ảnh bất động sản/phòng.',
         ac:['Chọn ảnh từ gallery','Share qua native share','Share nhiều ảnh'],
         tasks:[['Frontend','Image picker + native share API']] }
     ]},
-  { id:'FAV', name:'Yêu thích & Lịch sử', desc:'Lưu BĐS/phòng yêu thích và xem lịch sử.', dep:'BDS, PHONG', phase:4,
+  { id:'FAV', name:'Yêu thích & Lịch sử', desc:'Lưu bất động sản/phòng yêu thích và xem lịch sử.', dep:'BDS, PHONG', phase:4,
     stories:[
-      { id:'FAV-01', name:'Yêu thích BĐS', role:'Đã ĐN', priority:'Medium', desc:'Thêm BĐS vào yêu thích.',
+      { id:'FAV-01', name:'Yêu thích bất động sản', role:'Đã đăng nhập', priority:'Medium', desc:'Thêm bất động sản vào yêu thích.',
         ac:['Icon trái tim','Click toggle','Animation'], tasks:[['Backend','POST /api/favorites/properties/:id/toggle'],['Frontend','Heart icon']] },
-      { id:'FAV-02', name:'Yêu thích phòng', role:'Đã ĐN', priority:'Medium', desc:'Thêm phòng vào yêu thích.',
+      { id:'FAV-02', name:'Yêu thích phòng', role:'Đã đăng nhập', priority:'Medium', desc:'Thêm phòng vào yêu thích.',
         ac:['Tương tự FAV-01'], tasks:[['Backend','POST /api/favorites/rooms/:id/toggle'],['Frontend','Heart icon (chung)']] },
-      { id:'FAV-03', name:'DS yêu thích', role:'Đã ĐN', priority:'Medium', desc:'Xem DS yêu thích.',
-        ac:['Tab: BĐS / Phòng','Grid/card','Xóa khỏi DS','Click → chi tiết'],
+      { id:'FAV-03', name:'danh sách yêu thích', role:'Đã đăng nhập', priority:'Medium', desc:'Xem danh sách yêu thích.',
+        ac:['Tab: bất động sản / Phòng','Grid/card','Xóa khỏi danh sách','Click → chi tiết'],
         tasks:[['Backend','GET /api/favorites/properties, /rooms'],['Frontend','Tab UI + card list']] },
-      { id:'FAV-04', name:'Lịch sử xem', role:'Đã ĐN', priority:'Low', desc:'Xem lịch sử BĐS đã xem.',
-        ac:['DS BĐS đã xem (tối đa 10 gần nhất)','Hiển thị: ảnh, tên, giá, thời gian'],
+      { id:'FAV-04', name:'Lịch sử xem', role:'Đã đăng nhập', priority:'Low', desc:'Xem lịch sử bất động sản đã xem.',
+        ac:['danh sách bất động sản đã xem (tối đa 10 gần nhất)','Hiển thị: ảnh, tên, giá, thời gian'],
         tasks:[['Backend','GET/POST /api/history/properties'],['Frontend','History list']] },
-      { id:'FAV-05', name:'Xóa lịch sử / yêu thích', role:'Đã ĐN', priority:'Low', desc:'Xóa lịch sử, yêu thích.',
+      { id:'FAV-05', name:'Xóa lịch sử / yêu thích', role:'Đã đăng nhập', priority:'Low', desc:'Xóa lịch sử, yêu thích.',
         ac:['Xóa 1 item','Xóa tất cả','Confirm dialog'], tasks:[['Backend','DELETE /api/history, /favorites'],['Frontend','Delete action']] }
     ]},
   { id:'NAV', name:'Điều hướng & Giao diện', desc:'Điều hướng mượt mà, responsive, xử lý trạng thái.', dep:'Tất cả', phase:2,
     stories:[
-      { id:'NAV-01', name:'Bottom tab bar', role:'Tất cả', priority:'High', desc:'6 tabs: Trang chủ, Tìm kiếm, Bản đồ, TB, Yêu thích, Cá nhân.',
-        ac:['6 tab icon+label','Active highlight','Badge TB','Animation'], tasks:[['Frontend','Bottom tab bar component']] },
-      { id:'NAV-02', name:'Sidebar', role:'Đã ĐN', priority:'High', desc:'Sidebar chức năng quản lý.',
+      { id:'NAV-01', name:'Bottom tab bar', role:'Tất cả', priority:'High', desc:'6 tabs: Trang chủ, Tìm kiếm, Bản đồ, thông báo, Yêu thích, Cá nhân.',
+        ac:['6 tab icon+label','Active highlight','Badge thông báo','Animation'], tasks:[['Frontend','Bottom tab bar component']] },
+      { id:'NAV-02', name:'Sidebar', role:'Đã đăng nhập', priority:'High', desc:'Sidebar chức năng quản lý.',
         ac:['Avatar + tên','Menu theo quyền','Toggle mở/đóng','Logout'],
         tasks:[['Frontend','Sidebar component, dynamic menu']] },
       { id:'NAV-03', name:'Chuyển màn hình', role:'Tất cả', priority:'High', desc:'Chuyển đổi mượt giữa màn hình.',
@@ -354,8 +354,8 @@ const tlSprints = [
   { id:'S1', start:'01/06', end:'12/06', demo:'12/06', content:'AUTH-01→06', milestone:'Auth hoàn chỉnh', phase:'dev' },
   { id:'S2', start:'15/06', end:'26/06', demo:'26/06', content:'CAT-01→07 + NAV-01→02', milestone:'Danh mục + Điều hướng', phase:'dev' },
   { id:'S3', start:'29/06', end:'10/07', demo:'10/07', content:'USER-01→07', milestone:'Người dùng + Phân quyền', phase:'dev' },
-  { id:'S4', start:'13/07', end:'24/07', demo:'24/07', content:'BDS-01→04,08 + PROFILE-01→02', milestone:'CRUD BĐS', phase:'dev' },
-  { id:'S5', start:'27/07', end:'07/08', demo:'07/08', content:'BDS-05→07 + PHONG-01→02 + PROFILE-03→04', milestone:'Duyệt BĐS + Phòng', phase:'dev' },
+  { id:'S4', start:'13/07', end:'24/07', demo:'24/07', content:'BDS-01→04,08 + PROFILE-01→02', milestone:'CRUD bất động sản', phase:'dev' },
+  { id:'S5', start:'27/07', end:'07/08', demo:'07/08', content:'BDS-05→07 + PHONG-01→02 + PROFILE-03→04', milestone:'Duyệt bất động sản + Phòng', phase:'dev' },
   { id:'S6', start:'10/08', end:'21/08', demo:'21/08', content:'PHONG-03→06,09 + NOTIF-01→02', milestone:'Quy trình trạng thái phòng', phase:'dev' },
   { id:'S7', start:'24/08', end:'04/09', demo:'04/09', content:'PHONG-07→08 + DASH-01→03 + NOTIF-03→04', milestone:'Dashboard + Hợp đồng', phase:'dev' },
   { id:'S8', start:'07/09', end:'18/09', demo:'18/09', content:'SEARCH-01→04 + MAP-01→04', milestone:'Search + Map', phase:'dev' },
@@ -369,8 +369,8 @@ const milestones = [
   { id:'M1', date:'12/06', desc:'Auth hoàn chỉnh' },
   { id:'M2', date:'26/06', desc:'Danh mục + Điều hướng' },
   { id:'M3', date:'10/07', desc:'Người dùng + Phân quyền' },
-  { id:'M4', date:'24/07', desc:'CRUD BĐS' },
-  { id:'M5', date:'07/08', desc:'Duyệt BĐS + Phòng' },
+  { id:'M4', date:'24/07', desc:'CRUD bất động sản' },
+  { id:'M5', date:'07/08', desc:'Duyệt bất động sản + Phòng' },
   { id:'M6', date:'21/08', desc:'Quy trình trạng thái phòng' },
   { id:'M7', date:'04/09', desc:'Dashboard + Hợp đồng' },
   { id:'M8', date:'18/09', desc:'Search + Map' },
@@ -381,11 +381,11 @@ const milestones = [
 ]
 
 const demos = [
-  { sprint:'S1', date:'12/06', content:'Auth flow: Đăng ký → ĐN → Đổi MK' },
+  { sprint:'S1', date:'12/06', content:'Auth flow: Đăng ký → đăng nhập → Đổi mật khẩu' },
   { sprint:'S2', date:'26/06', content:'CRUD danh mục + Điều hướng tab/sidebar' },
-  { sprint:'S3', date:'10/07', content:'Quản lý user, phân quyền, gán KV' },
-  { sprint:'S4', date:'24/07', content:'Tạo/xem/sửa BĐS + Hồ sơ' },
-  { sprint:'S5', date:'07/08', content:'Duyệt BĐS + Tạo phòng + Avatar' },
+  { sprint:'S3', date:'10/07', content:'Quản lý user, phân quyền, gán khu vực' },
+  { sprint:'S4', date:'24/07', content:'Tạo/xem/sửa bất động sản + Hồ sơ' },
+  { sprint:'S5', date:'07/08', content:'Duyệt bất động sản + Tạo phòng + Avatar' },
   { sprint:'S6', date:'21/08', content:'Đổi trạng thái phòng + Thông báo' },
   { sprint:'S7', date:'04/09', content:'Đặt cọc, Hợp đồng, Dashboard' },
   { sprint:'S8', date:'18/09', content:'Tìm kiếm nâng cao + Bản đồ' },
@@ -473,38 +473,38 @@ function renderEpicView() {
   let html = '<div class="space-y-6">'
 
   // Roles
-  html += `<section><h2 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2"><i data-lucide="users" class="w-5 h-5 text-indigo-600"></i> Vai trò (Roles)</h2>
+  html += `<section><h2 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2"><i data-lucide="users" class="w-5 h-5 text-indigo-600"></i> Vai trò</h2>
   ${Table(['ID','Vai trò','Mô tả'], roles.map(r => [`<span class="font-mono text-indigo-600">${r.id}</span>`,r.name,r.desc]))}</section>`
 
   // Matrix
-  html += `<section><h2 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2"><i data-lucide="grid-3x3" class="w-5 h-5 text-indigo-600"></i> Ma trận Role - Epic</h2>
+  html += `<section><h2 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2"><i data-lucide="grid-3x3" class="w-5 h-5 text-indigo-600"></i> Ma trận Vai trò - Epic</h2>
   <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white">${Table(epicMatrix.headers, epicMatrix.rows, true)}</div>
-  <p class="text-xs text-gray-400 mt-1">C=Create, R=Read, U=Update, D=Delete, ĐK=Đăng ký, KV=Khu vực, TT=Trạng thái</p></section>`
+  <p class="text-xs text-gray-400 mt-1">C=Tạo, R=Xem, U=Sửa, D=Xóa</p></section>`
 
   // Dependency
   html += `<section><h2 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2"><i data-lucide="git-branch" class="w-5 h-5 text-indigo-600"></i> Phụ thuộc Epic</h2>
   <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white">${Table(['Epic','Phụ thuộc vào','Được phụ thuộc bởi'], epicDeps.map(d => [d.epic,d.dep,d.dependents]), true)}</div></section>`
 
   // Phase legend
-  const phases = [{num:1,name:'Foundation',color:'bg-red-50 border-red-200 text-red-700'},{num:2,name:'Core',color:'bg-blue-50 border-blue-200 text-blue-700'},{num:3,name:'Experience',color:'bg-green-50 border-green-200 text-green-700'},{num:4,name:'Engagement',color:'bg-purple-50 border-purple-200 text-purple-700'}]
+  const phases = [{num:1,name:'Nền tảng',color:'bg-red-50 border-red-200 text-red-700'},{num:2,name:'Lõi',color:'bg-blue-50 border-blue-200 text-blue-700'},{num:3,name:'Trải nghiệm',color:'bg-green-50 border-green-200 text-green-700'},{num:4,name:'Tương tác',color:'bg-purple-50 border-purple-200 text-purple-700'}]
   html += `<section><h2 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2"><i data-lucide="layers" class="w-5 h-5 text-indigo-600"></i> Pha triển khai</h2>
   <div class="flex flex-wrap gap-2">${phases.map(p => `<span class="px-3 py-1.5 rounded-lg text-xs font-medium border ${p.color}">Phase ${p.num}: ${p.name}</span>`).join('')}</div></section>`
 
   // Epics
   const phaseColors = { 1:'border-l-red-500', 2:'border-l-blue-500', 3:'border-l-green-500', 4:'border-l-purple-500' }
-  html += `<section><h2 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2"><i data-lucide="book-open" class="w-5 h-5 text-indigo-600"></i> Danh sách Epic (13)</h2>`
+  html += `<section><h2 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2"><i data-lucide="book-open" class="w-5 h-5 text-indigo-600"></i> Danh sách Epic</h2>`
   html += Accordion(epics, epic => {
-    if (!epic.stories || !epic.stories.length) return '<p class="text-sm text-gray-400 italic">Chưa có stories</p>'
+    if (!epic.stories || !epic.stories.length) return '<p class="text-sm text-gray-400 italic">Chưa có câu chuyện</p>'
     return `<p class="text-sm text-gray-600 mb-3">${epic.desc} <span class="text-xs text-gray-400">(Phụ thuộc: ${epic.dep})</span></p>
     ${Accordion(epic.stories, st => {
       return `<div class="space-y-3">
         <p class="text-sm text-gray-700">${st.desc}</p>
-        <p class="text-xs text-gray-500"><span class="font-medium">Role:</span> ${st.role}</p>
-        ${st.ac.length ? `<div><p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Acceptance Criteria</p><ul class="space-y-1">${st.ac.map(a => `<li class="flex items-start gap-2 text-sm text-gray-600"><input type="checkbox" disabled class="mt-0.5 rounded border-gray-300 text-indigo-600"><span>${a}</span></li>`).join('')}</ul></div>` : ''}
-        ${st.tasks.length ? `<div><p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Technical Tasks</p>${Table(['Nhóm','Task'], st.tasks, true)}</div>` : ''}
+        <p class="text-xs text-gray-500"><span class="font-medium">Vai trò:</span> ${st.role}</p>
+        ${st.ac.length ? `<div><p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Tiêu chí chấp nhận</p><ul class="space-y-1">${st.ac.map(a => `<li class="flex items-start gap-2 text-sm text-gray-600"><input type="checkbox" disabled class="mt-0.5 rounded border-gray-300 text-indigo-600"><span>${a}</span></li>`).join('')}</ul></div>` : ''}
+        ${st.tasks.length ? `<div><p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Nhiệm vụ kỹ thuật</p>${Table(['Nhóm','Task'], st.tasks, true)}</div>` : ''}
       </div>`
     }, 0)}
-    <div class="mt-2 flex items-center justify-between text-xs text-gray-400"><span>${epic.stories.length} stories</span><span class="text-indigo-600 font-medium">Priority: ${epic.stories.filter(s=>s.priority==='High').length} High</span></div>`
+    <div class="mt-2 flex items-center justify-between text-xs text-gray-400"><span>${epic.stories.length} câu chuyện</span><span class="text-indigo-600 font-medium">Ưu tiên: ${epic.stories.filter(s=>s.priority==='High').length} Cao</span></div>`
   }, 1)
 
   html += '</section></div>'
@@ -525,19 +525,19 @@ function renderTimelineView() {
   ]
   const phaseColors = {dev:'bg-indigo-500', test:'bg-emerald-500', release:'bg-amber-500'}
   html += `<div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
-    <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2"><i data-lucide="calendar" class="w-5 h-5 text-indigo-600"></i> Tổng quan Timeline</h2>
+    <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2"><i data-lucide="calendar" class="w-5 h-5 text-indigo-600"></i> Tổng quan tiến độ</h2>
     <div class="overflow-x-auto pb-2">
       <div class="min-w-[750px]">
-        <div class="flex mb-2">${months.map(m => `<div class="flex-1 text-center text-xs font-bold text-gray-500 py-1 bg-gray-50 border-r border-white rounded">${m.label}</div>`).join('')}<div class="flex-1 text-center text-xs font-bold text-gray-500 py-1 bg-gray-50 rounded border-r border-white">Hypercare</div></div>
+        <div class="flex mb-2">${months.map(m => `<div class="flex-1 text-center text-xs font-bold text-gray-500 py-1 bg-gray-50 border-r border-white rounded">${m.label}</div>`).join('')}<div class="flex-1 text-center text-xs font-bold text-gray-500 py-1 bg-gray-50 rounded border-r border-white">Hỗ trợ sau ra mắt</div></div>
         <div class="flex rounded-lg overflow-hidden h-7 mb-1">${months.map(m => m.sprints.map(i => {
           const s = tlSprints[i]
           return `<div class="flex-1 ${phaseColors[s.phase]} flex items-center justify-center text-white text-xs font-bold border-r border-white/30 cursor-default" title="${s.id}: ${s.content}">${s.id}</div>`
-        }).join('')).join('')}<div class="flex-1 bg-gray-400 flex items-center justify-center text-white text-xs font-bold border-r border-white/30 cursor-default" title="Go-live & Hypercare">GL</div></div>
+        }).join('')).join('')}<div class="flex-1 bg-gray-400 flex items-center justify-center text-white text-xs font-bold border-r border-white/30 cursor-default" title="Ra mắt & Hỗ trợ sau ra mắt">GL</div></div>
         <div class="flex text-[10px] text-gray-400 mb-3">${months.map(m => m.sprints.map(i => {
           const s = tlSprints[i]
           return `<div class="flex-1 text-center truncate px-0.5" title="${s.demo}">▸ ${s.demo}</div>`
-        }).join('')).join('')}<div class="flex-1 text-center truncate px-0.5">▸ 14/11 Go-live</div></div>
-        <div class="flex mt-1 gap-4 text-xs text-gray-500"><span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-indigo-500"></span> Dev</span><span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-emerald-500"></span> Test</span><span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-amber-500"></span> Release</span><span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-gray-400"></span> Hypercare</span></div>
+        }).join('')).join('')}<div class="flex-1 text-center truncate px-0.5">▸ 14/11 Ra mắt</div></div>
+        <div class="flex mt-1 gap-4 text-xs text-gray-500"><span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-indigo-500"></span> Phát triển</span><span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-emerald-500"></span> Kiểm thử</span><span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-amber-500"></span> Phát hành</span><span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-gray-400"></span> Hỗ trợ sau ra mắt</span></div>
       </div>
     </div>
   </div>`
@@ -546,7 +546,7 @@ function renderTimelineView() {
   html += `<section><h2 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2"><i data-lucide="list-checks" class="w-5 h-5 text-indigo-600"></i> Chi tiết Sprint</h2>
   <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">${tlSprints.map(s => {
     const phaseColors = {dev:'border-l-indigo-500', test:'border-l-emerald-500', release:'border-l-amber-500'}
-    const phaseLabels = {dev:'Dev', test:'Test', release:'Release'}
+    const phaseLabels = {dev:'Phát triển', test:'Kiểm thử', release:'Phát hành'}
     const storyIds = parseStoryIds(s.content)
     const stories = storyIds.map(id => allStories[id]).filter(Boolean)
     return `<div class="bg-white rounded-xl border border-gray-200 border-l-4 ${phaseColors[s.phase]} p-4">
@@ -557,7 +557,7 @@ function renderTimelineView() {
       <p class="text-xs font-medium text-indigo-600 mb-2">🎯 ${s.milestone}</p>
       ${stories.length ? `<details class="border-t border-gray-100 pt-2 mt-2 group">
         <summary class="flex items-center justify-between cursor-pointer hover:text-indigo-600 transition-colors list-none [&::-webkit-details-marker]:hidden">
-          <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">📦 Deliveries (${stories.length})</p>
+          <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">📦 Chuyển giao (${stories.length})</p>
           <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-gray-400 group-open:rotate-180 transition-transform flex-shrink-0"></i>
         </summary>
         <div class="mt-2 space-y-2">${stories.map(st => `<div class="text-xs"><div class="flex items-start gap-1.5"><span class="font-mono font-bold text-indigo-500 flex-shrink-0">${st.id}</span><span class="text-gray-700">${st.desc}</span></div><span class="inline-block mt-0.5 ml-4 px-1.5 py-0.5 rounded bg-gray-100 text-gray-500 text-[10px]">${st.role}</span></div>`).join('')}</div>
@@ -571,7 +571,7 @@ function renderTimelineView() {
     return [d.date, `<span class="font-mono text-indigo-600">${d.sprint}</span>`, m ? m.desc : '', d.content]
   })
   mdRows.push(
-    ['14/11', '<span class="font-mono text-emerald-600 font-bold">—</span>', '<span class="font-bold text-emerald-600">🚀 Go-live</span>', '<span class="text-gray-400">—</span>'],
+    ['14/11', '<span class="font-mono text-emerald-600 font-bold">—</span>', '<span class="font-bold text-emerald-600">🚀 Ra mắt</span>', '<span class="text-gray-400">—</span>'],
     ['27/11', '<span class="font-mono text-gray-500">—</span>', '<span class="text-gray-500">🏁 Kết thúc dự án</span>', '<span class="text-gray-400">—</span>']
   )
   html += `<section><h2 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2"><i data-lucide="flag" class="w-5 h-5 text-indigo-600"></i> Các mốc & Demo</h2>
@@ -591,8 +591,8 @@ function renderTimelineView() {
 
 function init() {
   const tabs = [
-    { id:'epic', label:'Epics & Stories', icon:'book-open', render:renderEpicView },
-    { id:'timeline', label:'Timeline', icon:'calendar', render:renderTimelineView }
+    { id:'epic', label:'Epics & Câu chuyện', icon:'book-open', render:renderEpicView },
+    { id:'timeline', label:'Tiến độ', icon:'calendar', render:renderTimelineView }
   ]
 
   const tabsEl = document.getElementById('tabs')
