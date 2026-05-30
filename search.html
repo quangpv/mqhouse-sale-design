@@ -180,6 +180,12 @@
               <button onclick="toggleFilterChip('type', '2 Phòng ngủ')" id="filter-chip-type-2 Phòng ngủ" class="px-4 py-2 border rounded-full text-[12px] font-medium transition-colors duration-150">2 Phòng ngủ</button>
             </div>
           </div>
+          <!-- Kiểu phòng -->
+          <div>
+            <h3 class="text-[14px] font-semibold text-textPrimary mb-2">Kiểu phòng</h3>
+            <div class="flex flex-wrap gap-2" id="filterChipDesignStyle">
+            </div>
+          </div>
           <!-- Loại hình BDS -->
           <div>
             <h3 class="text-[14px] font-semibold text-textPrimary mb-2">Loại hình BDS</h3>
@@ -198,8 +204,8 @@
             <div class="relative w-full h-6 mt-4 mb-2 flex items-center">
               <div class="absolute left-0 right-0 h-1.5 bg-slate-200 rounded-full"></div>
               <div id="filterPriceTrack" class="absolute h-1.5 bg-primary rounded-full" style="left: 0%; right: 0%;"></div>
-              <input type="range" id="filterPriceMin" min="0" max="100" value="0" oninput="syncFilterPrice()" class="absolute pointer-events-none appearance-none w-full bg-transparent top-0 h-full z-30">
-              <input type="range" id="filterPriceMax" min="0" max="100" value="100" oninput="syncFilterPrice()" class="absolute pointer-events-none appearance-none w-full bg-transparent top-0 h-full z-30">
+              <input type="range" id="filterPriceMin" min="0" max="100" value="0" oninput="syncFilterPrice()" class="absolute pointer-events-none appearance-none outline-none w-full bg-transparent top-0 h-full z-30">
+              <input type="range" id="filterPriceMax" min="0" max="100" value="100" oninput="syncFilterPrice()" class="absolute pointer-events-none appearance-none outline-none w-full bg-transparent top-0 h-full z-30">
             </div>
             <div class="flex items-center gap-3 mt-4">
               <div class="flex-1">
@@ -221,8 +227,8 @@
             <div class="relative w-full h-6 mt-4 mb-2 flex items-center">
               <div class="absolute left-0 right-0 h-1.5 bg-slate-200 rounded-full"></div>
               <div id="filterAreaTrack" class="absolute h-1.5 bg-primary rounded-full" style="left: 0%; right: 0%;"></div>
-              <input type="range" id="filterAreaMin" min="0" max="200" value="0" oninput="syncFilterArea()" class="absolute pointer-events-none appearance-none w-full bg-transparent top-0 h-full z-30">
-              <input type="range" id="filterAreaMax" min="0" max="200" value="200" oninput="syncFilterArea()" class="absolute pointer-events-none appearance-none w-full bg-transparent top-0 h-full z-30">
+              <input type="range" id="filterAreaMin" min="0" max="200" value="0" oninput="syncFilterArea()" class="absolute pointer-events-none appearance-none outline-none w-full bg-transparent top-0 h-full z-30">
+              <input type="range" id="filterAreaMax" min="0" max="200" value="200" oninput="syncFilterArea()" class="absolute pointer-events-none appearance-none outline-none w-full bg-transparent top-0 h-full z-30">
             </div>
             <div class="flex items-center gap-3 mt-4">
               <div class="flex-1">
@@ -235,6 +241,25 @@
               </div>
             </div>
           </div>
+          <!-- Bán kính -->
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <h3 class="text-[14px] font-semibold text-textPrimary">Bán kính</h3>
+              <span class="text-[12px] text-primary font-medium" id="filterRadiusLabel">10 km</span>
+            </div>
+            <div class="relative w-full h-6 mt-4 mb-2 flex items-center">
+              <div class="absolute left-0 right-0 h-1.5 bg-slate-200 rounded-full"></div>
+              <div id="filterRadiusTrack" class="absolute h-1.5 bg-primary rounded-full" style="left: 0%; width: 20%;"></div>
+              <input type="range" id="filterRadius" min="0" max="50" value="10" oninput="syncFilterRadius()" class="absolute appearance-none outline-none w-full bg-transparent top-0 h-full z-30">
+            </div>
+            <div class="flex items-center gap-3 mt-4">
+              <div class="flex-1">
+                <label class="text-[11px] text-textSecondary block mb-1">Khoảng cách (km)</label>
+                <input type="number" id="filterRadiusInput" value="10" min="0" max="50" oninput="syncFilterRadiusInput()" class="w-full px-3 py-1.5 border border-border text-[13px] rounded-input focus:outline-none focus:border-primary">
+              </div>
+            </div>
+          </div>
+          <!-- Tiện ích cơ bản -->
           <div>
             <h3 class="text-[14px] font-semibold text-textPrimary mb-2">Tiện ích cơ bản</h3>
             <div class="flex flex-wrap gap-1.5" id="filterBasicAmenities"></div>
@@ -291,10 +316,18 @@
         lucide.createIcons();
     </script>
     <script>
-        let filterState = { status: [], type: [], propertyType: [], priceMin: 0, priceMax: 100, areaMin: 0, areaMax: 200, amenities: [] };
+        let filterState = { status: [], type: [], propertyType: [], priceMin: 0, priceMax: 100, areaMin: 0, areaMax: 200, amenities: [], designStyle: [], radius: 10 };
 
         const AMENITIES_BASIC = ["Hồ bơi", "Phòng gym", "Bãi đậu xe", "Thang máy", "Bảo vệ", "Lễ tân 24/7", "Balcony", "Cửa sổ", "Dọn phòng", "Nuôi Pet", "Cửa sổ (giếng trời, ngoài trời)"];
         const AMENITIES_FURNITURE = ["Cửa sổ, ban công(thật, giả)", "Thang bộ/Thang máy"];
+
+        const ROOM_DESIGN_STYLES = {
+            "Studio": ["Thiết kế 1", "Thiết kế 2", "Thiết kế 3"],
+            "1 Phòng ngủ": ["Tiêu chuẩn", "Cao cấp", "Gác lửng"],
+            "2 Phòng ngủ": ["Tiêu chuẩn", "Cao cấp", "Corner"],
+            "Duplex": ["Thiết kế A", "Thiết kế B"],
+            "Sleeppod": ["4 giường", "6 giường", "8 giường"]
+        };
 
         function renderAmenityChips() {
             ['filterBasicAmenities', 'filterFurnitureAmenities'].forEach(id => {
@@ -310,6 +343,33 @@
             });
         }
 
+        function renderDesignStyleChips() {
+            const container = document.getElementById('filterChipDesignStyle');
+            if (!container) return;
+            const allStyles = [...new Set(Object.values(ROOM_DESIGN_STYLES).flat())];
+            container.innerHTML = allStyles.map(s => `
+                <button onclick="toggleFilterChip('designStyle', '${s}')" id="filter-chip-designStyle-${s}" class="px-4 py-2 border rounded-full text-[12px] font-medium transition-colors duration-150">${s}</button>
+            `).join('');
+        }
+
+        function syncFilterRadius() {
+            const val = parseInt(document.getElementById('filterRadius').value);
+            filterState.radius = val;
+            document.getElementById('filterRadiusLabel').innerText = val + ' km';
+            document.getElementById('filterRadiusInput').value = val;
+            document.getElementById('filterRadiusTrack').style.width = (val / 50 * 100) + '%';
+        }
+
+        function syncFilterRadiusInput() {
+            let val = parseInt(document.getElementById('filterRadiusInput').value) || 0;
+            if (val < 0) val = 0;
+            if (val > 50) val = 50;
+            filterState.radius = val;
+            document.getElementById('filterRadius').value = val;
+            document.getElementById('filterRadiusLabel').innerText = val + ' km';
+            document.getElementById('filterRadiusTrack').style.width = (val / 50 * 100) + '%';
+        }
+
         function openFilterSheet() {
             const sheet = document.getElementById('filterSheet');
             sheet.classList.remove('hidden');
@@ -318,8 +378,10 @@
                 sheet.querySelector('div').classList.remove('translate-y-10');
             }, 5);
             renderAmenityChips();
+            renderDesignStyleChips();
             renderFilterChips();
             syncFilterPriceUI();
+            syncFilterRadius();
         }
 
         function closeFilterSheet() {
@@ -359,6 +421,10 @@
             });
             filterState.propertyType.forEach(v => {
                 const el = document.getElementById(`filter-chip-propertyType-${v}`);
+                if (el) el.className = active;
+            });
+            filterState.designStyle.forEach(v => {
+                const el = document.getElementById(`filter-chip-designStyle-${v}`);
                 if (el) el.className = active;
             });
             ['filterBasicAmenities', 'filterFurnitureAmenities'].forEach(id => {
@@ -445,7 +511,7 @@
         }
 
         function resetFilterSheet() {
-            filterState = { status: [], type: [], propertyType: [], priceMin: 0, priceMax: 100, areaMin: 0, areaMax: 200, amenities: [] };
+            filterState = { status: [], type: [], propertyType: [], priceMin: 0, priceMax: 100, areaMin: 0, areaMax: 200, amenities: [], designStyle: [], radius: 10 };
             document.getElementById('searchLabelStatus').innerText = 'Trạng thái';
             document.getElementById('searchLabelType').innerText = 'Loại phòng';
             document.getElementById('searchLabelPropertyType').innerText = 'Loại hình BDS';
@@ -453,6 +519,7 @@
             renderFilterChips();
             syncFilterPriceUI();
             syncFilterAreaUI();
+            syncFilterRadius();
         }
 
         function applyFilterSheet() {

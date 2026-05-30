@@ -244,27 +244,39 @@
             <div class="flex-1 overflow-y-auto px-4 space-y-6 py-4 no-scrollbar min-h-0">
                 <div class="bg-surface p-4 rounded-card shadow-soft space-y-4 border border-border">
                     <span id="lbl-parent-bds" class="block text-small font-medium text-textSecondary">BDS: BDS-2026-HQ</span>
-                    <div>
+                    <!-- ADD MODE: Multiple mã phòng inputs -->
+                    <div id="phong-ma-section-add">
+                        <label class="block text-small font-medium text-textSecondary mb-1">Mã phòng</label>
+                        <div class="space-y-2" id="phong-malist-container"></div>
+                    </div>
+                    <!-- EDIT MODE: Single mã phòng input -->
+                    <div id="phong-ma-section-edit" class="hidden">
                         <label class="block text-small font-medium text-textSecondary mb-1">Mã phòng</label>
                         <input type="text" id="phong-ma" value="P.101" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary">
                     </div>
+                    <div>
+                        <label class="block text-small font-medium text-textSecondary mb-1">Trạng thái phòng</label>
+                        <select id="phong-trangthai" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary">
+                            <option value="Đang trống" selected>Đang trống</option>
+                            <option value="Sắp trống">Sắp trống</option>
+                            <option value="Đã cọc">Đã cọc</option>
+                            <option value="Đã cho thuê">Đã cho thuê</option>
+                        </select>
+                    </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-small font-medium text-textSecondary mb-1">Trạng thái phòng</label>
-                            <select id="phong-trangthai" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary">
-                                <option value="Đang trống" selected>Đang trống</option>
-                                <option value="Sắp trống">Sắp trống</option>
-                                <option value="Đã cọc">Đã cọc</option>
-                                <option value="Đã cho thuê">Đã cho thuê</option>
-                            </select>
-                        </div>
-                        <div>
                             <label class="block text-small font-medium text-textSecondary mb-1">Loại phòng</label>
-                            <select id="phong-loai" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary" style="max-height: 40px;">
+                            <select id="phong-loai" onchange="updateRoomDesignStyles()" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary" style="max-height: 40px;">
                                 <option value="Studio" selected>Studio</option>
                                 <option value="Duplex">Duplex</option>
                                 <option value="1 Phòng ngủ">1 Phòng ngủ</option>
                                 <option value="2 Phòng Ngủ">2 Phòng Ngủ</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-small font-medium text-textSecondary mb-1">Kiểu phòng</label>
+                            <select id="phong-kieu" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary" style="max-height: 40px;">
+                                <option value="">-- Chọn kiểu --</option>
                             </select>
                         </div>
                     </div>
@@ -424,6 +436,55 @@
     </div>
 
     <script>
+        // KIỂU PHÒNG THEO LOẠI PHÒNG
+        let roomDesignStyles = {
+            "Studio": ["Thiết kế 1", "Thiết kế 2", "Thiết kế 3"],
+            "Duplex": ["Thiết kế A", "Thiết kế B"],
+            "1 Phòng ngủ": ["Tiêu chuẩn", "Cao cấp", "Gác lửng"],
+            "2 Phòng Ngủ": ["Tiêu chuẩn", "Cao cấp", "Corner"]
+        };
+
+        // Hàm cập nhật kiểu phòng theo loại phòng đã chọn
+        function updateRoomDesignStyles() {
+            const loai = document.getElementById('phong-loai').value;
+            const select = document.getElementById('phong-kieu');
+            const styles = roomDesignStyles[loai] || [];
+            select.innerHTML = '<option value="">-- Chọn kiểu --</option>' +
+                styles.map(s => `<option value="${s}">${s}</option>`).join('');
+        }
+
+        // BATCH: Thêm/Xóa mã phòng trong form thêm phòng (add mode)
+        function addPhongCode() {
+            const nextIdx = bdsData.phongGrid.length + phongCodeList.length + 1;
+            phongCodeList.push("P." + (nextIdx + 100));
+            renderPhongCodeInputs();
+        }
+
+        function removePhongCode(index) {
+            if (phongCodeList.length <= 1) return;
+            phongCodeList.splice(index, 1);
+            renderPhongCodeInputs();
+        }
+
+        function renderPhongCodeInputs() {
+            document.getElementById('phong-malist-container').innerHTML =
+                phongCodeList.map((code, i) => `
+                    <div class="flex items-center gap-2">
+                        <input type="text" value="${code}"
+                            oninput="phongCodeList[${i}]=this.value"
+                            class="flex-1 h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary focus:outline-none focus:border-primary custom-transition">
+                        <button onclick="removePhongCode(${i})"
+                            class="p-2 text-error hover:bg-red-50 rounded-full custom-transition shrink-0">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `).join('') + `
+                    <button onclick="addPhongCode()" class="w-full flex items-center justify-center gap-1.5 h-10 border-2 border-dashed border-primary/30 text-primary text-small font-medium rounded-input bg-blue-50/50 hover:bg-blue-50 hover:border-primary/60 custom-transition">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Thêm phòng
+                    </button>`;
+            lucide.createIcons();
+        }
+
         // MOCK DATA ĐỒNG BỘ CHO CẢ BDS VÀ PHÒNG KẾ THỪA
         let bdsData = {
             noiThat: [
@@ -453,6 +514,7 @@
         let activeScope = 'bds'; 
         let currentMenuContext = null;
         let selectedServiceType = 'Cố định';
+        let phongCodeList = [];
 
         document.addEventListener("DOMContentLoaded", () => {
             renderBDSViews();
@@ -552,12 +614,21 @@
                 // Nếu chưa có dữ liệu chỉnh sửa riêng biệt, thực hiện nhân bản kế thừa từ BDS
                 if(!phongEditingData.isEditMode) {
                     document.getElementById('phong-screen-title').innerText = "Thêm phòng mới";
-                    document.getElementById('phong-ma').value = "P." + (bdsData.phongGrid.length + 101);
+                    // ADD mode: show multiple inputs
+                    document.getElementById('phong-ma-section-add').classList.remove('hidden');
+                    document.getElementById('phong-ma-section-edit').classList.add('hidden');
+                    phongCodeList = ["P." + (bdsData.phongGrid.length + 101)];
+                    renderPhongCodeInputs();
                     document.getElementById('phong-phithue').value = 6000000;
                     phongEditingData.noiThat = JSON.parse(JSON.stringify(bdsData.noiThat));
                     phongEditingData.tienIch = JSON.parse(JSON.stringify(bdsData.tienIch));
                     phongEditingData.dichVu = JSON.parse(JSON.stringify(bdsData.dichVu));
+                } else {
+                    // EDIT mode: show single input
+                    document.getElementById('phong-ma-section-add').classList.add('hidden');
+                    document.getElementById('phong-ma-section-edit').classList.remove('hidden');
                 }
+                updateRoomDesignStyles();
                 renderPhongViews();
             } else {
                 document.getElementById('screen-them-phong').classList.add('hidden');
@@ -580,6 +651,9 @@
             document.getElementById('phong-phithue').value = targetRoom.price;
             document.getElementById('phong-dientich').value = targetRoom.area ? parseInt(targetRoom.area) : 25;
 
+            updateRoomDesignStyles();
+            document.getElementById('phong-kieu').value = targetRoom.designStyle || '';
+
             // Trong thực tế sẽ clone data riêng phòng, demo sẽ clone mẫu từ BDS
             phongEditingData.noiThat = JSON.parse(JSON.stringify(bdsData.noiThat));
             phongEditingData.tienIch = JSON.parse(JSON.stringify(bdsData.tienIch));
@@ -590,20 +664,24 @@
 
         // XỬ LÝ LƯU PHÒNG VÀO SƠ ĐỒ GRID
         function commitSavePhong() {
-            const code = document.getElementById('phong-ma').value.trim();
             const status = document.getElementById('phong-trangthai').value;
             const price = parseFloat(document.getElementById('phong-phithue').value) || 0;
             const area = document.getElementById('phong-dientich').value + 'm²';
-
-            if(!code) { showToast("Vui lòng điền mã phòng!"); return; }
+            const designStyle = document.getElementById('phong-kieu').value;
 
             if(phongEditingData.isEditMode && phongEditingData.currentId) {
+                const code = document.getElementById('phong-ma').value.trim();
+                if(!code) { showToast("Vui lòng điền mã phòng!"); return; }
                 let room = bdsData.phongGrid.find(p => p.id === phongEditingData.currentId);
-                if(room) { room.code = code; room.status = status; room.price = price; room.area = area; }
+                if(room) { room.code = code; room.status = status; room.price = price; room.area = area; room.designStyle = designStyle; }
                 showToast("Đã cập nhật phòng thành công!");
             } else {
-                bdsData.phongGrid.push({ id: 'p' + (bdsData.phongGrid.length + 1), code, status, price, area });
-                showToast("Đã thêm phòng mới vào sơ đồ!");
+                const validCodes = phongCodeList.map(c => c.trim()).filter(c => c);
+                if(validCodes.length === 0) { showToast("Vui lòng nhập ít nhất 1 mã phòng!"); return; }
+                validCodes.forEach(code => {
+                    bdsData.phongGrid.push({ id: 'p' + (bdsData.phongGrid.length + 1), code, status, price, area, designStyle });
+                });
+                showToast("Đã thêm " + validCodes.length + " phòng vào sơ đồ!");
             }
 
             navigateTo('them-bds');

@@ -205,6 +205,12 @@
                         <button onclick="toggleChip('type', '2 Phòng ngủ')" id="chip-type-2 Phòng ngủ" class="px-4 py-2 border rounded-full text-[12px] font-medium transition-colors duration-150">2 Phòng ngủ</button>
                     </div>
                 </div>
+                <!-- Kiểu phòng -->
+                <div>
+                    <h3 class="text-[14px] font-semibold text-textPrimary mb-2">Kiểu phòng</h3>
+                    <div class="flex flex-wrap gap-2" id="chipGroupDesignStyle">
+                    </div>
+                </div>
                 <!-- Loại hình BDS -->
                 <div>
                     <h3 class="text-[14px] font-semibold text-textPrimary mb-2">Loại hình BDS</h3>
@@ -223,8 +229,8 @@
                     <div class="relative w-full h-6 mt-4 mb-2 flex items-center">
                         <div class="absolute left-0 right-0 h-1.5 bg-slate-200 rounded-full"></div>
                         <div id="detailSliderTrack" class="absolute h-1.5 bg-primary rounded-full" style="left: 0%; right: 0%;"></div>
-                        <input type="range" id="detailSliderMin" min="0" max="100" value="0" oninput="syncSliders('detail', 'min')" class="absolute pointer-events-none appearance-none w-full bg-transparent top-0 h-full z-30">
-                        <input type="range" id="detailSliderMax" min="0" max="100" value="100" oninput="syncSliders('detail', 'max')" class="absolute pointer-events-none appearance-none w-full bg-transparent top-0 h-full z-30">
+                        <input type="range" id="detailSliderMin" min="0" max="100" value="0" oninput="syncSliders('detail', 'min')" class="absolute pointer-events-none appearance-none outline-none w-full bg-transparent top-0 h-full z-30">
+                        <input type="range" id="detailSliderMax" min="0" max="100" value="100" oninput="syncSliders('detail', 'max')" class="absolute pointer-events-none appearance-none outline-none w-full bg-transparent top-0 h-full z-30">
                     </div>
                     <div class="flex items-center gap-3 mt-4">
                         <div class="flex-1">
@@ -246,8 +252,8 @@
                     <div class="relative w-full h-6 mt-4 mb-2 flex items-center">
                         <div class="absolute left-0 right-0 h-1.5 bg-slate-200 rounded-full"></div>
                         <div id="detailAreaTrack" class="absolute h-1.5 bg-primary rounded-full" style="left: 0%; right: 0%;"></div>
-                        <input type="range" id="detailAreaSliderMin" min="0" max="200" value="0" oninput="syncAreaSliders('min')" class="absolute pointer-events-none appearance-none w-full bg-transparent top-0 h-full z-30">
-                        <input type="range" id="detailAreaSliderMax" min="0" max="200" value="200" oninput="syncAreaSliders('max')" class="absolute pointer-events-none appearance-none w-full bg-transparent top-0 h-full z-30">
+                        <input type="range" id="detailAreaSliderMin" min="0" max="200" value="0" oninput="syncAreaSliders('min')" class="absolute pointer-events-none appearance-none outline-none w-full bg-transparent top-0 h-full z-30">
+                        <input type="range" id="detailAreaSliderMax" min="0" max="200" value="200" oninput="syncAreaSliders('max')" class="absolute pointer-events-none appearance-none outline-none w-full bg-transparent top-0 h-full z-30">
                     </div>
                     <div class="flex items-center gap-3 mt-4">
                         <div class="flex-1">
@@ -257,6 +263,24 @@
                         <div class="flex-1">
                             <label class="text-[11px] text-textSecondary block mb-1">Đến (Max)</label>
                             <input type="number" id="detailAreaInputMax" value="200" min="0" max="200" oninput="syncAreaInputs('max')" class="w-full px-3 py-1.5 border border-border text-[13px] rounded-input focus:outline-none focus:border-primary">
+                        </div>
+                    </div>
+                </div>
+                <!-- Bán kính -->
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="text-[14px] font-semibold text-textPrimary">Bán kính</h3>
+                        <span class="text-[12px] text-primary font-medium" id="lblMapRadius">10 km</span>
+                    </div>
+                    <div class="relative w-full h-6 mt-4 mb-2 flex items-center">
+                        <div class="absolute left-0 right-0 h-1.5 bg-slate-200 rounded-full"></div>
+                        <div id="mapRadiusTrack" class="absolute h-1.5 bg-primary rounded-full" style="left: 0%; width: 20%;"></div>
+                        <input type="range" id="mapRadiusSlider" min="0" max="50" value="10" oninput="syncMapRadius()" class="absolute appearance-none outline-none w-full bg-transparent top-0 h-full z-30">
+                    </div>
+                    <div class="flex items-center gap-3 mt-4">
+                        <div class="flex-1">
+                            <label class="text-[11px] text-textSecondary block mb-1">Khoảng cách (km)</label>
+                            <input type="number" id="mapRadiusInput" value="10" min="0" max="50" oninput="syncMapRadiusInput()" class="w-full px-3 py-1.5 border border-border text-[13px] rounded-input focus:outline-none focus:border-primary">
                         </div>
                     </div>
                 </div>
@@ -289,11 +313,11 @@
                     <span class="text-[12px] text-textSecondary">Khoảng giá thuê lựa chọn:</span>
                     <span class="text-[14px] font-semibold text-primary" id="lblPriceRangeDisplay">0 - 100 Tr</span>
                 </div>
-                <div class="relative w-full h-6 flex items-center">
+                <div class="relative w-full h-6 mt-4 mb-2 flex items-center">
                     <div class="absolute left-0 right-0 h-1.5 bg-slate-200 rounded-full"></div>
                     <div id="priceSliderTrack" class="absolute h-1.5 bg-primary rounded-full" style="left: 0%; right: 0%;"></div>
-                    <input type="range" id="priceSliderMin" min="0" max="100" value="0" oninput="syncSliders('price', 'min')" class="absolute pointer-events-none appearance-none w-full bg-transparent top-0 h-full z-30">
-                    <input type="range" id="priceSliderMax" min="0" max="100" value="100" oninput="syncSliders('price', 'max')" class="absolute pointer-events-none appearance-none w-full bg-transparent top-0 h-full z-30">
+                    <input type="range" id="priceSliderMin" min="0" max="100" value="0" oninput="syncSliders('price', 'min')" class="absolute pointer-events-none appearance-none outline-none w-full bg-transparent top-0 h-full z-30">
+                    <input type="range" id="priceSliderMax" min="0" max="100" value="100" oninput="syncSliders('price', 'max')" class="absolute pointer-events-none appearance-none outline-none w-full bg-transparent top-0 h-full z-30">
                 </div>
                 <div class="flex items-center gap-3">
                     <input type="number" id="priceInputMin" value="0" min="0" max="100" oninput="syncInputs('price', 'min')" class="w-full px-3 py-2 border border-border text-[14px] rounded-input text-center">
@@ -352,6 +376,7 @@
                 title: "Căn hộ Studio cao cấp Horizon",
                 type: "Căn hộ",
                 roomType: "Studio",
+                designStyle: "Thiết kế 1",
                 status: "Còn hàng",
                 price: 8.5,
                 distance: "0.3 km",
@@ -367,6 +392,7 @@
                 title: "Phòng trọ dịch vụ Full nội thất lầu 2",
                 type: "Phòng trọ",
                 roomType: "Studio",
+                designStyle: "Thiết kế 2",
                 status: "Còn hàng",
                 price: 3.8,
                 distance: "0.7 km",
@@ -382,6 +408,7 @@
                 title: "Tòa nhà căn hộ dịch vụ Lê Quang Định",
                 type: "Tòa nhà",
                 roomType: "2 Phòng ngủ",
+                designStyle: "Cao cấp",
                 status: "Còn hàng",
                 price: 45.0,
                 distance: "1.2 km",
@@ -397,6 +424,7 @@
                 title: "Căn hộ Mini ban công thoáng mát",
                 type: "Căn hộ",
                 roomType: "1 Phòng ngủ",
+                designStyle: "Tiêu chuẩn",
                 status: "Còn hàng",
                 price: 6.2,
                 distance: "0.9 km",
@@ -412,6 +440,7 @@
                 title: "Phòng trọ gác lửng giá sinh viên",
                 type: "Phòng trọ",
                 roomType: "Studio",
+                designStyle: "Thiết kế 3",
                 status: "Hết hàng",
                 price: 2.5,
                 distance: "1.5 km",
@@ -427,6 +456,7 @@
                 title: "Luxury Penthouse Pearl Plaza view sông",
                 type: "Căn hộ",
                 roomType: "2 Phòng ngủ",
+                designStyle: "Corner",
                 status: "Còn hàng",
                 price: 95.0,
                 distance: "1.8 km",
@@ -442,7 +472,14 @@
         const AMENITIES_BASIC = ["Hồ bơi", "Phòng gym", "Bãi đậu xe", "Thang máy", "Bảo vệ", "Lễ tân 24/7", "Balcony", "Cửa sổ", "Dọn phòng", "Nuôi Pet", "Cửa sổ (giếng trời, ngoài trời)"];
         const AMENITIES_FURNITURE = ["Cửa sổ, ban công(thật, giả)", "Thang bộ/Thang máy"];
 
-        let currentFilters = { status: ["Còn hàng"], type: [], propertyType: [], priceMin: 0, priceMax: 100, areaMin: 0, areaMax: 200, amenities: [] };
+        const ROOM_DESIGN_STYLES = {
+            "Studio": ["Thiết kế 1", "Thiết kế 2", "Thiết kế 3"],
+            "1 Phòng ngủ": ["Tiêu chuẩn", "Cao cấp", "Gác lửng"],
+            "2 Phòng ngủ": ["Tiêu chuẩn", "Cao cấp", "Corner"],
+            "Duplex": ["Thiết kế A", "Thiết kế B"]
+        };
+
+        let currentFilters = { status: ["Còn hàng"], type: [], propertyType: [], priceMin: 0, priceMax: 100, areaMin: 0, areaMax: 200, amenities: [], designStyle: [], radius: 10 };
         let isSheetOpen = false; let selectedPropertyId = null;
         let map; let googleMarkers = []; let MapMarkerOverlay;
 
@@ -465,6 +502,37 @@
                 });
             });
         });
+
+        function renderDesignStyleChips() {
+            const container = document.getElementById('chipGroupDesignStyle');
+            if (!container) return;
+            const allStyles = [...new Set(Object.values(ROOM_DESIGN_STYLES).flat())];
+            container.innerHTML = allStyles.map(s => `
+                <button onclick="toggleChip('designStyle', '${s}')" id="chip-designStyle-${s}" class="px-4 py-2 border rounded-full text-[12px] font-medium transition-colors duration-150">${s}</button>
+            `).join('');
+        }
+
+        function syncMapRadius() {
+            const val = parseInt(document.getElementById('mapRadiusSlider').value);
+            currentFilters.radius = val;
+            document.getElementById('lblMapRadius').innerText = val + ' km';
+            document.getElementById('mapRadiusInput').value = val;
+            document.getElementById('mapRadiusTrack').style.width = (val / 50 * 100) + '%';
+        }
+
+        function syncMapRadiusInput() {
+            let val = parseInt(document.getElementById('mapRadiusInput').value) || 0;
+            if (val < 0) val = 0;
+            if (val > 50) val = 50;
+            currentFilters.radius = val;
+            document.getElementById('mapRadiusSlider').value = val;
+            document.getElementById('lblMapRadius').innerText = val + ' km';
+            document.getElementById('mapRadiusTrack').style.width = (val / 50 * 100) + '%';
+        }
+
+        function getDistanceKm(distanceStr) {
+            return parseFloat(distanceStr) || 0;
+        }
 
         function renderAmenityChips() {
             const containers = [
@@ -517,6 +585,7 @@
 
         function openModal(id) {
             const target = document.getElementById(id); target.classList.remove("hidden");
+            if (id === 'modalDetail') { renderDesignStyleChips(); syncMapRadius(); }
             setTimeout(() => { target.classList.remove("opacity-0"); target.querySelector('div').classList.remove("translate-y-10"); }, 5);
         }
 
@@ -589,6 +658,11 @@
                 const el = document.getElementById(`chip-propertyType-${v}`);
                 el.className = currentFilters.propertyType.includes(v) ? "px-4 py-2 bg-primary border border-primary text-white text-[12px] font-medium rounded-full shadow-sm" : "px-4 py-2 bg-white border border-border text-textPrimary text-[12px] font-medium rounded-full hover:bg-slate-50";
             });
+            const allStyles = [...new Set(Object.values(ROOM_DESIGN_STYLES).flat())];
+            allStyles.forEach(v => {
+                const el = document.getElementById(`chip-designStyle-${v}`);
+                if (el) el.className = currentFilters.designStyle.includes(v) ? "px-4 py-2 bg-primary border border-primary text-white text-[12px] font-medium rounded-full shadow-sm" : "px-4 py-2 bg-white border border-border text-textPrimary text-[12px] font-medium rounded-full hover:bg-slate-50";
+            });
             ['detail', 'price'].forEach(p => {
                 document.getElementById(`${p}SliderMin`).value = currentFilters.priceMin; document.getElementById(`${p}SliderMax`).value = currentFilters.priceMax;
                 document.getElementById(`${p}InputMin`).value = currentFilters.priceMin; document.getElementById(`${p}InputMax`).value = currentFilters.priceMax;
@@ -614,11 +688,12 @@
         }
 
         function resetFilters() {
-            currentFilters = { status: [], type: [], propertyType: [], priceMin: 0, priceMax: 100, areaMin: 0, areaMax: 200, amenities: [] };
+            currentFilters = { status: [], type: [], propertyType: [], priceMin: 0, priceMax: 100, areaMin: 0, areaMax: 200, amenities: [], designStyle: [], radius: 10 };
             document.getElementById("labelStatus").innerText = "Trạng thái";
             document.getElementById("labelType").innerText = "Loại phòng";
             document.getElementById("labelPropertyType").innerText = "Loại hình BDS";
             syncFiltersToUI();
+            syncMapRadius();
         }
 
         function executeApplyFilters() {
@@ -629,11 +704,13 @@
             const filtered = MOCK_DATA.filter(item => {
                 if (currentFilters.status.length > 0 && !currentFilters.status.includes(item.status)) return false;
                 if (currentFilters.type.length > 0 && !currentFilters.type.includes(item.roomType)) return false;
+                if (currentFilters.designStyle.length > 0 && !currentFilters.designStyle.includes(item.designStyle || '')) return false;
                 if (currentFilters.propertyType.length > 0 && !currentFilters.propertyType.includes(item.type)) return false;
                 if (item.price < currentFilters.priceMin || item.price > currentFilters.priceMax) return false;
                 const itemArea = parseInt(item.area) || 0;
                 if (itemArea < currentFilters.areaMin || itemArea > currentFilters.areaMax) return false;
                 if (currentFilters.amenities.length > 0 && !currentFilters.amenities.every(a => item.amenities.includes(a))) return false;
+                if (getDistanceKm(item.distance) > currentFilters.radius) return false;
                 return true;
             });
             renderMapMarkers(filtered); renderPropertyCards(filtered);
@@ -757,7 +834,10 @@
                         <div>
                             <div class="flex items-center justify-between gap-1 mb-0.5">
                                 <span class="text-[11px] font-medium text-primary flex items-center gap-1"><i data-lucide="${typeIcon}" class="w-3 h-3"></i>${item.type}</span>
-                                <span class="text-[11px] text-textSecondary flex items-center gap-0.5"><i data-lucide="navigation" class="w-3 h-3 text-error"></i>Cách tôi ${item.distance}</span>
+                                <div class="flex items-center gap-1.5">
+                                    ${item.designStyle ? `<span class="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-50 text-primary font-medium">${item.designStyle}</span>` : ''}
+                                    <span class="text-[11px] text-textSecondary flex items-center gap-0.5"><i data-lucide="navigation" class="w-3 h-3 text-error"></i>Cách tôi ${item.distance}</span>
+                                </div>
                             </div>
                             <h4 class="text-[14px] font-semibold text-textPrimary truncate">${item.title}</h4>
                             <p class="text-[12px] text-textSecondary truncate mt-0.5">${item.address}</p>
