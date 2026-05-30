@@ -102,25 +102,7 @@
                 </button>
             </div>
 
-            <div class="px-4 py-2 space-y-3">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-body font-semibold text-textSecondary uppercase tracking-wider">Tìm kiếm nhanh</h3>
-                    <button class="flex items-center gap-1.5 px-3 py-1.5 bg-surface border border-border rounded-button text-small font-medium hover:bg-background transition-colors duration-150">
-                        <span>Chọn Tỉnh thành</span>
-                        <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-textSecondary"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
-                <button onclick="parent.switchScreen('search')" class="px-4 py-2 bg-primary text-white text-body font-medium rounded-button shadow-soft whitespace-nowrap transition-colors duration-150" style="margin-left: 16px;">Quận 1</button>
-                <button onclick="parent.switchScreen('search')" class="px-4 py-2 bg-surface border border-border text-textPrimary text-body font-medium rounded-button shadow-soft hover:border-border whitespace-nowrap transition-colors duration-150">Quận 2</button>
-                <button onclick="parent.switchScreen('search')" class="px-4 py-2 bg-surface border border-border text-textPrimary text-body font-medium rounded-button shadow-soft hover:border-border whitespace-nowrap transition-colors duration-150">Quận 3</button>
-                <button onclick="parent.switchScreen('search')" class="px-4 py-2 bg-surface border border-border text-textPrimary text-body font-medium rounded-button shadow-soft hover:border-border whitespace-nowrap transition-colors duration-150">Quận 4</button>
-                <button onclick="parent.switchScreen('search')" class="px-4 py-2 bg-surface border border-border text-textPrimary text-body font-medium rounded-button shadow-soft hover:border-border whitespace-nowrap transition-colors duration-150">Quận 7</button>
-                <button onclick="parent.switchScreen('search')" class="px-4 py-2 bg-surface border border-border text-textPrimary text-body font-medium rounded-button shadow-soft hover:border-border whitespace-nowrap transition-colors duration-150" style="margin-right: 16px;">Bình Thạnh</button>
-            </div>
-
-            <div class="mx-4 mt-3 rounded-card overflow-hidden relative h-[148px]">
+            <div class="mx-4 rounded-card overflow-hidden relative h-[148px]">
                 <div id="banner-slide-0" onclick="parent.switchScreen('search')" class="absolute inset-0 transition-all duration-500 ease-in-out cursor-pointer bg-gradient-to-r from-primary to-blue-500" style="transform: translateX(0); z-index: 20;">
                     <div class="absolute inset-0 bg-cover bg-center opacity-20" style="background-image: url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80')"></div>
                     <div class="relative p-4 flex items-center justify-between">
@@ -164,6 +146,31 @@
                     <button id="banner-dot-0" onclick="goToBannerSlide(0)" class="w-2 h-2 rounded-full bg-white transition-all duration-300"></button>
                     <button id="banner-dot-1" onclick="goToBannerSlide(1)" class="w-1.5 h-1.5 rounded-full bg-white/60 transition-all duration-300"></button>
                     <button id="banner-dot-2" onclick="goToBannerSlide(2)" class="w-1.5 h-1.5 rounded-full bg-white/60 transition-all duration-300"></button>
+                </div>
+            </div>
+
+            <div class="px-4 py-2 space-y-3 mt-2">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-body font-semibold text-textSecondary uppercase tracking-wider">Tìm kiếm nhanh</h3>
+                    <button onclick="toggleProvincePopup()" class="flex items-center gap-1.5 px-3 py-1.5 bg-surface border border-border rounded-button text-small font-medium hover:bg-background transition-colors duration-150">
+                        <span id="selected-province">Chọn Tỉnh thành</span>
+                        <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-textSecondary"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="district-list" class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+            </div>
+
+            <div id="province-popup" class="fixed inset-0 z-50 hidden">
+                <div class="absolute inset-0 bg-black/40" onclick="toggleProvincePopup()"></div>
+                <div class="absolute bottom-0 left-0 right-0 bg-surface rounded-t-2xl max-h-[60vh] flex flex-col">
+                    <div class="flex items-center justify-between p-4 border-b border-border">
+                        <h3 class="text-body font-semibold">Chọn Tỉnh / Thành</h3>
+                        <button onclick="toggleProvincePopup()" class="w-8 h-8 flex items-center justify-center text-textSecondary hover:text-textPrimary rounded-full hover:bg-background transition-colors">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                    <div class="overflow-y-auto p-2" id="province-list"></div>
                 </div>
             </div>
 
@@ -309,8 +316,69 @@
             `;
         }
 
+        const provinces = [
+            'Hồ Chí Minh', 'Hà Nội', 'Đà Nẵng', 'Hải Phòng', 'Cần Thơ',
+            'An Giang', 'Bà Rịa - Vũng Tàu', 'Bắc Giang', 'Bắc Kạn', 'Bạc Liêu',
+            'Bắc Ninh', 'Bến Tre', 'Bình Dương', 'Bình Định', 'Bình Phước',
+            'Bình Thuận', 'Cà Mau', 'Cao Bằng', 'Đắk Lắk', 'Đắk Nông',
+            'Điện Biên', 'Đồng Nai', 'Đồng Tháp', 'Gia Lai', 'Hà Giang',
+            'Hà Nam', 'Hà Tĩnh', 'Hải Dương', 'Hậu Giang', 'Hòa Bình',
+            'Hưng Yên', 'Khánh Hòa', 'Kiên Giang', 'Kon Tum', 'Lai Châu',
+            'Lâm Đồng', 'Lạng Sơn', 'Lào Cai', 'Long An', 'Nam Định',
+            'Nghệ An', 'Ninh Bình', 'Ninh Thuận', 'Phú Thọ', 'Phú Yên',
+            'Quảng Bình', 'Quảng Nam', 'Quảng Ngãi', 'Quảng Ninh', 'Quảng Trị',
+            'Sóc Trăng', 'Sơn La', 'Tây Ninh', 'Thái Bình', 'Thái Nguyên',
+            'Thanh Hóa', 'Thừa Thiên Huế', 'Tiền Giang', 'Trà Vinh', 'Tuyên Quang',
+            'Vĩnh Long', 'Vĩnh Phúc', 'Yên Bái'
+        ];
+
+        function toggleProvincePopup() {
+            document.getElementById('province-popup').classList.toggle('hidden');
+            lucide.createIcons();
+        }
+
+        function selectProvince(name) {
+            document.getElementById('selected-province').textContent = name;
+            toggleProvincePopup();
+        }
+
         // Render UI Pipeline
         document.addEventListener("DOMContentLoaded", () => {
+            const districts = ['Quận 1', 'Quận 2', 'Quận 3', 'Quận 4', 'Quận 7', 'Bình Thạnh'];
+            const districtContainer = document.getElementById('district-list');
+            let selectedDistrict = null;
+            districts.forEach((name, i) => {
+                const btn = document.createElement('button');
+                btn.textContent = name;
+                btn.className = i === 0
+                    ? 'px-4 py-2 bg-primary text-white text-body font-medium rounded-button shadow-soft whitespace-nowrap transition-colors duration-150'
+                    : 'px-4 py-2 bg-surface border border-border text-textPrimary text-body font-medium rounded-button shadow-soft hover:border-border whitespace-nowrap transition-colors duration-150';
+                if (i === 0) btn.style.marginLeft = '16px';
+                if (i === districts.length - 1) btn.style.marginRight = '16px';
+                if (i === 0) selectedDistrict = btn;
+                btn.onclick = () => {
+                    if (selectedDistrict) {
+                        selectedDistrict.className = 'px-4 py-2 bg-surface border border-border text-textPrimary text-body font-medium rounded-button shadow-soft hover:border-border whitespace-nowrap transition-colors duration-150';
+                        selectedDistrict.style.marginLeft = selectedDistrict.style.marginLeft || '';
+                        selectedDistrict.style.marginRight = selectedDistrict.style.marginRight || '';
+                    }
+                    btn.className = 'px-4 py-2 bg-primary text-white text-body font-medium rounded-button shadow-soft whitespace-nowrap transition-colors duration-150';
+                    if (i === 0) btn.style.marginLeft = '16px';
+                    if (i === districts.length - 1) btn.style.marginRight = '16px';
+                    selectedDistrict = btn;
+                };
+                districtContainer.appendChild(btn);
+            });
+
+            const provinceList = document.getElementById('province-list');
+            provinces.forEach(name => {
+                const div = document.createElement('div');
+                div.textContent = name;
+                div.className = 'px-4 py-3 text-body text-textPrimary rounded-button hover:bg-background cursor-pointer transition-colors duration-150';
+                div.onclick = () => selectProvince(name);
+                provinceList.appendChild(div);
+            });
+
             const featuredContainer = document.getElementById('featured-list');
             const latestContainer = document.getElementById('latest-list');
             const recentContainer = document.getElementById('recent-list');
