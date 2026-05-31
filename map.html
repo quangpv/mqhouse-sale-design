@@ -88,7 +88,7 @@
             <!-- Hàng 1: Nút Back, Ô tìm kiếm & Button Lọc chi tiết -->
             <div class="flex items-center gap-2 w-full px-4">
                 <!-- Nút Back -->
-                <button onclick="parent.goBack()" class="p-2.5 bg-surface border border-border rounded-input hover:bg-slate-50 transition-colors duration-150 text-textPrimary shadow-sm shrink-0">
+                <button onclick="parent.switchScreen('search')" class="p-2.5 bg-surface border border-border rounded-input hover:bg-slate-50 transition-colors duration-150 text-textPrimary shadow-sm shrink-0">
                     <i data-lucide="arrow-left" class="w-5 h-5 text-textPrimary"></i>
                 </button>
                 <div class="relative flex-1">
@@ -107,10 +107,10 @@
 
             <!-- Hàng 2: Thanh lọc nhanh -->
             <div class="relative w-full">
-                <div id="quickFilterScroll" class="w-full flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+                <div id="quickFilterScroll" class="w-full flex items-center gap-2 overflow-x-auto no-scrollbar py-1 px-4">
                     
                     <!-- Dropdown Trạng thái -->
-                    <div class="relative dropdown-wrapper shrink-0 ml-4">
+                    <div class="relative dropdown-wrapper shrink-0">
                         <button onclick="toggleQuickDropdown('dropStatus', this)" class="flex items-center gap-1 px-3 py-2 bg-surface/90 backdrop-blur-sm border border-border rounded-full text-[12px] font-medium text-textPrimary shadow-sm hover:bg-surface">
                             <span id="labelStatus">Còn hàng</span>
                             <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-textSecondary"></i>
@@ -168,7 +168,7 @@
         <!-- Header kích hoạt đóng mở tab -->
         <div onclick="toggleBottomSheetHeight()" class="w-full py-2.5 flex flex-col items-center cursor-pointer select-none shrink-0 hover:bg-slate-50 transition-colors duration-150">
             <div class="w-12 h-1.5 bg-slate-300 rounded-full mb-1.5"></div>
-            <div class="w-full px-6 flex justify-between items-center">
+            <div class="w-full px-4 flex justify-between items-center">
                 <div class="flex items-baseline gap-1.5">
                     <span class="text-[15px] font-semibold text-textPrimary">Kết quả</span>
                     <span id="txtSummaryCount" class="text-[13px] text-textSecondary font-normal">(4 sản phẩm)</span>
