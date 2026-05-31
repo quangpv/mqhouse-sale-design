@@ -284,6 +284,14 @@
                         <label class="block text-small font-medium text-textSecondary mb-1">Diện tích (m²)</label>
                         <input type="number" id="phong-dientich" value="25" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary">
                     </div>
+                    <div>
+                        <label class="block text-small font-medium text-textSecondary mb-1">Số phòng vệ sinh</label>
+                        <select id="phong-sophongvs" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary">
+                            <option value="1">1 WC</option>
+                            <option value="2">2 WC</option>
+                            <option value="3">3 WC</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="bg-surface p-4 rounded-card shadow-soft space-y-3 border border-border">
@@ -501,11 +509,11 @@
                 { id: "bds-dv3", name: "Phí quản lý & Wifi", price: 150000, unit: "Phòng", type: "Cố định", cycle: "Tháng" }
             ],
             phongGrid: [
-                { id: "p1", code: "P.101", status: "Đang trống", price: 5800000, area: "25m²" },
-                { id: "p2", code: "P.102", status: "Đã cho thuê", price: 6000000, area: "30m²" },
-                { id: "p3", code: "P.201", status: "Đã cọc", price: 5900000, area: "25m²" },
-                { id: "p4", code: "P.202", status: "Sắp trống", price: 6200000, area: "35m²" },
-                { id: "p5", code: "P.301", status: "Đang trống", price: 5500000, area: "20m²" }
+                { id: "p1", code: "P.101", status: "Đang trống", price: 5800000, area: "25m²", wc: 1, designStyle: "" },
+                { id: "p2", code: "P.102", status: "Đã cho thuê", price: 6000000, area: "30m²", wc: 1, designStyle: "" },
+                { id: "p3", code: "P.201", status: "Đã cọc", price: 5900000, area: "25m²", wc: 2, designStyle: "" },
+                { id: "p4", code: "P.202", status: "Sắp trống", price: 6200000, area: "35m²", wc: 1, designStyle: "" },
+                { id: "p5", code: "P.301", status: "Đang trống", price: 5500000, area: "20m²", wc: 1, designStyle: "" }
             ]
         };
 
@@ -599,6 +607,9 @@
                     <div onclick="clickQuickUpdatePhong('${room.id}')" class="flex flex-col items-center justify-center p-2 rounded-card bg-${statusColor}/15 border border-${statusColor}/40 cursor-pointer active:scale-[0.98] custom-transition aspect-square">
                         <span class="text-[13px] font-semibold text-${statusColor}">${room.code}</span>
                         <span class="text-[10px] font-medium text-${statusColor}/70 mt-1">${Number(room.price).toLocaleString('vi-VN')}</span>
+                        <span class="text-[8px] text-${statusColor}/50 mt-0.5 flex items-center gap-0.5">
+                            <i data-lucide="bath" class="w-2.5 h-2.5"></i>${room.wc || 1}
+                        </span>
                     </div>
                 `;
             }).join('');
@@ -620,6 +631,7 @@
                     phongCodeList = ["P." + (bdsData.phongGrid.length + 101)];
                     renderPhongCodeInputs();
                     document.getElementById('phong-phithue').value = 6000000;
+                    document.getElementById('phong-sophongvs').value = 1;
                     phongEditingData.noiThat = JSON.parse(JSON.stringify(bdsData.noiThat));
                     phongEditingData.tienIch = JSON.parse(JSON.stringify(bdsData.tienIch));
                     phongEditingData.dichVu = JSON.parse(JSON.stringify(bdsData.dichVu));
@@ -650,6 +662,7 @@
             document.getElementById('phong-trangthai').value = targetRoom.status;
             document.getElementById('phong-phithue').value = targetRoom.price;
             document.getElementById('phong-dientich').value = targetRoom.area ? parseInt(targetRoom.area) : 25;
+            document.getElementById('phong-sophongvs').value = targetRoom.wc || 1;
 
             updateRoomDesignStyles();
             document.getElementById('phong-kieu').value = targetRoom.designStyle || '';
@@ -668,18 +681,19 @@
             const price = parseFloat(document.getElementById('phong-phithue').value) || 0;
             const area = document.getElementById('phong-dientich').value + 'm²';
             const designStyle = document.getElementById('phong-kieu').value;
+            const wc = parseInt(document.getElementById('phong-sophongvs').value) || 1;
 
             if(phongEditingData.isEditMode && phongEditingData.currentId) {
                 const code = document.getElementById('phong-ma').value.trim();
                 if(!code) { showToast("Vui lòng điền mã phòng!"); return; }
                 let room = bdsData.phongGrid.find(p => p.id === phongEditingData.currentId);
-                if(room) { room.code = code; room.status = status; room.price = price; room.area = area; room.designStyle = designStyle; }
+                if(room) { room.code = code; room.status = status; room.price = price; room.area = area; room.designStyle = designStyle; room.wc = wc; }
                 showToast("Đã cập nhật phòng thành công!");
             } else {
                 const validCodes = phongCodeList.map(c => c.trim()).filter(c => c);
                 if(validCodes.length === 0) { showToast("Vui lòng nhập ít nhất 1 mã phòng!"); return; }
                 validCodes.forEach(code => {
-                    bdsData.phongGrid.push({ id: 'p' + (bdsData.phongGrid.length + 1), code, status, price, area, designStyle });
+                    bdsData.phongGrid.push({ id: 'p' + (bdsData.phongGrid.length + 1), code, status, price, area, designStyle, wc });
                 });
                 showToast("Đã thêm " + validCodes.length + " phòng vào sơ đồ!");
             }

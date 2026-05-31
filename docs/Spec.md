@@ -216,7 +216,7 @@
 - id, tên phòng, mô tả
 - BĐS (Bất động sản)
 - loại phòng (Loại phòng)
-- diện tích (m²), giá thuê (VNĐ/tháng), giá cọc
+- diện tích (m²), số phòng vệ sinh, giá thuê (VNĐ/tháng), giá cọc
 - nội thất (danh sách Nội thất), tiện ích (danh sách Tiện ích), dịch vụ (danh sách Dịch vụ)
 - khách hàng hiện tại (Khách hàng)
 - trạng thái: [đang trống, đã cọc, đã thuê, sắp trống, chờ duyệt cọc, chờ duyệt thuê, chờ duyệt sắp trống, chờ duyệt đang trống]
