@@ -645,18 +645,20 @@
 
             const rooms = item.rooms;
             let roomsHtml = rooms.map((r, i) => `
-                <div onclick="event.stopPropagation();parent.switchScreen('roomDetails')" class="w-[140px] h-[147px] flex-shrink-0 bg-surface border border-border rounded-card overflow-hidden flex flex-col cursor-pointer transition-colors duration-150">
-                    <div class="h-[65px] bg-slate-100 overflow-hidden flex-shrink-0">
+                <div onclick="event.stopPropagation();parent.switchScreen('roomDetails')" class="w-[140px] h-[115px] flex-shrink-0 bg-surface border border-border rounded-[8px] overflow-hidden flex flex-col cursor-pointer transition-colors duration-150">
+                    <div class="h-[65px] bg-slate-100 overflow-hidden flex-shrink-0 relative">
                         <img src="${r.image}" alt="" class="w-full h-full object-cover">
+                        <span class="absolute bottom-1 right-1 text-[11px] font-medium ${r.available > 0 ? 'text-white bg-success/80' : 'text-white bg-error/80'} px-1.5 py-0.5 rounded-md backdrop-blur-[1px]">${r.available > 0 ? 'Còn ' + r.available : 'Hết'}</span>
                     </div>
-                    <div class="flex-1 p-1.5 space-y-0.5 flex flex-col justify-center">
-                        <span class="text-[11px] font-semibold text-primary">${r.roomType}</span>
-                        <p class="text-[11px] text-textSecondary leading-tight">${r.designStyle}</p>
+                    <div class="flex-1 p-1 flex flex-col justify-center gap-0.5">
                         <div class="flex items-center justify-between">
-                            <span class="text-small font-bold text-textPrimary">${r.price}tr</span>
+                            <span class="text-[11px] font-semibold text-primary">${r.roomType}</span>
                             <span class="text-[11px] text-textSecondary">${r.area}m²</span>
                         </div>
-                        <span class="text-[11px] font-medium ${r.available > 0 ? 'text-success' : 'text-error'}">${r.available > 0 ? 'Còn ' + r.available : 'Hết'}</span>
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] text-textSecondary">${r.designStyle}</span>
+                            <span class="text-small font-bold text-textPrimary">${r.price}tr</span>
+                        </div>
                     </div>
                 </div>
             `).join('');
@@ -664,14 +666,14 @@
             if (rooms.length > 4) {
                 const extra = rooms.length - 4;
                 roomsHtml += `
-                    <div onclick="event.stopPropagation();parent.switchScreen('propertyDetails')" class="w-[140px] h-[147px] flex-shrink-0 bg-surface border border-border rounded-card overflow-hidden flex flex-col cursor-pointer transition-colors duration-150">
+                    <div onclick="event.stopPropagation();parent.switchScreen('propertyDetails')" class="w-[140px] h-[115px] flex-shrink-0 bg-surface border border-border rounded-[8px] overflow-hidden flex flex-col cursor-pointer transition-colors duration-150">
                         <div class="h-[65px] flex items-center justify-center bg-slate-50 flex-shrink-0">
                             <div class="flex items-center gap-1 text-primary">
                                 <i data-lucide="arrow-right" class="w-6 h-6"></i>
                                 <span class="text-h3 font-bold">+${extra}</span>
                             </div>
                         </div>
-                        <div class="flex-1 flex flex-col items-center justify-center px-1.5">
+                        <div class="flex-1 flex flex-col items-center justify-center px-1">
                             <span class="text-[11px] font-medium text-textSecondary text-center">Xem thêm</span>
                         </div>
                     </div>
