@@ -40,6 +40,13 @@
                     boxShadow: {
                         'soft': '0 4px 12px -1px rgba(15, 23, 42, 0.04), 0 2px 4px -1px rgba(15, 23, 42, 0.02)',
                         'marker': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                    },
+                    fontSize: {
+                        'small': ['12px', '16px'],
+                        'body': ['14px', '20px'],
+                        'h3': ['20px', '28px'],
+                        'h2': ['24px', '32px'],
+                        'h1': ['32px', '40px'],
                     }
                 }
             }
@@ -173,7 +180,7 @@
         </div>
 
         <!-- Nội dung danh sách cuộn dọc -->
-        <div id="propertyCardContainer" class="flex-1 overflow-y-auto px-3 pb-6 space-y-3 no-scrollbar"></div>
+        <div id="propertyCardContainer" class="flex-1 overflow-y-auto pb-6 space-y-3 no-scrollbar"></div>
     </div>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~ OVERLAYS MODAL / BOTTOM SHEETS ~~~~~~~~~~~~~~~~~~~~~ -->
@@ -371,102 +378,24 @@
     <!-- HỆ THỐNG DỮ LIỆU MOCK DATA & LOGIC INTERACTION -->
     <script>
         const MOCK_DATA = [
-            {
-                id: 1,
-                title: "Căn hộ Studio cao cấp Horizon",
-                type: "Căn hộ",
-                roomType: "Studio",
-                designStyle: "Thiết kế 1",
-                status: "Còn hàng",
-                price: 8.5,
-                distance: "0.3 km",
-                address: "123 Nguyễn Thái Học, Phường 12, Quận Bình Thạnh, TP.HCM",
-                image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80",
-                amenities: ["Hồ bơi", "Phòng gym", "Thang máy", "Balcony", "Cửa sổ", "Cửa sổ, ban công(thật, giả)", "Thang bộ/Thang máy"],
-                area: "30m²",
-                lat: 10.795,
-                lng: 106.708
-            },
-            {
-                id: 2,
-                title: "Phòng trọ dịch vụ Full nội thất lầu 2",
-                type: "Phòng trọ",
-                roomType: "Studio",
-                designStyle: "Thiết kế 2",
-                status: "Còn hàng",
-                price: 3.8,
-                distance: "0.7 km",
-                address: "45/12 Xô Viết Nghệ Tĩnh, Phường 25, Quận Bình Thạnh, TP.HCM",
-                image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80",
-                amenities: ["Bãi đậu xe", "Bảo vệ", "Cửa sổ", "Thang bộ/Thang máy"],
-                area: "25m²",
-                lat: 10.810,
-                lng: 106.719
-            },
-            {
-                id: 3,
-                title: "Tòa nhà căn hộ dịch vụ Lê Quang Định",
-                type: "Tòa nhà",
-                roomType: "2 Phòng ngủ",
-                designStyle: "Cao cấp",
-                status: "Còn hàng",
-                price: 45.0,
-                distance: "1.2 km",
-                address: "210 Lê Quang Định, Phường 14, Quận Bình Thạnh, TP.HCM",
-                image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=400&q=80",
-                amenities: ["Hồ bơi", "Bãi đậu xe", "Thang máy", "Bảo vệ", "Lễ tân 24/7", "Dọn phòng", "Thang bộ/Thang máy"],
-                area: "40m²",
-                lat: 10.802,
-                lng: 106.698
-            },
-            {
-                id: 4,
-                title: "Căn hộ Mini ban công thoáng mát",
-                type: "Căn hộ",
-                roomType: "1 Phòng ngủ",
-                designStyle: "Tiêu chuẩn",
-                status: "Còn hàng",
-                price: 6.2,
-                distance: "0.9 km",
-                address: "88 Nguyễn Văn Thương, Phường 25, Quận Bình Thạnh, TP.HCM",
-                image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400&q=80",
-                amenities: ["Bãi đậu xe", "Thang máy", "Balcony", "Cửa sổ", "Nuôi Pet", "Cửa sổ, ban công(thật, giả)", "Thang bộ/Thang máy"],
-                area: "30m²",
-                lat: 10.815,
-                lng: 106.722
-            },
-            {
-                id: 5,
-                title: "Phòng trọ gác lửng giá sinh viên",
-                type: "Phòng trọ",
-                roomType: "Studio",
-                designStyle: "Thiết kế 3",
-                status: "Hết hàng",
-                price: 2.5,
-                distance: "1.5 km",
-                address: "342 Bạch Đằng, Phường 14, Quận Bình Thạnh, TP.HCM",
-                image: "https://images.unsplash.com/photo-1616046229478-9901c5536a45?auto=format&fit=crop&w=400&q=80",
-                amenities: ["Bãi đậu xe", "Cửa sổ", "Cửa sổ (giếng trời, ngoài trời)"],
-                area: "18m²",
-                lat: 10.798,
-                lng: 106.725
-            },
-            {
-                id: 6,
-                title: "Luxury Penthouse Pearl Plaza view sông",
-                type: "Căn hộ",
-                roomType: "2 Phòng ngủ",
-                designStyle: "Corner",
-                status: "Còn hàng",
-                price: 95.0,
-                distance: "1.8 km",
-                address: "561A Điện Biên Phủ, Phường 25, Quận Bình Thạnh, TP.HCM",
-                image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80",
-                amenities: ["Hồ bơi", "Phòng gym", "Bãi đậu xe", "Thang máy", "Bảo vệ", "Lễ tân 24/7", "Balcony", "Cửa sổ", "Dọn phòng", "Cửa sổ, ban công(thật, giả)", "Thang bộ/Thang máy"],
-                area: "95m²",
-                lat: 10.805,
-                lng: 106.710
-            }
+            { id: 1, type: 'single', propertyType: "Căn hộ", title: "Flora Novia Skyline Studio", category: "CĂN HỘ CHUNG CƯ", status: "available", price: 14.5, area: 35, roomType: "Studio", designStyle: "Thiết kế 1", address: "128 Nguyễn Văn Bánh, Phường 15, Bình Thạnh", favorited: true, images: ["https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400", "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400", "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400", "https://images.unsplash.com/photo-1560185007-5f0bb1866cab?w=400"], amenities: ["Hồ bơi", "Phòng gym", "Bãi đậu xe", "Thang máy", "Balcony"], lat: 10.795, lng: 106.712 },
+            { id: 6, type: 'multi', propertyType: "Căn hộ", title: "Vinhomes Central Park", category: "CĂN HỘ CHUNG CƯ", address: "208 Nguyễn Hữu Cảnh, Phường 22, Bình Thạnh", favorited: false, images: ["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400", "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400", "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=400"], amenities: ["Hồ bơi", "Phòng gym", "Bãi đậu xe", "Thang máy", "Bảo vệ"], lat: 10.800, lng: 106.715, rooms: [
+                { roomType: "Studio", designStyle: "Thiết kế 1", price: 8.5, area: 30, available: 3, image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400" },
+                { roomType: "Studio", designStyle: "Thiết kế 2", price: 9.5, area: 35, available: 2, image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400" },
+                { roomType: "1 Phòng ngủ", designStyle: "Tiêu chuẩn", price: 12, area: 45, available: 1, image: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400" },
+                { roomType: "1 Phòng ngủ", designStyle: "Cao cấp", price: 15, area: 50, available: 0, image: "https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=400" },
+                { roomType: "2 Phòng ngủ", designStyle: "Tiêu chuẩn", price: 18, area: 65, available: 2, image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400" },
+                { roomType: "2 Phòng ngủ", designStyle: "Cao cấp", price: 22, area: 75, available: 1, image: "https://images.unsplash.com/photo-1560185007-5f0bb1866cab?w=400" },
+            ] },
+            { id: 2, type: 'single', propertyType: "Phòng trọ", title: "Vinhomes Central Cozy Room", category: "PHÒNG TRỌ KHÉP KÍN", status: "rented", price: 6.8, area: 20, roomType: "1 Phòng ngủ", designStyle: "Tiêu chuẩn", address: "208 Nguyễn Hữu Cảnh, Phường 22, Bình Thạnh", favorited: false, images: ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400", "https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=400", "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=400"], amenities: ["Bãi đậu xe", "Cửa sổ"], lat: 10.810, lng: 106.719 },
+            { id: 7, type: 'multi', propertyType: "Căn hộ", title: "Saigon Pearl Residence", category: "CĂN HỘ CHUNG CƯ", address: "92 Nguyễn Hữu Cảnh, Phường 22, Bình Thạnh", favorited: true, images: ["https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400", "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400", "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400", "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400"], amenities: ["Hồ bơi", "Bãi đậu xe", "Thang máy", "Bảo vệ"], lat: 10.808, lng: 106.718, rooms: [
+                { roomType: "Studio", designStyle: "Thiết kế 1", price: 7.5, area: 28, available: 5, image: "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=400" },
+                { roomType: "1 Phòng ngủ", designStyle: "Tiêu chuẩn", price: 10, area: 40, available: 3, image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400" },
+                { roomType: "1 Phòng ngủ", designStyle: "Cao cấp", price: 13, area: 48, available: 1, image: "https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=400" },
+            ] },
+            { id: 3, type: 'single', propertyType: "Căn hộ", title: "The Manor Premium Studio", category: "CĂN HỘ STUDIO", status: "available", price: 8.5, area: 30, roomType: "Studio", designStyle: "Cao cấp", address: "55 Nguyễn Văn Bánh, Phường 15, Bình Thạnh", favorited: false, images: ["https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400", "https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=400", "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400"], amenities: ["Hồ bơi", "Phòng gym", "Thang máy", "Balcony"], lat: 10.790, lng: 106.710 },
+            { id: 4, type: 'single', propertyType: "Tòa nhà", title: "Saigon Centre Office Suite", category: "TÒA NHÀ VĂN PHÒNG", status: "available", price: 45, area: 80, roomType: "2 Phòng ngủ", designStyle: "Thiết kế 1", address: "65 Lê Quang Định, Phường 14, Bình Thạnh", favorited: true, images: ["https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400", "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400", "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400", "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400"], amenities: ["Bãi đậu xe", "Thang máy", "Bảo vệ", "Lễ tân 24/7"], lat: 10.802, lng: 106.698 },
+            { id: 5, type: 'single', propertyType: "Phòng trọ", title: "Phú Nhuận Garden Homestay", category: "PHÒNG TRỌ KHÉP KÍN", status: "available", price: 3.8, area: 18, roomType: "Studio", designStyle: "Tiêu chuẩn", address: "120 Bạch Đằng, Phường 14, Bình Thạnh", favorited: false, images: ["https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400", "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400"], amenities: ["Bãi đậu xe", "Cửa sổ"], lat: 10.798, lng: 106.725 },
         ];
 
         const AMENITIES_BASIC = ["Hồ bơi", "Phòng gym", "Bãi đậu xe", "Thang máy", "Bảo vệ", "Lễ tân 24/7", "Balcony", "Cửa sổ", "Dọn phòng", "Nuôi Pet", "Cửa sổ (giếng trời, ngoài trời)"];
@@ -530,10 +459,6 @@
             document.getElementById('mapRadiusTrack').style.width = (val / 50 * 100) + '%';
         }
 
-        function getDistanceKm(distanceStr) {
-            return parseFloat(distanceStr) || 0;
-        }
-
         function renderAmenityChips() {
             const containers = [
                 { id: "detailBasicAmenities", items: AMENITIES_BASIC }, { id: "detailFurnitureAmenities", items: AMENITIES_FURNITURE },
@@ -549,6 +474,135 @@
                     `).join('');
                 }
             });
+        }
+
+        function createCardSingle(item) {
+            const isAvail = item.status === 'available';
+            const stCls = isAvail ? 'text-success bg-green-50 border-success/10' : 'text-error bg-red-50 border-error/10';
+            const hCls = item.favorited ? 'text-error bg-red-50/30' : 'text-textSecondary bg-slate-50 hover:text-error hover:bg-red-50/50';
+            const hFill = item.favorited ? ' fill-current' : '';
+            const selCls = selectedPropertyId === item.id ? 'border-primary ring-1 ring-primary/20' : 'border-border';
+            const imgs = item.images;
+            const len = imgs.length;
+            let gHtml = '';
+            if (len === 1) {
+                gHtml = `<div class="col-span-4 h-full"><img src="${imgs[0]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"></div>`;
+            } else if (len === 2) {
+                gHtml = `<div class="col-span-2 h-full"><img src="${imgs[0]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"></div><div class="col-span-2 h-full"><img src="${imgs[1]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"></div>`;
+            } else {
+                const extra = len > 3 ? `<div class="absolute inset-0 bg-slate-900/40 flex items-center justify-center text-white text-small font-semibold backdrop-blur-[1px]">+${len - 3} ảnh</div>` : '';
+                gHtml = `<div class="col-span-2 h-full"><img src="${imgs[0]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"></div><div class="col-span-1 h-full"><img src="${imgs[1]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"></div><div class="col-span-1 h-full relative"><img src="${imgs[2]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]">${extra}</div>`;
+            }
+            return `<div id="card-item-${item.id}" onclick="window.parent.switchScreen('propertyDetails')" class="bg-surface border-b border-border flex flex-col group cursor-pointer ${selCls}">
+                <div class="grid grid-cols-4 gap-1 h-[105px] w-full overflow-hidden bg-slate-100 flex-shrink-0 relative">${gHtml}</div>
+                <div class="p-2.5 px-4 flex-1 flex flex-col justify-between">
+                    <div class="space-y-1">
+                        <div class="flex items-start justify-between gap-2">
+                            <div class="flex flex-wrap items-center gap-1.5 min-w-0">
+                                <span class="text-small font-semibold text-primary tracking-wide">${item.category}</span>
+                                <span class="text-[11px] px-2 py-0.5 bg-blue-50 text-primary rounded-md font-medium whitespace-nowrap">${item.roomType}</span>
+                            </div>
+                            <span class="text-small font-semibold ${stCls} px-2 py-0.5 rounded-full border whitespace-nowrap flex-shrink-0">${isAvail ? 'Còn phòng' : 'Hết phòng'}</span>
+                        </div>
+                        <h4 class="text-body font-semibold text-textPrimary line-clamp-1">${item.title}</h4>
+                        <p class="text-small text-textSecondary line-clamp-2">${item.address}</p>
+                        <div class="text-[11px] text-textSecondary">
+                            <span>${item.designStyle}</span>
+                            <span class="mx-1">·</span>
+                            <span>${item.area} m²</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="text-textSecondary text-small font-medium">
+                            <span class="text-body font-semibold text-primary">${item.price}tr</span> /tháng
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="event.stopPropagation();window.parent.switchScreen('sharing')" class="w-8 h-8 flex items-center justify-center text-textSecondary hover:text-primary bg-slate-50 hover:bg-blue-50/50 rounded-full transition-colors duration-150" title="Chia sẻ bài đăng">
+                                <i data-lucide="share-2" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="event.stopPropagation();" class="w-8 h-8 flex items-center justify-center ${hCls} rounded-full transition-colors duration-150" title="${item.favorited ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'}">
+                                <i data-lucide="heart" class="w-4 h-4${hFill}"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function createCardMulti(item) {
+            const hCls = item.favorited ? 'text-error bg-red-50/30' : 'text-textSecondary bg-slate-50 hover:text-error hover:bg-red-50/50';
+            const hFill = item.favorited ? ' fill-current' : '';
+            const selCls = selectedPropertyId === item.id ? 'border-primary ring-1 ring-primary/20' : 'border-border';
+            const imgs = item.images;
+            const len = imgs.length;
+            let gHtml = '';
+            if (len === 1) {
+                gHtml = `<div class="col-span-4 h-full"><img src="${imgs[0]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"></div>`;
+            } else if (len === 2) {
+                gHtml = `<div class="col-span-2 h-full"><img src="${imgs[0]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"></div><div class="col-span-2 h-full"><img src="${imgs[1]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"></div>`;
+            } else {
+                const extra = len > 3 ? `<div class="absolute inset-0 bg-slate-900/40 flex items-center justify-center text-white text-small font-semibold backdrop-blur-[1px]">+${len - 3} ảnh</div>` : '';
+                gHtml = `<div class="col-span-2 h-full"><img src="${imgs[0]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"></div><div class="col-span-1 h-full"><img src="${imgs[1]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"></div><div class="col-span-1 h-full relative"><img src="${imgs[2]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]">${extra}</div>`;
+            }
+
+            const rooms = item.rooms;
+            let roomsHtml = rooms.map(r => `
+                <div onclick="event.stopPropagation();window.parent.switchScreen('roomDetails')" class="w-[140px] h-[115px] flex-shrink-0 bg-surface border border-border rounded-[8px] overflow-hidden flex flex-col cursor-pointer transition-colors duration-150">
+                    <div class="h-[65px] bg-slate-100 overflow-hidden flex-shrink-0 relative">
+                        <img src="${r.image}" alt="" class="w-full h-full object-cover">
+                        <span class="absolute bottom-1 right-1 text-[11px] font-medium ${r.available > 0 ? 'text-white bg-success/80' : 'text-white bg-error/80'} px-1.5 py-0.5 rounded-md backdrop-blur-[1px]">${r.available > 0 ? 'Còn ' + r.available : 'Hết'}</span>
+                    </div>
+                    <div class="flex-1 p-1 flex flex-col justify-center gap-0.5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-semibold text-primary">${r.roomType}</span>
+                            <span class="text-[11px] text-textSecondary">${r.area}m²</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] text-textSecondary">${r.designStyle}</span>
+                            <span class="text-small font-bold text-textPrimary">${r.price}tr</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            if (rooms.length > 4) {
+                const extra = rooms.length - 4;
+                roomsHtml += `
+                    <div onclick="event.stopPropagation();window.parent.switchScreen('propertyDetails')" class="w-[140px] h-[115px] flex-shrink-0 bg-surface border border-border rounded-[8px] overflow-hidden flex flex-col cursor-pointer transition-colors duration-150">
+                        <div class="h-[65px] flex items-center justify-center bg-slate-50 flex-shrink-0">
+                            <div class="flex items-center gap-1 text-primary">
+                                <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                                <span class="text-h3 font-bold">+${extra}</span>
+                            </div>
+                        </div>
+                        <div class="flex-1 flex flex-col items-center justify-center px-1">
+                            <span class="text-[11px] font-medium text-textSecondary text-center">Xem thêm</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            return `<div id="card-item-${item.id}" onclick="window.parent.switchScreen('propertyDetails')" class="bg-surface border-b border-border flex flex-col group cursor-pointer ${selCls}">
+                <div class="grid grid-cols-4 gap-1 h-[105px] w-full overflow-hidden bg-slate-100 relative flex-shrink-0">${gHtml}</div>
+                <div class="p-2.5 px-4 space-y-0.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-small font-semibold text-primary tracking-wide">${item.category}</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="event.stopPropagation();window.parent.switchScreen('sharing')" class="w-8 h-8 flex items-center justify-center text-textSecondary hover:text-primary bg-slate-50 hover:bg-blue-50/50 rounded-full transition-colors duration-150" title="Chia sẻ bài đăng">
+                                <i data-lucide="share-2" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="event.stopPropagation();" class="w-8 h-8 flex items-center justify-center ${hCls} rounded-full transition-colors duration-150" title="${item.favorited ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'}">
+                                <i data-lucide="heart" class="w-4 h-4${hFill}"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <h4 class="text-body font-semibold text-textPrimary">${item.title}</h4>
+                    <p class="text-small text-textSecondary line-clamp-2">${item.address}</p>
+                </div>
+                <div class="flex items-center gap-2 overflow-x-auto no-scrollbar px-4 pb-2.5">
+                    ${roomsHtml}
+                </div>
+            </div>`;
         }
 
         // SỬA LỖI: Cập nhật hàm toggle giúp đóng mở chuẩn xác không bị xung đột ẩn trực tiếp
@@ -575,7 +629,12 @@
         }
 
         function applyQuickFilter(field, value) {
-            currentFilters[field] = [value];
+            if (field === 'status') {
+                const statusMap = { 'Còn hàng': 'available', 'Hết hàng': 'rented' };
+                currentFilters[field] = [statusMap[value] || value];
+            } else {
+                currentFilters[field] = [value];
+            }
             document.getElementById(`label${field.charAt(0).toUpperCase() + field.slice(1)}`).innerText = value;
             document.getElementById("dropStatus").classList.add("hidden"); 
             document.getElementById("dropType").classList.add("hidden");
@@ -702,15 +761,18 @@
 
         function applyFiltersAndRender() {
             const filtered = MOCK_DATA.filter(item => {
-                if (currentFilters.status.length > 0 && !currentFilters.status.includes(item.status)) return false;
-                if (currentFilters.type.length > 0 && !currentFilters.type.includes(item.roomType)) return false;
-                if (currentFilters.designStyle.length > 0 && !currentFilters.designStyle.includes(item.designStyle || '')) return false;
-                if (currentFilters.propertyType.length > 0 && !currentFilters.propertyType.includes(item.type)) return false;
+                const isMulti = item.type === 'multi';
+                if (currentFilters.status.length > 0) {
+                    const statusMap = { 'Còn hàng': 'available', 'Hết hàng': 'rented' };
+                    const mappedStatuses = currentFilters.status.map(s => statusMap[s] || s);
+                    if (!isMulti && !mappedStatuses.includes(item.status)) return false;
+                }
+                if (currentFilters.type.length > 0 && !isMulti && !currentFilters.type.includes(item.roomType)) return false;
+                if (currentFilters.designStyle.length > 0 && !isMulti && !currentFilters.designStyle.includes(item.designStyle || '')) return false;
+                if (currentFilters.propertyType.length > 0 && !currentFilters.propertyType.includes(item.propertyType)) return false;
                 if (item.price < currentFilters.priceMin || item.price > currentFilters.priceMax) return false;
-                const itemArea = parseInt(item.area) || 0;
-                if (itemArea < currentFilters.areaMin || itemArea > currentFilters.areaMax) return false;
+                if ((item.area || 0) < currentFilters.areaMin || (item.area || 0) > currentFilters.areaMax) return false;
                 if (currentFilters.amenities.length > 0 && !currentFilters.amenities.every(a => item.amenities.includes(a))) return false;
-                if (getDistanceKm(item.distance) > currentFilters.radius) return false;
                 return true;
             });
             renderMapMarkers(filtered); renderPropertyCards(filtered);
@@ -793,13 +855,22 @@
             data.forEach(item => {
                 const isSelected = selectedPropertyId === item.id;
                 let iconName = "home";
-                if (item.type === "Căn hộ") iconName = "building-2";
-                if (item.type === "Tòa nhà") iconName = "building";
+                if (item.propertyType === "Căn hộ") iconName = "building-2";
+                if (item.propertyType === "Tòa nhà") iconName = "building";
 
+                let priceLabel = '';
+                if (item.type === 'multi' && item.rooms && item.rooms.length > 0) {
+                    const prices = item.rooms.map(r => r.price);
+                    const minP = Math.min(...prices);
+                    const maxP = Math.max(...prices);
+                    priceLabel = minP === maxP ? `${minP} Tr` : `${minP} - ${maxP} Tr`;
+                } else if (item.price) {
+                    priceLabel = `${item.price} Tr`;
+                }
                 const content = `
                     <div onclick="selectProperty(${item.id})" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full shadow-marker transition-all cursor-pointer ${isSelected ? 'bg-primary text-white scale-110' : 'bg-surface text-textPrimary hover:scale-105'}" style="white-space:nowrap;">
                         <i data-lucide="${iconName}" class="w-3.5 h-3.5 ${isSelected ? 'text-white' : 'text-primary'}"></i>
-                        <span class="text-[11px] font-semibold">${item.price} Tr</span>
+                        <span class="text-[11px] font-semibold">${priceLabel}</span>
                     </div>
                 `;
 
@@ -815,40 +886,14 @@
         }
 
         function renderPropertyCards(data) {
-            const container = document.getElementById("propertyCardContainer"); container.innerHTML = "";
-            if(data.length === 0) {
+            const container = document.getElementById("propertyCardContainer");
+            if (data.length === 0) {
                 container.innerHTML = `<div class="text-center py-8 text-textSecondary text-[14px]"><i data-lucide="info" class="w-8 h-8 mx-auto text-slate-300 mb-2"></i>Không có phòng phù hợp bộ lọc</div>`;
                 lucide.createIcons(); return;
             }
-            data.forEach(item => {
-                const isSelected = selectedPropertyId === item.id; const card = document.createElement("div"); card.id = `card-item-${item.id}`;
-                card.className = `p-3 bg-surface rounded-card border transition-all duration-150 flex gap-3 shadow-soft cursor-pointer ${isSelected ? 'border-primary ring-1 ring-primary/20' : 'border-border'}`;
-                card.onclick = () => window.parent.switchScreen('propertyDetails');
-                let typeIcon = "home"; if(item.type === "Căn hộ") typeIcon = "building-2"; if(item.type === "Tòa nhà") typeIcon = "building";
-                card.innerHTML = `
-                    <div class="w-24 h-24 rounded-input overflow-hidden relative shrink-0 bg-slate-100">
-                        <img src="${item.image}" alt="room image" class="w-full h-full object-cover">
-                        <span class="absolute top-1 left-1 text-[10px] px-1.5 py-0.5 rounded bg-black/60 text-white font-medium">${item.status}</span>
-                    </div>
-                    <div class="flex-1 flex flex-col justify-between min-w-0">
-                        <div>
-                            <div class="flex items-center justify-between gap-1 mb-0.5">
-                                <span class="text-[11px] font-medium text-primary flex items-center gap-1"><i data-lucide="${typeIcon}" class="w-3 h-3"></i>${item.type}</span>
-                                <div class="flex items-center gap-1.5">
-                                    ${item.designStyle ? `<span class="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-50 text-primary font-medium">${item.designStyle}</span>` : ''}
-                                    <span class="text-[11px] text-textSecondary flex items-center gap-0.5"><i data-lucide="navigation" class="w-3 h-3 text-error"></i>Cách tôi ${item.distance}</span>
-                                </div>
-                            </div>
-                            <h4 class="text-[14px] font-semibold text-textPrimary truncate">${item.title}</h4>
-                            <p class="text-[12px] text-textSecondary truncate mt-0.5">${item.address}</p>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-[14px] font-semibold text-primary flex items-center gap-0.5"><i data-lucide="dollar-sign" class="w-3.5 h-3.5"></i>${item.price} <span class="text-[11px] text-textSecondary font-normal">triệu/tháng</span></span>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
+            container.innerHTML = data.map(item =>
+                item.type === 'multi' ? createCardMulti(item) : createCardSingle(item)
+            ).join('');
             lucide.createIcons();
         }
 
