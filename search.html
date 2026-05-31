@@ -645,7 +645,7 @@
 
             const rooms = item.rooms;
             let roomsHtml = rooms.map((r, i) => `
-                <div onclick="event.stopPropagation();parent.switchScreen('propertyDetails')" class="w-[140px] h-[147px] flex-shrink-0 bg-surface border border-border rounded-card overflow-hidden flex flex-col cursor-pointer transition-colors duration-150">
+                <div onclick="event.stopPropagation();parent.switchScreen('roomDetails')" class="w-[140px] h-[147px] flex-shrink-0 bg-surface border border-border rounded-card overflow-hidden flex flex-col cursor-pointer transition-colors duration-150">
                     <div class="h-[65px] bg-slate-100 overflow-hidden flex-shrink-0">
                         <img src="${r.image}" alt="" class="w-full h-full object-cover">
                     </div>
