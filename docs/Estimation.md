@@ -12,7 +12,7 @@
 | Hạng mục | Số lượng |
 |----------|----------|
 | Epic | 13 |
-| User Stories | 76 |
+| User Stories | 74 |
 | Sprint | 12 (24 tuần) |
 | Sprint Dev | 9 (S1→S9) |
 | Sprint Testing | 3 (S10→S12) |
@@ -247,4 +247,4 @@
 
 ---
 
-*Tổng số: 13 Epics, 76 User Stories, 12 Sprints, 24 tuần.*
+*Tổng số: 13 Epics, 74 User Stories, 12 Sprints, 24 tuần.*
