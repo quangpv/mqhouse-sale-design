@@ -402,6 +402,177 @@ const holidays = [
 ]
 
 // ══════════════════════════════════════════════
+//  DATA — ERD (from Spec.md)
+// ══════════════════════════════════════════════
+
+const erdEntities = [
+  { id:'NguoiDung', name:'Người dùng', attrs:[
+    { name:'id', type:'PK' }, { name:'tenDangNhap', type:'string' }, { name:'matKhau', type:'string (hash)' },
+    { name:'hoTen', type:'string' }, { name:'email', type:'string' }, { name:'soDienThoai', type:'string' },
+    { name:'maTaiKhoan', type:'string' }, { name:'trangThai', type:'enum: Đang hoạt động, Đã khóa' },
+    { name:'ngayTao', type:'datetime' }, { name:'ngayCapNhat', type:'datetime' }
+  ]},
+  { id:'VaiTro', name:'Vai trò', attrs:[
+    { name:'id', type:'PK' }, { name:'ten', type:'string' }, { name:'moTa', type:'string' },
+    { name:'trangThai', type:'enum: Đang hoạt động, Đã khóa' },
+    { name:'ngayTao', type:'datetime' }, { name:'ngayCapNhat', type:'datetime' }
+  ]},
+  { id:'PhanQuyen', name:'Phân quyền', attrs:[
+    { name:'id', type:'PK' }, { name:'vaiTroId', type:'FK → VaiTro' }, { name:'maQuyen', type:'string (20 mã)' },
+    { name:'ngayTao', type:'datetime' }
+  ]},
+  { id:'UserArea', name:'UserArea', attrs:[
+    { name:'id', type:'PK' }, { name:'nguoiDungId', type:'FK → Người dùng' },
+    { name:'diaGioiHCId', type:'FK → Địa giới HC' }, { name:'cap', type:'enum: Quận/Huyện, Phường/Xã' }
+  ]},
+  { id:'KhachHang', name:'Khách hàng', attrs:[
+    { name:'id', type:'PK' }, { name:'hoTen', type:'string' }, { name:'soDienThoai', type:'string' },
+    { name:'email', type:'string' }, { name:'ghiChu', type:'string' },
+    { name:'trangThai', type:'enum: Đang hoạt động, Đã khóa' },
+    { name:'ngayTao', type:'datetime' }, { name:'ngayCapNhat', type:'datetime' }
+  ]},
+  { id:'BatDongSan', name:'Bất động sản', attrs:[
+    { name:'id', type:'PK' }, { name:'ten', type:'string' }, { name:'moTa', type:'text' },
+    { name:'diaChi', type:'string' }, { name:'latitude', type:'float' }, { name:'longitude', type:'float' },
+    { name:'loaiBDSId', type:'FK → Loại BĐS' }, { name:'chuBDSId', type:'FK → Người dùng' },
+    { name:'dienTich', type:'float (m²)' }, { name:'giaThue', type:'decimal (VNĐ/tháng)' },
+    { name:'soPhongNgu', type:'int' }, { name:'soToilet', type:'int' }, { name:'soTang', type:'int' },
+    { name:'huongNha', type:'string' }, { name:'namXayDung', type:'int' }, { name:'matTien', type:'float (m)' },
+    { name:'duongVao', type:'float (m)' }, { name:'giayToPhapLy', type:'string' },
+    { name:'noiBat', type:'boolean' },
+    { name:'trangThai', type:'enum: nháp, chờ duyệt, đã duyệt, bị từ chối, hết hạn' },
+    { name:'ngayTao', type:'datetime' }, { name:'ngayCapNhat', type:'datetime' }, { name:'ngayHetHan', type:'date' }
+  ]},
+  { id:'Phong', name:'Phòng', attrs:[
+    { name:'id', type:'PK' }, { name:'ten', type:'string' }, { name:'moTa', type:'text' },
+    { name:'bdsId', type:'FK → Bất động sản' }, { name:'loaiPhongId', type:'FK → Loại phòng' },
+    { name:'dienTich', type:'float (m²)' }, { name:'soPhongVS', type:'int' },
+    { name:'giaThue', type:'decimal (VNĐ/tháng)' }, { name:'giaCoc', type:'decimal' },
+    { name:'khachHangId', type:'FK → Khách hàng (nullable)' },
+    { name:'trangThai', type:'enum: 8 trạng thái' },
+    { name:'ngayTao', type:'datetime' }, { name:'ngayCapNhat', type:'datetime' }
+  ]},
+  { id:'HopDong', name:'Hợp đồng', attrs:[
+    { name:'id', type:'PK' }, { name:'phongId', type:'FK → Phòng' },
+    { name:'khachHangId', type:'FK → Khách hàng' },
+    { name:'ngayBatDau', type:'date' }, { name:'ngayKetThuc', type:'date' },
+    { name:'giaThue', type:'decimal' }, { name:'tienCoc', type:'decimal' },
+    { name:'chuKyThanhToan', type:'string' },
+    { name:'trangThai', type:'enum: hiệu lực, đã hết hạn, đã hủy' },
+    { name:'ngayTao', type:'datetime' }, { name:'ngayCapNhat', type:'datetime' }
+  ]},
+  { id:'LoaiBDS', name:'Loại BĐS', attrs:[
+    { name:'id', type:'PK' }, { name:'ten', type:'string' }, { name:'moTa', type:'string' },
+    { name:'trangThai', type:'enum: Đang hoạt động, Đã khóa' },
+    { name:'ngayTao', type:'datetime' }, { name:'ngayCapNhat', type:'datetime' }
+  ]},
+  { id:'LoaiPhong', name:'Loại phòng', attrs:[
+    { name:'id', type:'PK' }, { name:'ten', type:'string' }, { name:'moTa', type:'string' },
+    { name:'trangThai', type:'enum: Đang hoạt động, Đã khóa' },
+    { name:'ngayTao', type:'datetime' }, { name:'ngayCapNhat', type:'datetime' }
+  ]},
+  { id:'NoiThat', name:'Nội thất', attrs:[
+    { name:'id', type:'PK' }, { name:'ten', type:'string' }, { name:'moTa', type:'string' },
+    { name:'icon', type:'string' }, { name:'nguoiTaoId', type:'FK → Người dùng' },
+    { name:'trangThai', type:'enum: Đang hoạt động, Đã khóa' },
+    { name:'ngayTao', type:'datetime' }, { name:'ngayCapNhat', type:'datetime' }
+  ]},
+  { id:'TienIch', name:'Tiện ích', attrs:[
+    { name:'id', type:'PK' }, { name:'ten', type:'string' }, { name:'moTa', type:'string' },
+    { name:'icon', type:'string' }, { name:'khoangCach', type:'float (m)' },
+    { name:'nguoiTaoId', type:'FK → Người dùng' },
+    { name:'trangThai', type:'enum: Đang hoạt động, Đã khóa' },
+    { name:'ngayTao', type:'datetime' }, { name:'ngayCapNhat', type:'datetime' }
+  ]},
+  { id:'DichVu', name:'Dịch vụ', attrs:[
+    { name:'id', type:'PK' }, { name:'ten', type:'string' }, { name:'moTa', type:'string' },
+    { name:'gia', type:'decimal' }, { name:'donVi', type:'enum: tháng, năm, m²' },
+    { name:'chuKyThanhToan', type:'string' }, { name:'loai', type:'enum: bắt buộc, tự chọn' },
+    { name:'chiSoDau', type:'int' }, { name:'nguoiTaoId', type:'FK → Người dùng' },
+    { name:'trangThai', type:'enum: Đang hoạt động, Đã khóa' },
+    { name:'ngayTao', type:'datetime' }, { name:'ngayCapNhat', type:'datetime' }
+  ]},
+  { id:'File', name:'File', attrs:[
+    { name:'id', type:'PK' }, { name:'ten', type:'string' }, { name:'duongDan', type:'string' },
+    { name:'kichThuoc', type:'int' }, { name:'dinhDang', type:'string' },
+    { name:'loai', type:'enum: Hình ảnh, Văn bản, Tài liệu' },
+    { name:'entityType', type:'polymorphic: BDS, Phòng, Người dùng, Khách hàng' },
+    { name:'entityId', type:'UUID' }, { name:'nguoiTaoId', type:'FK → Người dùng' },
+    { name:'ngayTao', type:'datetime' }
+  ]},
+  { id:'DiaGioiHC', name:'Địa giới HC', attrs:[
+    { name:'id', type:'PK' }, { name:'ten', type:'string' }, { name:'slug', type:'string' },
+    { name:'ma', type:'string' }, { name:'cap', type:'enum: Tỉnh, Quận/Huyện, Phường/Xã' },
+    { name:'parentId', type:'FK → tự tham chiếu (nullable)' }, { name:'path', type:'string' },
+    { name:'trangThai', type:'enum: Đang hoạt động, Đã khóa' },
+    { name:'ngayTao', type:'datetime' }, { name:'ngayCapNhat', type:'datetime' }
+  ]},
+  { id:'BDSYeuThich', name:'BĐS yêu thích', attrs:[
+    { name:'id', type:'PK' }, { name:'nguoiDungId', type:'FK → Người dùng' },
+    { name:'bdsId', type:'FK → Bất động sản' }, { name:'ngayTao', type:'datetime' }
+  ]},
+  { id:'PhongYeuThich', name:'Phòng yêu thích', attrs:[
+    { name:'id', type:'PK' }, { name:'nguoiDungId', type:'FK → Người dùng' },
+    { name:'phongId', type:'FK → Phòng' }, { name:'ngayTao', type:'datetime' }
+  ]},
+  { id:'LichSuXem', name:'Lịch sử xem BĐS', attrs:[
+    { name:'id', type:'PK' }, { name:'nguoiDungId', type:'FK → Người dùng' },
+    { name:'bdsId', type:'FK → Bất động sản' }, { name:'thoiGianXem', type:'datetime' }
+  ]},
+  { id:'ThongBao', name:'Thông báo', attrs:[
+    { name:'id', type:'PK' }, { name:'tieuDe', type:'string' }, { name:'noiDung', type:'text' },
+    { name:'loai', type:'enum: 5 loại' }, { name:'trangThai', type:'enum: chưa đọc, đã đọc' },
+    { name:'nguoiGuiId', type:'FK → Người dùng' }, { name:'nguoiNhanId', type:'FK → Người dùng' },
+    { name:'entityType', type:'polymorphic: BDS, Phòng' }, { name:'entityId', type:'UUID' },
+    { name:'ngayTao', type:'datetime' }
+  ]}
+]
+
+const erdRelations = {
+  oneToMany: [
+    { from:'VaiTro', to:'NguoiDung', card:'1→N', desc:'Một vai trò có nhiều người dùng', del:'Chặn xóa role nếu còn user' },
+    { from:'NguoiDung', to:'UserArea', card:'1→N', desc:'Người dùng có nhiều khu vực quản lý', del:'Xóa user → UserArea mất theo' },
+    { from:'NguoiDung', to:'File', card:'1→1', desc:'Người dùng có avatar', del:'Xóa file → user set avatar null' },
+    { from:'VaiTro', to:'PhanQuyen', card:'1→N', desc:'Vai trò có nhiều phân quyền', del:'Xóa role → phân quyền mất theo' },
+    { from:'DiaGioiHC', to:'UserArea', card:'1→N', desc:'Địa giới được gán cho nhiều UserArea', del:'Xóa địa giới → UserArea mất theo' },
+    { from:'NguoiDung', to:'BatDongSan', card:'1→N', desc:'Người dùng sở hữu nhiều BĐS', del:'Chặn xóa user nếu còn BĐS' },
+    { from:'LoaiBDS', to:'BatDongSan', card:'1→N', desc:'Loại BĐS có nhiều BĐS', del:'Chặn xóa loại nếu còn BĐS' },
+    { from:'BatDongSan', to:'Phong', card:'1→N', desc:'BĐS có nhiều phòng', del:'Xóa BĐS → phòng mất theo' },
+    { from:'BatDongSan', to:'BDSYeuThich', card:'1→N', desc:'BĐS có nhiều lượt yêu thích', del:'Xóa BĐS → yêu thích mất theo' },
+    { from:'BatDongSan', to:'LichSuXem', card:'1→N', desc:'BĐS có nhiều lượt xem', del:'Xóa BĐS → lịch sử mất theo' },
+    { from:'LoaiPhong', to:'Phong', card:'1→N', desc:'Loại phòng có nhiều phòng', del:'Chặn xóa loại nếu còn phòng' },
+    { from:'KhachHang', to:'Phong', card:'1→N', desc:'Khách hàng thuê nhiều phòng (theo thời gian)', del:'Xóa khách → phòng set khách null' },
+    { from:'Phong', to:'HopDong', card:'1→N', desc:'Phòng có nhiều hợp đồng', del:'Chặn xóa phòng nếu còn HĐ' },
+    { from:'Phong', to:'PhongYeuThich', card:'1→N', desc:'Phòng có nhiều lượt yêu thích', del:'Xóa phòng → yêu thích mất theo' },
+    { from:'HopDong', to:'File', card:'1→1', desc:'Hợp đồng có file đính kèm', del:'Xóa file → HĐ set file null' },
+    { from:'KhachHang', to:'File', card:'1→1', desc:'Khách hàng có ảnh đại diện', del:'Xóa ảnh → KH set ảnh null' },
+    { from:'NguoiDung', to:'File', card:'1→N', desc:'Người dùng upload nhiều file (người tạo)', del:'Xóa user → file set null' },
+    { from:'NguoiDung', to:'NoiThat', card:'1→N', desc:'Người dùng tạo nhiều nội thất', del:'Xóa user → nội thất set null' },
+    { from:'NguoiDung', to:'TienIch', card:'1→N', desc:'Người dùng tạo nhiều tiện ích', del:'Xóa user → tiện ích set null' },
+    { from:'NguoiDung', to:'DichVu', card:'1→N', desc:'Người dùng tạo nhiều dịch vụ', del:'Xóa user → dịch vụ set null' },
+    { from:'NguoiDung', to:'ThongBao', card:'1→N', desc:'Người dùng gửi nhiều thông báo (người gửi)', del:'Xóa user → TB set người gửi null' },
+    { from:'NguoiDung', to:'ThongBao', card:'1→N', desc:'Người dùng nhận nhiều thông báo (người nhận)', del:'Xóa user → TB mất theo' },
+    { from:'NguoiDung', to:'BDSYeuThich', card:'1→N', desc:'Người dùng thích nhiều BĐS', del:'Xóa user → yêu thích mất theo' },
+    { from:'NguoiDung', to:'PhongYeuThich', card:'1→N', desc:'Người dùng thích nhiều phòng', del:'Xóa user → yêu thích mất theo' },
+    { from:'NguoiDung', to:'LichSuXem', card:'1→N', desc:'Người dùng xem nhiều BĐS', del:'Xóa user → lịch sử mất theo' }
+  ],
+  manyToMany: [
+    { entity1:'BatDongSan', entity2:'NoiThat', junction:'bds_noi_that', desc:'BĐS gắn nhiều nội thất, không thuộc tính bổ sung' },
+    { entity1:'BatDongSan', entity2:'TienIch', junction:'bds_tien_ich', desc:'BĐS gắn nhiều tiện ích, có khoảng cách (m)' },
+    { entity1:'Phong', entity2:'NoiThat', junction:'phong_noi_that', desc:'Phòng gắn nhiều nội thất, không thuộc tính bổ sung' },
+    { entity1:'Phong', entity2:'TienIch', junction:'phong_tien_ich', desc:'Phòng gắn nhiều tiện ích, có khoảng cách (m)' },
+    { entity1:'Phong', entity2:'DichVu', junction:'phong_dich_vu', desc:'Phòng đăng ký dịch vụ, có giá, đơn vị, chu kỳ, chỉ số đầu' }
+  ],
+  polymorphic: [
+    { table:'File', cols:'entityType, entityId', desc:'File thuộc BĐS / Phòng / User / Khách hàng' },
+    { table:'ThongBao', cols:'entityType, entityId', desc:'Thông báo liên kết đến BĐS hoặc Phòng' }
+  ],
+  selfRef: [
+    { table:'DiaGioiHC', col:'parentId', desc:'Cây 3 cấp: Tỉnh (null) → Quận/Huyện → Phường/Xã. Chặn xóa nếu còn con' }
+  ]
+}
+
+// ══════════════════════════════════════════════
 //  HELPERS
 // ══════════════════════════════════════════════
 
@@ -586,13 +757,135 @@ function renderTimelineView() {
 }
 
 // ══════════════════════════════════════════════
+//  RENDERER — ERD
+// ══════════════════════════════════════════════
+
+const SPINNER = '<svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>'
+let erdCache = null
+let mermaidLoaded = false
+let erdDiagramStr = null
+
+function buildErdDiagramStr() {
+  if (erdDiagramStr) return erdDiagramStr
+  let d = 'erDiagram\n'
+  const coreEntityIds = ['NguoiDung','VaiTro','PhanQuyen','UserArea','KhachHang','BatDongSan','Phong','HopDong','LoaiBDS','LoaiPhong','NoiThat','TienIch','DichVu','File','DiaGioiHC','BDSYeuThich','PhongYeuThich','LichSuXem','ThongBao']
+  coreEntityIds.forEach(id => {
+    const e = erdEntities.find(x => x.id === id)
+    if (e) d += `  ${id} {\n${e.attrs.map(a => {
+      const t = a.type
+      if (t.startsWith('PK')) return `    uuid ${a.name} PK`
+      if (t.startsWith('FK')) return `    uuid ${a.name} FK`
+      if (t.startsWith('int')) return `    int ${a.name}`
+      if (t.startsWith('float') || t.startsWith('decimal')) return `    float ${a.name}`
+      if (t.startsWith('boolean')) return `    bool ${a.name}`
+      if (t.startsWith('datetime') || t.startsWith('date')) return `    date ${a.name}`
+      if (t.startsWith('text')) return `    string ${a.name}`
+      return `    string ${a.name}`
+    }).join('\n')}\n  }\n`
+  })
+  erdRelations.manyToMany.forEach(r => {
+    d += `  ${r.junction} {\n    uuid id PK\n    uuid ${r.entity1.toLowerCase()}_id FK\n    uuid ${r.entity2.toLowerCase()}_id FK\n    string extra "mô tả thêm"\n  }\n`
+  })
+  const relMap = {}
+  erdRelations.oneToMany.forEach(r => {
+    const key = r.from + '-' + r.to
+    if (!relMap[key]) { relMap[key] = true; d += `  ${r.from} ||--o{ ${r.to} : "${r.desc.split(',')[0]}"\n` }
+  })
+  erdRelations.manyToMany.forEach(r => {
+    d += `  ${r.entity1} ||--o{ ${r.junction} : ""\n`
+    d += `  ${r.junction} }o--|| ${r.entity2} : ""\n`
+  })
+  erdDiagramStr = d
+  return d
+}
+
+function renderErdView() {
+  let html = '<div class="space-y-6">'
+
+  // Section A: ERD diagram (spinner + empty SVG container + zoom controls)
+  html += `<section>
+    <h2 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+      <i data-lucide="database" class="w-5 h-5 text-indigo-600"></i> Sơ đồ ERD
+    </h2>
+    <div id="erd-diagram" class="bg-white rounded-xl border border-gray-200 p-4">
+      <div class="relative">
+        <div class="absolute top-0 right-0 z-10 flex gap-1">
+          <button id="erd-zi" class="p-1.5 bg-white rounded border shadow-sm hover:bg-gray-100 cursor-pointer" title="Phóng to"><i data-lucide="zoom-in" class="w-4 h-4"></i></button>
+          <button id="erd-zo" class="p-1.5 bg-white rounded border shadow-sm hover:bg-gray-100 cursor-pointer" title="Thu nhỏ"><i data-lucide="zoom-out" class="w-4 h-4"></i></button>
+          <button id="erd-zr" class="p-1.5 bg-white rounded border shadow-sm hover:bg-gray-100 cursor-pointer" title="Đặt lại"><i data-lucide="maximize" class="w-4 h-4"></i></button>
+        </div>
+        <div id="erd-loading" class="flex items-center justify-center py-12">
+          <div class="flex items-center gap-3 text-gray-400">${SPINNER}<span class="text-sm">Đang tải sơ đồ...</span></div>
+        </div>
+        <div id="erd-zc" style="overflow:auto">
+          <div id="erd-svg" style="min-width:900px"></div>
+        </div>
+      </div>
+    </div>
+  </section>`
+
+  // Section B: Entity details
+  html += `<section>
+    <h2 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+      <i data-lucide="table-2" class="w-5 h-5 text-indigo-600"></i> Đặc tả thực thể (${erdEntities.length})
+    </h2>`
+  html += Accordion(erdEntities, ent => {
+    const attrRows = ent.attrs.map(a => {
+      let typeClass = ''
+      if (a.type.startsWith('PK')) typeClass = 'text-red-600 font-mono'
+      else if (a.type.startsWith('FK')) typeClass = 'text-blue-600 font-mono'
+      else if (a.type.startsWith('enum')) typeClass = 'text-emerald-600'
+      else if (a.type.startsWith('poly')) typeClass = 'text-purple-600'
+      return [`<span class="${typeClass}">${a.name}</span>`, `<span class="text-xs ${typeClass}">${a.type}</span>`]
+    })
+    return `<div class="overflow-x-auto rounded-lg border border-gray-100">${Table(['Thuộc tính', 'Kiểu'], attrRows, true)}</div>`
+  }, 0)
+  html += '</section>'
+
+  // Section C: Relationship tables
+  html += `<section>
+    <h2 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+      <i data-lucide="git-merge" class="w-5 h-5 text-indigo-600"></i> Quan hệ
+    </h2>
+    <div class="space-y-4">
+      <div>
+        <h3 class="text-sm font-semibold text-gray-700 mb-2">1-N / 1-1 (${erdRelations.oneToMany.length} quan hệ)</h3>
+        <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white">
+          ${Table(['#','Thực thể 1','Chiều','Thực thể 2','Mô tả','Luật xóa'],
+            erdRelations.oneToMany.map((r,i) => [String(i+1), r.from, r.card, r.to, r.desc, r.del]), true)}
+        </div>
+      </div>
+      <div>
+        <h3 class="text-sm font-semibold text-gray-700 mb-2">N-N (bảng trung gian)</h3>
+        <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white">
+          ${Table(['#','Thực thể 1','Bảng trung gian','Thực thể 2','Mô tả'],
+            erdRelations.manyToMany.map((r,i) => [String(i+1), r.entity1, r.junction, r.entity2, r.desc]), true)}
+        </div>
+      </div>
+      <div>
+        <h3 class="text-sm font-semibold text-gray-700 mb-2">Đa hình & Tự tham chiếu</h3>
+        <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white">
+          ${Table(['Bảng','Cột','Mô tả'],
+            [...erdRelations.polymorphic.map(r => [r.table, r.cols, r.desc]),
+             ...erdRelations.selfRef.map(r => [r.table, r.col, r.desc])], true)}
+        </div>
+      </div>
+    </div>
+  </section>`
+
+  html += '</div>'
+  return html
+}
+
+// ══════════════════════════════════════════════
 //  APP
 // ══════════════════════════════════════════════
 
 function init() {
   const tabs = [
     { id:'epic', label:'Epics & Câu chuyện', icon:'book-open', render:renderEpicView },
-    { id:'timeline', label:'Tiến độ', icon:'calendar', render:renderTimelineView }
+    { id:'timeline', label:'Tiến độ', icon:'calendar', render:renderTimelineView },
+    { id:'erd', label:'ERD', icon:'database', render:renderErdView }
   ]
 
   const tabsEl = document.getElementById('tabs')
@@ -605,9 +898,69 @@ function init() {
     sessionStorage.setItem('activeTab', tabId)
     renderTabs()
     const tab = tabs.find(t => t.id === tabId)
-    contentEl.innerHTML = tab.render()
+
+    if (tabId === 'erd' && erdCache) {
+      contentEl.innerHTML = erdCache
+      contentEl.scrollTop = 0
+      lucide.createIcons()
+      return
+    }
+
+    if (tabId !== 'erd') {
+      contentEl.innerHTML = tab.render()
+      contentEl.scrollTop = 0
+      lucide.createIcons()
+      return
+    }
+
+    // Phase 0: skeleton ngay — không block paint
+    contentEl.innerHTML = '<div class="flex items-center justify-center py-20 text-gray-400 gap-3">' + SPINNER + '<span class="text-sm">Đang tải...</span></div>'
     contentEl.scrollTop = 0
-    lucide.createIcons()
+
+    // Phase 1: render toàn bộ tables + diagram placeholder (deferred 1 frame)
+    requestAnimationFrame(() => {
+      contentEl.innerHTML = renderErdView()
+      contentEl.scrollTop = 0
+      lucide.createIcons()
+
+      // Phase 2: load Mermaid + render SVG (deferred thêm 1 frame)
+      requestAnimationFrame(() => {
+        loadAndRenderErdDiagram()
+      })
+    })
+  }
+
+  function loadAndRenderErdDiagram() {
+    const def = buildErdDiagramStr()
+    function render() {
+      mermaid.initialize({ startOnLoad: false, theme: 'default', securityLevel: 'loose' })
+      const svgEl = document.getElementById('erd-svg')
+      const loadingEl = document.getElementById('erd-loading')
+      if (!svgEl) return
+      mermaid.render('erd-render-graph', def).then(({svg}) => {
+        svgEl.innerHTML = svg
+        if (loadingEl) loadingEl.remove()
+        // Zoom controls
+        let z = 1
+        const zc = document.getElementById('erd-zc')
+        function az() { svgEl.style.zoom = z }
+        document.getElementById('erd-zi').onclick = () => { z = Math.min(z * 1.25, 3); az() }
+        document.getElementById('erd-zo').onclick = () => { z = Math.max(z / 1.25, 0.25); az() }
+        document.getElementById('erd-zr').onclick = () => { z = 1; az() }
+        erdCache = document.getElementById('tab-content').innerHTML
+      }).catch(err => {
+        if (loadingEl) loadingEl.innerHTML = '<span class="text-red-500 text-sm">Lỗi: ' + err.message + '</span>'
+      })
+    }
+    if (mermaidLoaded) { render(); return }
+    const s = document.createElement('script')
+    s.src = 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js'
+    s.onload = () => { mermaidLoaded = true; render() }
+    s.onerror = () => {
+      const e = document.getElementById('erd-loading')
+      if (e) e.innerHTML = '<span class="text-red-500 text-sm">Không thể tải thư viện sơ đồ.</span>'
+    }
+    document.head.appendChild(s)
   }
 
   function renderTabs() {
