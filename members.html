@@ -70,6 +70,14 @@
                 <i data-lucide="search" class="w-4 h-4 text-textSecondary absolute left-3.5 pointer-events-none"></i>
                 <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Tìm kiếm thành viên..." class="w-full pl-10 pr-4 py-2 bg-background border border-border rounded-input text-body placeholder:text-textSecondary focus:outline-none focus:border-primary transition-colors duration-150">
             </div>
+
+            <!-- Filter Tabs -->
+            <div class="flex gap-1 bg-background rounded-input p-1 overflow-x-auto flex-nowrap">
+                <button onclick="switchTab('all')" id="tab-all" class="flex-shrink-0 px-3 py-1.5 text-small font-medium rounded-input transition-all duration-150 bg-surface text-textPrimary shadow-soft whitespace-nowrap">Tất cả</button>
+                <button onclick="switchTab('active')" id="tab-active" class="flex-shrink-0 px-3 py-1.5 text-small font-medium rounded-input transition-all duration-150 text-textSecondary hover:text-textPrimary whitespace-nowrap">Đang hoạt động <span id="activeCount">(0)</span></button>
+                <button onclick="switchTab('pending')" id="tab-pending" class="flex-shrink-0 px-3 py-1.5 text-small font-medium rounded-input transition-all duration-150 text-textSecondary hover:text-textPrimary whitespace-nowrap">Chờ duyệt <span id="pendingCount">(0)</span></button>
+                <button onclick="switchTab('locked')" id="tab-locked" class="flex-shrink-0 px-3 py-1.5 text-small font-medium rounded-input transition-all duration-150 text-textSecondary hover:text-textPrimary whitespace-nowrap">Đã khóa <span id="lockedCount">(0)</span></button>
+            </div>
         </header>
 
         <!-- Danh sách list -->
@@ -243,6 +251,26 @@
         </div>
     </div>
 
+    <!-- ~[Từ chối đăng ký] Dialog -->
+    <div id="rejectDialog" class="fixed inset-0 z-50 hidden bg-textPrimary/20 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-surface w-full max-w-sm rounded-modal p-5 flex flex-col gap-4 shadow-lg transform scale-95 opacity-0 transition-all duration-150" id="rejectDialogBody">
+            <div class="flex items-start gap-3">
+                <div class="p-2 bg-error/10 text-error rounded-full flex-shrink-0">
+                    <i data-lucide="x-circle" class="w-5 h-5"></i>
+                </div>
+                <div class="flex flex-col gap-1 flex-1">
+                    <h3 class="text-body font-semibold text-textPrimary">Từ chối đăng ký</h3>
+                    <p class="text-small text-textSecondary">Vui lòng nhập lý do từ chối</p>
+                    <textarea id="rejectReason" rows="3" placeholder="Nhập lý do từ chối..." class="w-full px-3 py-2 mt-2 bg-surface border border-border rounded-input text-body focus:outline-none focus:border-primary transition-colors duration-150 resize-none"></textarea>
+                </div>
+            </div>
+            <div class="flex items-center justify-end gap-2 mt-2">
+                <button onclick="closeRejectDialog()" class="px-4 py-2 bg-background hover:bg-border text-textPrimary text-small font-medium rounded-button transition-colors duration-150">Hủy</button>
+                <button onclick="submitReject()" class="px-4 py-2 bg-error text-surface text-small font-medium rounded-button transition-colors duration-150">Xác nhận từ chối</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ~[Xác nhận] Dialog -->
     <div id="confirmDialog" class="fixed inset-0 z-50 hidden bg-textPrimary/20 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-surface w-full max-w-sm rounded-modal p-5 flex flex-col gap-4 shadow-lg transform scale-95 opacity-0 transition-all duration-150" id="confirmDialogBody">
@@ -305,8 +333,17 @@
             { id: 5, name: "Vũ Phương Thảo", phone: "0977445566", username: "thao.vp", role: "Sale", status: "Đang hoạt động", province: "Thành phố Hồ Chí Minh", city: "Quận Bình Thạnh", districts: ["Bình Thạnh"], wards: ["Phường 15"], avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" }
         ];
 
+        let currentTab = 'all';
         let selectedUserId = null;
         let searchQuery = "";
+        let selectedRequestId = null;
+        let isApprovingRequest = false;
+
+        // Mock dữ liệu yêu cầu đăng ký
+        let registerRequests = [
+            { id: 1, phone: "0912345678", username: "nguyen.van.b", fullName: "Nguyễn Văn B", role: "Sale", createdAt: "02/06/2026 14:30", status: "Chờ duyệt" },
+            { id: 2, phone: "0988777666", username: "tran.thi.c", fullName: "Trần Thị C", role: "HouseHolder", createdAt: "02/06/2026 15:45", status: "Chờ duyệt" }
+        ];
         
         // State Form Khu vực tạm thời
         let currentProvince = "";
@@ -317,8 +354,29 @@
         let selectedRole = "";
         let selectedStatus = "Đang hoạt động";
 
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('[id^="tab-"]').forEach(t => {
+                t.classList.remove('bg-surface', 'text-textPrimary', 'shadow-soft');
+                t.classList.add('text-textSecondary');
+            });
+            const tabEl = document.getElementById('tab-' + tab);
+            if (tabEl) {
+                tabEl.classList.add('bg-surface', 'text-textPrimary', 'shadow-soft');
+                tabEl.classList.remove('text-textSecondary');
+            }
+            renderUserList();
+        }
+
+        function updateTabCounts() {
+            document.getElementById('pendingCount').innerText = `(${registerRequests.length})`;
+            document.getElementById('activeCount').innerText = `(${users.filter(u => u.status === 'Đang hoạt động').length})`;
+            document.getElementById('lockedCount').innerText = `(${users.filter(u => u.status === 'Đã khóa').length})`;
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             renderUserList();
+            updateTabCounts();
             setupDropdownClickInterceptor();
             lucide.createIcons();
         });
@@ -348,16 +406,155 @@
             }, 2000);
         }
 
-        // Tải danh sách thành viên [Quản lý thành viên]
-        function renderUserList() {
+        // Hiển thị yêu cầu đăng ký (tab Chờ duyệt)
+        function renderPendingRequests() {
             const container = document.getElementById('userListContainer');
             container.innerHTML = "";
 
-            const filtered = users.filter(u => 
-                u.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                u.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                u.phone.includes(searchQuery)
+            const filtered = registerRequests.filter(r =>
+                r.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                r.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                r.phone.includes(searchQuery)
             );
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-16 text-textSecondary gap-2">
+                        <i data-lucide="user-plus" class="w-8 h-8 opacity-30"></i>
+                        <span class="text-small">Không có yêu cầu đăng ký nào</span>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            filtered.forEach(req => {
+                const card = document.createElement('div');
+                card.className = "p-4 bg-surface border border-border rounded-card shadow-soft flex flex-col gap-3 relative transition-all duration-150 hover:border-primary/20";
+                card.innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-primary/10 border border-border flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="user" class="w-5 h-5 text-primary"></i>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-semibold text-textPrimary text-body leading-tight">${req.fullName}</span>
+                                <span class="text-small text-textSecondary mt-0.5">${req.phone} · @${req.username}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <span class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                            ${req.role}
+                        </span>
+                        <span class="text-small text-textSecondary">
+                            <i data-lucide="clock" class="w-3 h-3 inline"></i> ${req.createdAt}
+                        </span>
+                    </div>
+
+                    <div class="h-[1px] bg-border/60 my-0.5"></div>
+
+                    <div class="flex gap-2">
+                        <button onclick="approveRequest(${req.id})" class="flex-1 py-2 bg-success text-white text-small font-medium rounded-button hover:bg-green-700 transition-colors duration-150 flex items-center justify-center gap-1.5">
+                            <i data-lucide="check-circle" class="w-4 h-4"></i> Duyệt
+                        </button>
+                        <button onclick="openRejectDialog(${req.id})" class="flex-1 py-2 bg-error text-white text-small font-medium rounded-button hover:bg-red-700 transition-colors duration-150 flex items-center justify-center gap-1.5">
+                            <i data-lucide="x-circle" class="w-4 h-4"></i> Từ chối
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+            updateTabCounts();
+        }
+
+        // Duyệt yêu cầu đăng ký → mở bottom sheet form dialog
+        function approveRequest(requestId) {
+            const idx = registerRequests.findIndex(r => r.id === requestId);
+            if (idx === -1) return;
+            const req = registerRequests[idx];
+
+            document.getElementById('dialogTitle').innerText = "Duyệt yêu cầu đăng ký";
+
+            document.getElementById('formAvatarPreview').src = AVATAR_POOL[Math.floor(Math.random() * AVATAR_POOL.length)];
+
+            document.getElementById('formName').value = req.fullName;
+            document.getElementById('formPhone').value = req.phone;
+            document.getElementById('formUsername').value = req.username;
+            generateRandomPassword();
+            document.getElementById('formPassword').value = "••••••••";
+
+            selectedRole = req.role;
+            document.getElementById('roleDropdownValue').innerText = req.role;
+
+            selectedStatus = "Đang hoạt động";
+            document.getElementById('statusDropdownValue').innerText = "Đang hoạt động";
+            document.getElementById('formStatusContainer').classList.remove('hidden');
+
+            clearLocationFormState();
+
+            isApprovingRequest = true;
+            selectedRequestId = requestId;
+
+            showFormDialog();
+        }
+
+        // Dialog từ chối
+        function openRejectDialog(requestId) {
+            selectedRequestId = requestId;
+            document.getElementById('rejectReason').value = "";
+            const dialog = document.getElementById('rejectDialog');
+            dialog.classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('rejectDialogBody').classList.remove('scale-95', 'opacity-0');
+                document.getElementById('rejectDialogBody').classList.add('scale-100', 'opacity-100');
+            }, 5);
+        }
+
+        function closeRejectDialog() {
+            const body = document.getElementById('rejectDialogBody');
+            body.classList.remove('scale-100', 'opacity-100');
+            body.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => document.getElementById('rejectDialog').classList.add('hidden'), 150);
+        }
+
+        function submitReject() {
+            const reason = document.getElementById('rejectReason').value.trim();
+            if (!reason) {
+                showNotification("Vui lòng nhập lý do từ chối", "error");
+                return;
+            }
+            const idx = registerRequests.findIndex(r => r.id === selectedRequestId);
+            if (idx === -1) return;
+            const req = registerRequests[idx];
+            registerRequests.splice(idx, 1);
+            updateTabCounts();
+            closeRejectDialog();
+            showNotification(`Đã từ chối tài khoản "${req.fullName}". Lý do: ${reason}`);
+            renderUserList();
+        }
+
+        // Tải danh sách thành viên [Quản lý thành viên]
+        function renderUserList() {
+            if (currentTab === 'pending') {
+                renderPendingRequests();
+                return;
+            }
+
+            const container = document.getElementById('userListContainer');
+            container.innerHTML = "";
+
+            const filtered = users.filter(u => {
+                const matchSearch = u.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                    u.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    u.phone.includes(searchQuery);
+                if (!matchSearch) return false;
+                if (currentTab === 'active') return u.status === 'Đang hoạt động';
+                if (currentTab === 'locked') return u.status === 'Đã khóa';
+                return true;
+            });
 
             if (filtered.length === 0) {
                 container.innerHTML = `
@@ -371,9 +568,9 @@
             }
 
             filtered.forEach(user => {
+                const showStatus = currentTab === 'all';
                 const statusColor = user.status === 'Đang hoạt động' ? 'bg-success/10 text-success border-success/20' : 'bg-error/10 text-error border-error/20';
                 
-                // Trộn chip quận/huyện + phường xã kèm icon riêng biệt
                 const districtChips = (user.districts || []).map(d => `
                     <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-primary/5 border border-primary/10 text-textSecondary rounded-md text-[11px]">
                         <i data-lucide="map" class="w-2.5 h-2.5 text-primary"></i>${d}
@@ -403,9 +600,7 @@
                     </div>
                     
                     <div class="flex flex-wrap items-center gap-1.5">
-                        <span class="px-2 py-0.5 rounded-full text-[11px] font-medium border ${statusColor}">
-                            ${user.status}
-                        </span>
+                        ${showStatus ? `<span class="px-2 py-0.5 rounded-full text-[11px] font-medium border ${statusColor}">${user.status}</span>` : ''}
                         <span class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
                             ${user.role}
                         </span>
@@ -426,6 +621,7 @@
                 container.appendChild(card);
             });
             lucide.createIcons();
+            updateTabCounts();
         }
 
         function handleSearch(val) {
@@ -497,7 +693,7 @@
             e.stopPropagation();
             const statuses = [
                 { name: "Đang hoạt động", icon: "check-circle" },
-                { name: "Đang khóa", icon: "slash" }
+                { name: "Đã khóa", icon: "slash" }
             ];
             setupGenericDropdownItems(statuses, 'status', (val) => {
                 selectedStatus = val;
@@ -550,6 +746,7 @@
 
         // [[Thêm thành viên]]
         function openAddUserDialog() {
+            isApprovingRequest = false;
             selectedUserId = null;
             document.getElementById('dialogTitle').innerText = "Thêm thành viên";
             document.getElementById('formStatusContainer').classList.add('hidden');
@@ -603,6 +800,7 @@
         }
 
         function closeFormDialog() {
+            isApprovingRequest = false;
             const body = document.getElementById('formDialogBody');
             body.classList.add('translate-y-full');
             setTimeout(() => {
@@ -809,6 +1007,41 @@
         // Xử lý nộp Form thành viên Dialog ()-> [Quản lý thành viên]
         function handleFormSubmit(e) {
             e.preventDefault();
+
+            if (isApprovingRequest) {
+                const idx = registerRequests.findIndex(r => r.id === selectedRequestId);
+                if (idx === -1) return;
+                const req = registerRequests[idx];
+
+                if(!selectedRole) {
+                    showNotification("Vui lòng chọn vai trò thành viên!", "error");
+                    return;
+                }
+
+                const newUser = {
+                    id: users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1,
+                    name: document.getElementById('formName').value,
+                    phone: document.getElementById('formPhone').value,
+                    username: document.getElementById('formUsername').value,
+                    role: selectedRole,
+                    status: selectedStatus,
+                    avatar: document.getElementById('formAvatarPreview').src,
+                    province: currentProvince,
+                    city: currentCity,
+                    districts: [...currentDistricts],
+                    wards: [...currentWards]
+                };
+                users.unshift(newUser);
+                registerRequests.splice(idx, 1);
+                updateTabCounts();
+
+                isApprovingRequest = false;
+                selectedRequestId = null;
+                closeFormDialog();
+                showNotification(`Đã duyệt tài khoản "${req.fullName}"`);
+                renderUserList();
+                return;
+            }
 
             if(!selectedRole) {
                 showNotification("Vui lòng chọn vai trò thành viên!", "error");

@@ -297,7 +297,7 @@ def main():
     dry_run = '--dry-run' in sys.argv
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    dotenv_path = os.path.join(script_dir, '..', '.env')
+        dotenv_path = os.path.join(script_dir, '.env')
     load_env(dotenv_path)
 
     token = os.environ.get('JIRA_TOKEN', '')

@@ -2,10 +2,13 @@
 
 ## 1. Tài khoản & Đăng nhập
 - Tôi muốn có màn hình đăng nhập, ai có tài khoản thì vào được, ai chưa có thì đăng ký
-- Quên mật khẩu thì lấy lại được qua OTP gửi email hoặc SMS
+- Quên mật khẩu thì lấy lại được qua OTP gửi email, SMS hoặc Zalo
 - Đã vào hệ thống rồi thì có thể đổi mật khẩu nếu muốn
 - Tài khoản nào vi phạm thì admin có thể khóa lại, khóa rồi không vào được nữa
 - Có 5 hạng tài khoản: Super Admin (cao nhất), Admin, Quản lý khu vực, Chủ nhà, Sale
+- Đăng ký tài khoản qua form: số điện thoại, tên tài khoản, mật khẩu, họ tên, vai trò mong muốn
+- Xác thực số điện thoại bằng Zalo OTP trước khi gửi yêu cầu
+- Tài khoản đăng ký tự động ở trạng thái "Chờ duyệt", admin phải duyệt mới kích hoạt
 
 ## 2. Bảng tổng quan (Dashboard)
 - Vào trang chủ là thấy ngay tổng quan: bao nhiêu BĐS, bao nhiêu phòng, bao nhiêu cái đã duyệt, còn bao nhiêu cái chờ
@@ -175,7 +178,7 @@
 - avatar (File)
 - vai trò (Vai trò)
 - khu vực quản lý (danh sách UserArea)
-- trạng thái: [Đang hoạt động, Đã khóa]
+- trạng thái: [Chờ duyệt, Đang hoạt động, Đã khóa]
 - ngày tạo, ngày cập nhật
 
 ## Vai trò
@@ -426,6 +429,13 @@
         - Không thể khóa Super Admin
         - Nếu bị khóa → không thể đăng nhập, token hiện tại bị vô hiệu
         - Ghi lại lịch sử khóa/mở khóa
+    - Đăng ký (tự đăng ký)
+        - Bất kỳ ai có SĐT hợp lệ đều có thể gửi yêu cầu
+        - Bắt buộc xác thực SĐT qua Zalo OTP trước khi gửi yêu cầu
+        - Yêu cầu đăng ký tự động ở trạng thái "Chờ duyệt"
+        - Admin duyệt → chuyển "Đang hoạt động", gửi thông báo cho user
+        - Admin từ chối → xóa yêu cầu hoặc chuyển "Bị từ chối", gửi thông báo kèm lý do
+        - Tài khoản "Chờ duyệt" không thể đăng nhập
     - Giới hạn kỹ thuật
         - Tên đăng nhập không khoảng trắng, không ký tự đặc biệt, không trùng
         - Mật khẩu tối thiểu 6 ký tự, có chữ và số
@@ -603,6 +613,7 @@
     - Sale đổi trạng thái phòng bắt buộc phải được duyệt bởi HouseHolder (chủ phòng), Manager (quản lý phòng), Admin hoặc SuperAdmin
     - Manager bắt buộc phải có ít nhất 1 khu vực quản lý
     - Không cho sửa tên đăng nhập sau khi tạo
+    - Tài khoản "Chờ duyệt" không thể đăng nhập
 
 # Security Rules
 
@@ -610,16 +621,17 @@
     - Xác thực qua JWT token, kiểm tra token hết hạn mỗi request
     - Chỉ user có trạng thái "Đang hoạt động" mới đăng nhập được
     - OTP có hiệu lực 5 phút, chỉ dùng 1 lần
-    - OTP gồm 6 chữ số
+    - OTP gồm 4 chữ số
     - Khi đặt lại mật khẩu thành công → vô hiệu hóa token OTP
     - (Đề xuất) Giới hạn số lần đăng nhập sai: 5 lần → khóa tạm thời 15 phút
     - (Đề xuất) Giới hạn số lần gửi lại OTP: tối đa 3 lần/giờ
+    - Xác thực số điện thoại qua Zalo OTP khi đăng ký
 
 # State (đồng bộ với State Machine ở trên)
 
 Phòng: [đang trống, đã cọc, đã thuê, sắp trống, chờ duyệt cọc, chờ duyệt thuê, chờ duyệt sắp trống, chờ duyệt đang trống]
 Bất động sản: [nháp, chờ duyệt, đã duyệt, bị từ chối, hết hạn]
-Người dùng: [Đang hoạt động, đã khóa]
+Người dùng: [Chờ duyệt, Đang hoạt động, Đã khóa]
 Địa giới hành chính: [Đang hoạt động, đã khóa]
 Thông báo: [chưa đọc, đã đọc]
 Hợp đồng: [hiệu lực, đã hết hạn, đã hủy]

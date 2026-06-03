@@ -3,21 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng Ký Tài Khoản - Tìm Kiếm Bất Động Sản</title>
-    <!-- Inter Font -->
+    <title>Đăng Ký Tài Khoản - MQ Sale</title>
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
                         primary: '#2563EB',
                         background: '#F8FAFC',
@@ -29,85 +25,270 @@
                         warning: '#F59E0B',
                         error: '#DC2626',
                     },
-                    borderRadius: {
-                        'input': '10px',
-                        'button': '12px',
-                        'card': '16px',
-                        'modal': '20px',
-                    },
-                    boxShadow: {
-                        'soft': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
-                    },
-                    fontSize: {
-                        'small': ['12px', '16px'],
-                        'body': ['14px', '20px'],
-                        'h3': ['20px', '28px'],
-                        'h2': ['24px', '32px'],
-                        'h1': ['32px', '40px'],
-                    }
+                    borderRadius: { input: '10px', button: '12px', card: '16px', modal: '20px' },
+                    boxShadow: { soft: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)' },
+                    fontSize: { small: ['12px', '16px'], body: ['14px', '20px'], h3: ['20px', '28px'], h2: ['24px', '32px'], h1: ['32px', '40px'] }
                 }
             }
         }
     </script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0F172A;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #0F172A; }
+        .otp-input { width: 44px; height: 52px; text-align: center; font-size: 20px; font-weight: 600; }
+        .otp-input:focus { border-color: #2563EB; outline: none; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2); }
+        .hidden { display: none; }
+        ::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="flex justify-center items-center min-h-screen p-0 sm:p-4 text-textPrimary">
 
-    <!-- Mobile Device Container -->
-    <div class="w-full max-w-[430px] h-screen sm:h-[880px] bg-background sm:rounded-modal shadow-2xl relative flex flex-col justify-between overflow-hidden border border-border p-6">
-        
-        <!-- Top Section: Navigation & Header -->
-        <div class="space-y-6">
-            <button onclick="parent.switchScreen('login')" class="w-[44px] h-[44px] flex items-center justify-center bg-surface border border-border rounded-input text-textPrimary hover:bg-slate-50 transition-colors duration-150 shadow-soft">
-                <i data-lucide="arrow-left" class="w-5 h-5"></i>
-            </button>
-            
-            <div class="space-y-2">
-                <h1 class="text-h2 font-semibold text-textPrimary">Tạo tài khoản mới</h1>
-                <p class="text-body text-textSecondary">Vui lòng điền thông tin bên dưới để gửi yêu cầu tạo tài khoản cho admin phê duyệt.</p>
+    <div class="w-full max-w-[430px] h-screen sm:h-[880px] bg-background sm:rounded-modal shadow-2xl relative flex flex-col overflow-hidden border border-border p-6">
+
+        <!-- ===== STEP 1: REGISTER FORM ===== -->
+        <div id="step-form" class="flex flex-col h-full">
+
+            <!-- Top: back button only -->
+            <div class="flex items-center gap-3">
+                <button onclick="parent.switchScreen('login')" class="w-[44px] h-[44px] flex items-center justify-center bg-surface border border-border rounded-input text-textPrimary hover:bg-slate-50 transition-colors duration-150 shadow-soft flex-shrink-0">
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                </button>
             </div>
+
+            <!-- Form -->
+            <div class="flex-1 overflow-y-auto my-4 space-y-4 pr-1">
+
+                <h1 class="text-h2 font-semibold text-textPrimary">Tạo tài khoản mới</h1>
+
+                <!-- Description + Login link -->
+                <p class="text-body text-textSecondary">
+                    Nhập thông tin bên dưới để gửi yêu cầu đăng ký.
+                    Đã có tài khoản?
+                    <button onclick="parent.switchScreen('login')" class="text-primary font-semibold hover:underline inline">Đăng nhập</button>
+                </p>
+
+                <!-- Phone -->
+                <div class="space-y-1.5">
+                    <label class="text-small font-medium text-textPrimary">Số điện thoại</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-textSecondary"><i data-lucide="phone" class="w-5 h-5"></i></span>
+                        <input id="reg-phone" type="tel" maxlength="11" placeholder="0912345678" class="w-full pl-10 pr-4 py-3 bg-surface border border-border rounded-input text-body focus:outline-none focus:border-primary transition-colors duration-150 placeholder:text-textSecondary text-textPrimary shadow-soft">
+                    </div>
+                </div>
+
+                <!-- Username -->
+                <div class="space-y-1.5">
+                    <label class="text-small font-medium text-textPrimary">Tên tài khoản</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-textSecondary"><i data-lucide="user" class="w-5 h-5"></i></span>
+                        <input id="reg-username" type="text" placeholder="nguyenvana" class="w-full pl-10 pr-4 py-3 bg-surface border border-border rounded-input text-body focus:outline-none focus:border-primary transition-colors duration-150 placeholder:text-textSecondary text-textPrimary shadow-soft">
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="space-y-1.5">
+                    <label class="text-small font-medium text-textPrimary">Mật khẩu</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-textSecondary"><i data-lucide="lock" class="w-5 h-5"></i></span>
+                        <input id="reg-password" type="password" placeholder="Tối thiểu 6 ký tự" class="w-full pl-10 pr-10 py-3 bg-surface border border-border rounded-input text-body focus:outline-none focus:border-primary transition-colors duration-150 placeholder:text-textSecondary text-textPrimary shadow-soft">
+                        <button type="button" onclick="togglePwd('reg-password', this)" class="absolute inset-y-0 right-0 flex items-center pr-3 text-textSecondary">
+                            <i data-lucide="eye" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="space-y-1.5">
+                    <label class="text-small font-medium text-textPrimary">Xác nhận mật khẩu</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-textSecondary"><i data-lucide="lock" class="w-5 h-5"></i></span>
+                        <input id="reg-confirm" type="password" placeholder="Nhập lại mật khẩu" class="w-full pl-10 pr-10 py-3 bg-surface border border-border rounded-input text-body focus:outline-none focus:border-primary transition-colors duration-150 placeholder:text-textSecondary text-textPrimary shadow-soft">
+                        <button type="button" onclick="togglePwd('reg-confirm', this)" class="absolute inset-y-0 right-0 flex items-center pr-3 text-textSecondary">
+                            <i data-lucide="eye" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Full Name -->
+                <div class="space-y-1.5">
+                    <label class="text-small font-medium text-textPrimary">Họ tên</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-textSecondary"><i data-lucide="badge-check" class="w-5 h-5"></i></span>
+                        <input id="reg-name" type="text" placeholder="Nguyễn Văn A" class="w-full pl-10 pr-4 py-3 bg-surface border border-border rounded-input text-body focus:outline-none focus:border-primary transition-colors duration-150 placeholder:text-textSecondary text-textPrimary shadow-soft">
+                    </div>
+                </div>
+
+                <!-- Desired Role -->
+                <div class="space-y-1.5">
+                    <label class="text-small font-medium text-textPrimary">Vai trò mong muốn</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-textSecondary"><i data-lucide="briefcase" class="w-5 h-5"></i></span>
+                        <select id="reg-role" class="w-full pl-10 pr-4 py-3 bg-surface border border-border rounded-input text-body focus:outline-none focus:border-primary transition-colors duration-150 text-textPrimary shadow-soft appearance-none">
+                            <option value="">Chọn vai trò</option>
+                            <option value="Sale">Sale</option>
+                            <option value="HouseHolder">HouseHolder (Chủ nhà)</option>
+                        </select>
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-textSecondary pointer-events-none"><i data-lucide="chevron-down" class="w-4 h-4"></i></span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Submit -->
+            <div class="pt-2 pb-4">
+                <button onclick="goToOtp()" class="w-full py-3 bg-primary text-white font-semibold text-body rounded-button shadow-soft hover:bg-blue-700 transition-colors duration-150 flex items-center justify-center gap-2">
+                    <span>Gửi mã OTP</span>
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                </button>
+            </div>
+
         </div>
 
-        <!-- Middle Section: Register Form -->
-        <div class="flex-1 flex flex-col justify-center max-y-[300px] my-auto space-y-5">
-            <!-- Email Input -->
-            <div class="space-y-1.5">
-                <label class="text-small font-medium text-textPrimary">Tài khoản email</label>
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-textSecondary">
-                        <i data-lucide="mail" class="w-5 h-5"></i>
-                    </span>
-                    <input type="email" placeholder="name@example.com" class="w-full pl-10 pr-4 py-3 bg-surface border border-border rounded-input text-body focus:outline-none focus:border-primary transition-colors duration-150 placeholder:text-textSecondary text-textPrimary shadow-soft">
+        <!-- ===== STEP 2: ZALO OTP ===== -->
+        <div id="step-otp" class="flex flex-col h-full hidden">
+
+            <!-- Top -->
+            <div class="space-y-5">
+                <button onclick="backToForm()" class="w-[44px] h-[44px] flex items-center justify-center bg-surface border border-border rounded-input text-textPrimary hover:bg-slate-50 transition-colors duration-150 shadow-soft">
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                </button>
+                <div class="space-y-1.5">
+                    <h1 class="text-h2 font-semibold text-textPrimary">Xác thực số điện thoại</h1>
+                    <p class="text-body text-textSecondary">Mã OTP đã gửi qua Zalo đến <span id="otp-phone-display" class="font-semibold text-textPrimary">***</span></p>
                 </div>
             </div>
 
-            <!-- Submit Button -->
-            <div class="pt-2">
-                <button onclick="parent.switchScreen('login')" class="w-full py-3 bg-primary text-white font-semibold text-body rounded-button shadow-soft hover:bg-blue-700 transition-colors duration-150 flex items-center justify-center gap-2 group">
-                    <span>Gửi yêu cầu</span>
-                    <i data-lucide="send" class="w-4 h-4 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
+            <!-- OTP Input -->
+            <div class="flex-1 flex flex-col items-center justify-center space-y-6">
+                <div class="flex gap-3 justify-center" id="otp-container">
+                    <input class="otp-input bg-surface border border-border rounded-input shadow-soft" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
+                    <input class="otp-input bg-surface border border-border rounded-input shadow-soft" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
+                    <input class="otp-input bg-surface border border-border rounded-input shadow-soft" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
+                    <input class="otp-input bg-surface border border-border rounded-input shadow-soft" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
+                </div>
+
+                <button onclick="verifyOtp()" class="w-full py-3 bg-primary text-white font-semibold text-body rounded-button shadow-soft hover:bg-blue-700 transition-colors duration-150">
+                    Xác thực
                 </button>
+
+                <div class="text-center">
+                    <p class="text-body text-textSecondary">Không nhận được mã?</p>
+                    <button id="btn-resend" onclick="resendOtp()" class="text-primary font-semibold hover:underline mt-1" disabled>
+                        Gửi lại (<span id="countdown">60</span>s)
+                    </button>
+                </div>
             </div>
+
+            <!-- Footer -->
+            <div class="pb-4 text-center">
+                <p class="text-small text-textSecondary">
+                    Mã OTP được gửi qua ứng dụng Zalo. <br>Vui lòng kiểm tra tin nhắn Zalo của bạn.
+                </p>
+            </div>
+
         </div>
 
-        <!-- Bottom Section: Footer / Back to Login -->
-        <div class="pb-4 pt-4 mt-16 text-center">
-            <p class="text-body text-textSecondary">
-                Đã có tài khoản? 
-                <button onclick="parent.switchScreen('login')" class="text-primary font-semibold hover:underline transition-all duration-150 ml-1">Đăng nhập</button>
+        <!-- ===== STEP 3: SUCCESS ===== -->
+        <div id="step-success" class="flex flex-col h-full items-center justify-center hidden">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                <i data-lucide="check-circle" class="w-8 h-8 text-success"></i>
+            </div>
+            <h1 class="text-h3 font-semibold text-textPrimary text-center">Yêu cầu đã gửi thành công!</h1>
+            <p class="text-body text-textSecondary text-center mt-2 px-4">
+                Yêu cầu đăng ký của bạn đang chờ admin phê duyệt.<br>
+                Bạn sẽ nhận được thông báo khi tài khoản được kích hoạt.
             </p>
+            <button onclick="parent.switchScreen('login')" class="mt-8 w-full py-3 bg-primary text-white font-semibold text-body rounded-button shadow-soft hover:bg-blue-700 transition-colors duration-150">
+                Về trang đăng nhập
+            </button>
         </div>
 
     </div>
 
-    <!-- Initialize Lucide Icons -->
     <script>
         lucide.createIcons();
+
+        // Toggle password visibility
+        function togglePwd(id, btn) {
+            const input = document.getElementById(id);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                input.type = 'password';
+                icon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
+        }
+
+        // OTP auto-focus
+        const otpInputs = document.querySelectorAll('#otp-container input');
+        otpInputs.forEach((input, index) => {
+            input.addEventListener('input', function() {
+                if (this.value && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+            });
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && !this.value && index > 0) {
+                    otpInputs[index - 1].focus();
+                }
+            });
+        });
+
+        function maskPhone(phone) {
+            return '***' + phone.slice(-3);
+        }
+
+        // Go to OTP step
+        function goToOtp() {
+            const phone = document.getElementById('reg-phone').value.trim();
+            document.getElementById('otp-phone-display').textContent = maskPhone(phone);
+            document.getElementById('step-form').classList.add('hidden');
+            document.getElementById('step-otp').classList.remove('hidden');
+            otpInputs[0].focus();
+            startCountdown();
+            lucide.createIcons();
+        }
+
+        // Back to form
+        function backToForm() {
+            document.getElementById('step-otp').classList.add('hidden');
+            document.getElementById('step-form').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        // Countdown
+        let countdownTimer;
+        function startCountdown() {
+            let sec = 60;
+            const btn = document.getElementById('btn-resend');
+            const span = document.getElementById('countdown');
+            btn.disabled = true;
+            span.textContent = sec;
+            clearInterval(countdownTimer);
+            countdownTimer = setInterval(() => {
+                sec--;
+                span.textContent = sec;
+                if (sec <= 0) {
+                    clearInterval(countdownTimer);
+                    btn.disabled = false;
+                    span.textContent = '0';
+                }
+            }, 1000);
+        }
+
+        function resendOtp() {
+            startCountdown();
+            // TODO: call API to resend OTP
+        }
+
+        function verifyOtp() {
+            // TODO: call API verify OTP, then on success:
+            document.getElementById('step-otp').classList.add('hidden');
+            document.getElementById('step-success').classList.remove('hidden');
+            lucide.createIcons();
+        }
     </script>
 </body>
 </html>
