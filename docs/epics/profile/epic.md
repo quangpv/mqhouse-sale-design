@@ -2,7 +2,7 @@
 
 **Mã Epic:** PROFILE
 **Business Objective:** Cho phép người dùng quản lý thông tin cá nhân.
-**Mô tả:** Xem và chỉnh sửa hồ sơ cá nhân, đổi avatar, xem thông tin tài khoản.
+**Mô tả:** Xem và chỉnh sửa hồ sơ cá nhân, đổi avatar, xem thông tin tài khoản, trang tĩnh (giới thiệu, điều khoản), liên hệ hỗ trợ.
 **Dependency:** Epic 1 (Xác thực)
 
 ---

@@ -285,6 +285,16 @@
       </div>
     </div>
 
+    <!-- Room List Bottom Sheet -->
+    <div id="roomListSheet" class="hidden absolute inset-0 bg-black/40 z-50 flex flex-col justify-end items-center opacity-0 transition-opacity duration-200" onclick="if(event.target===this)closeRoomListSheet()">
+      <div class="bg-surface rounded-t-modal max-h-[85%] flex flex-col w-full max-w-lg shadow-2xl transform translate-y-10 transition-transform duration-200">
+        <div id="roomListSheetInfo" class="px-4 py-3 border-b border-border shrink-0">
+        </div>
+        <div id="roomListSheetBody" class="flex-1 overflow-y-auto px-4 pb-4 no-scrollbar">
+        </div>
+      </div>
+    </div>
+
     <!-- Quick Filter Dropdowns (portal-style, outside overflow-hidden) -->
     <div id="searchDropStatus" class="hidden fixed w-36 bg-surface/95 backdrop-blur-md border border-border rounded-button shadow-xl z-50 py-1">
         <button onclick="applySearchQuickFilter('status', '', 'Trạng thái')" class="w-full text-left px-3 py-2 text-[12px] hover:bg-slate-50 text-textPrimary">Tất cả</button>
@@ -398,6 +408,87 @@
             sheet.classList.add('opacity-0');
             sheet.querySelector('div').classList.add('translate-y-10');
             setTimeout(() => sheet.classList.add('hidden'), 200);
+        }
+
+        function closeRoomListSheet() {
+            const sheet = document.getElementById('roomListSheet');
+            sheet.classList.add('opacity-0');
+            sheet.querySelector('div').classList.add('translate-y-10');
+            setTimeout(() => sheet.classList.add('hidden'), 200);
+        }
+
+        function openRoomListSheet(itemId, roomType, designStyle) {
+            const item = MOCK_DATA.find(i => i.id === itemId);
+            if (!item || !item.rooms) return;
+            const matched = item.rooms.filter(r => r.roomType === roomType && r.designStyle === designStyle);
+            if (matched.length === 0) return;
+            const first = matched[0];
+            const expanded = matched.flatMap(r => {
+                const count = Math.max(r.available, 1);
+                return Array.from({ length: count }, () => ({ ...r }));
+            });
+
+            function roomStatus(available) {
+                if (available > 0) return { label: 'Đang trống', cls: 'text-success bg-green-50 border-success/10', overlay: 'bg-success/80' };
+                return { label: 'Đã thuê', cls: 'text-error bg-red-50 border-error/10', overlay: 'bg-error/80' };
+            }
+
+            function renderRoomImages(imgs) {
+                const len = imgs.length;
+                if (len === 1) {
+                    return `<div class="col-span-4 h-full"><img src="${imgs[0]}" alt="" class="w-full h-full object-cover"></div>`;
+                } else if (len === 2) {
+                    return `<div class="col-span-2 h-full"><img src="${imgs[0]}" alt="" class="w-full h-full object-cover"></div><div class="col-span-2 h-full"><img src="${imgs[1]}" alt="" class="w-full h-full object-cover"></div>`;
+                } else {
+                    const extra = len > 3 ? `<div class="absolute inset-0 bg-slate-900/40 flex items-center justify-center text-white text-small font-semibold backdrop-blur-[1px]">+${len - 3} ảnh</div>` : '';
+                    return `<div class="col-span-2 h-full"><img src="${imgs[0]}" alt="" class="w-full h-full object-cover"></div><div class="col-span-1 h-full"><img src="${imgs[1]}" alt="" class="w-full h-full object-cover"></div><div class="col-span-1 h-full relative"><img src="${imgs[2]}" alt="" class="w-full h-full object-cover">${extra}</div>`;
+                }
+            }
+
+            document.getElementById('roomListSheetInfo').innerHTML = `
+                <h3 class="text-[15px] font-semibold text-textPrimary">${item.title}</h3>
+                <p class="text-[12px] text-textSecondary mt-0.5">${item.address}</p>
+                <div class="flex flex-wrap gap-x-1 gap-y-0.5 text-[12px] text-textSecondary mt-2">
+                    <span class="font-medium text-textPrimary">${first.roomType}</span>
+                    <span>·</span>
+                    <span>${first.designStyle}</span>
+                    <span>·</span>
+                    <span>${first.area} m²</span>
+                    <span>·</span>
+                    <span>${first.wc || 1} WC</span>
+                    <span>·</span>
+                    <span>${item.propertyType}</span>
+                </div>
+            `;
+
+            document.getElementById('roomListSheetBody').innerHTML = `
+                <div class="space-y-3 pt-4">
+                    ${expanded.map((r, i) => {
+                        const st = roomStatus(r.available);
+                        const imgs = r.images || [r.image];
+                        return `
+                            <div class="bg-surface border border-border rounded-card overflow-hidden cursor-pointer" onclick="event.stopPropagation();closeRoomListSheet();parent.switchScreen('roomDetails')">
+                                <div class="grid grid-cols-4 gap-1 h-[105px] w-full overflow-hidden bg-slate-100 relative">
+                                    ${renderRoomImages(imgs)}
+                                    <span class="absolute bottom-1 right-1 text-[11px] font-medium text-white ${st.overlay} px-1.5 py-0.5 rounded-md backdrop-blur-[1px]">${st.label}</span>
+                                </div>
+                                <div class="p-3 flex items-center justify-between">
+                                    <span class="text-[13px] font-semibold text-textPrimary">P-${item.id}-${i}</span>
+                                    <span class="text-[14px] font-semibold text-primary">${r.price} tr/tháng</span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+
+            const sheet = document.getElementById('roomListSheet');
+            sheet.classList.remove('hidden');
+            setTimeout(() => {
+                sheet.classList.remove('opacity-0');
+                sheet.querySelector('div').classList.remove('translate-y-10');
+            }, 5);
+            lucide.createIcons();
         }
 
         function toggleFilterChip(field, value) {
@@ -568,20 +659,20 @@
             { id: 1, type: 'single', propertyType: "Căn hộ", title: "Flora Novia Skyline Studio", category: "CĂN HỘ CHUNG CƯ", status: "available", price: 14.5, area: 35, roomType: "Studio", designStyle: "Thiết kế 1", address: "128 Nguyễn Văn Bánh, Phường 15, Bình Thạnh", favorited: true, images: ["https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400", "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400", "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400", "https://images.unsplash.com/photo-1560185007-5f0bb1866cab?w=400"], wc: 1 },
             { id: 6, type: 'multi', propertyType: "Căn hộ", title: "Vinhomes Central Park", category: "CĂN HỘ CHUNG CƯ", address: "208 Nguyễn Hữu Cảnh, Phường 22, Bình Thạnh", favorited: false, images: ["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400", "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400", "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=400"],
                 rooms: [
-                    { roomType: "Studio", designStyle: "Thiết kế 1", price: 8.5, area: 30, available: 3, image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400", wc: 1 },
-                    { roomType: "Studio", designStyle: "Thiết kế 2", price: 9.5, area: 35, available: 2, image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400", wc: 1 },
-                    { roomType: "1 Phòng ngủ", designStyle: "Tiêu chuẩn", price: 12, area: 45, available: 1, image: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400", wc: 1 },
-                    { roomType: "1 Phòng ngủ", designStyle: "Cao cấp", price: 15, area: 50, available: 0, image: "https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=400", wc: 1 },
-                    { roomType: "2 Phòng ngủ", designStyle: "Tiêu chuẩn", price: 18, area: 65, available: 2, image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400", wc: 2 },
-                    { roomType: "2 Phòng ngủ", designStyle: "Cao cấp", price: 22, area: 75, available: 1, image: "https://images.unsplash.com/photo-1560185007-5f0bb1866cab?w=400", wc: 2 },
+                    { roomType: "Studio", designStyle: "Thiết kế 1", price: 8.5, area: 30, available: 3, image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400", wc: 1, images: ["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400", "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400", "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=400"] },
+                    { roomType: "Studio", designStyle: "Thiết kế 2", price: 9.5, area: 35, available: 2, image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400", wc: 1, images: ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400", "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400", "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400"] },
+                    { roomType: "1 Phòng ngủ", designStyle: "Tiêu chuẩn", price: 12, area: 45, available: 1, image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400", wc: 1, images: ["https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400", "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=400", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400", "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400"] },
+                    { roomType: "1 Phòng ngủ", designStyle: "Cao cấp", price: 15, area: 50, available: 0, image: "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=400", wc: 1, images: ["https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=400", "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400"] },
+                    { roomType: "2 Phòng ngủ", designStyle: "Tiêu chuẩn", price: 18, area: 65, available: 2, image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400", wc: 2, images: ["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400", "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400", "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=400", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400"] },
+                    { roomType: "2 Phòng ngủ", designStyle: "Cao cấp", price: 22, area: 75, available: 1, image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400", wc: 2, images: ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400", "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=400"] },
                 ]
             },
             { id: 2, type: 'single', propertyType: "Phòng trọ", title: "Vinhomes Central Cozy Room", category: "PHÒNG TRỌ KHÉP KÍN", status: "rented", price: 6.8, area: 20, roomType: "1 Phòng ngủ", designStyle: "Tiêu chuẩn", address: "208 Nguyễn Hữu Cảnh, Phường 22, Bình Thạnh", favorited: false, images: ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400", "https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=400", "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=400"], wc: 1 },
             { id: 7, type: 'multi', propertyType: "Căn hộ", title: "Saigon Pearl Residence", category: "CĂN HỘ CHUNG CƯ", address: "92 Nguyễn Hữu Cảnh, Phường 22, Bình Thạnh", favorited: true, images: ["https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400", "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400", "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400", "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400"],
                 rooms: [
-                    { roomType: "Studio", designStyle: "Thiết kế 1", price: 7.5, area: 28, available: 5, image: "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=400", wc: 1 },
-                    { roomType: "1 Phòng ngủ", designStyle: "Tiêu chuẩn", price: 10, area: 40, available: 3, image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400", wc: 1 },
-                    { roomType: "1 Phòng ngủ", designStyle: "Cao cấp", price: 13, area: 48, available: 1, image: "https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=400", wc: 1 },
+                    { roomType: "Studio", designStyle: "Thiết kế 1", price: 7.5, area: 28, available: 5, image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400", wc: 1, images: ["https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400", "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400", "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400", "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400"] },
+                    { roomType: "1 Phòng ngủ", designStyle: "Tiêu chuẩn", price: 10, area: 40, available: 3, image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400", wc: 1, images: ["https://images.unsplash.com/photo-1497366216548-37526070297c?w=400", "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400", "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400"] },
+                    { roomType: "1 Phòng ngủ", designStyle: "Cao cấp", price: 13, area: 48, available: 1, image: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400", wc: 1, images: ["https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400", "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400"] },
                 ]
             },
             { id: 3, type: 'single', propertyType: "Căn hộ", title: "The Manor Premium Studio", category: "CĂN HỘ STUDIO", status: "available", price: 8.5, area: 30, roomType: "Studio", designStyle: "Cao cấp", address: "55 Nguyễn Văn Bánh, Phường 15, Bình Thạnh", favorited: false, images: ["https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400", "https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=400", "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400"], wc: 1 },
@@ -660,7 +751,7 @@
 
             const rooms = item.rooms;
             let roomsHtml = rooms.map((r, i) => `
-                <div onclick="event.stopPropagation();parent.switchScreen('roomDetails')" class="w-[140px] h-[115px] flex-shrink-0 bg-surface border border-border rounded-[8px] overflow-hidden flex flex-col cursor-pointer transition-colors duration-150">
+                <div onclick="event.stopPropagation();openRoomListSheet(${item.id}, '${r.roomType}', '${r.designStyle}')" class="w-[140px] h-[115px] flex-shrink-0 bg-surface border border-border rounded-[8px] overflow-hidden flex flex-col cursor-pointer transition-colors duration-150">
                     <div class="h-[65px] bg-slate-100 overflow-hidden flex-shrink-0 relative">
                         <img src="${r.image}" alt="" class="w-full h-full object-cover">
                         <span class="absolute bottom-1 right-1 text-[11px] font-medium ${r.available > 0 ? 'text-white bg-success/80' : 'text-white bg-error/80'} px-1.5 py-0.5 rounded-md backdrop-blur-[1px]">${r.available > 0 ? 'Còn ' + r.available : 'Hết'}</span>
