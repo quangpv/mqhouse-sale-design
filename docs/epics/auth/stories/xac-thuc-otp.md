@@ -1,7 +1,7 @@
 # AUTH-04: Xác thực OTP
 
 - **Role:** Người dùng (tất cả)
-- **Mô tả:** As a **người dùng**, I want **nhập mã OTP đã được gửi qua email/SMS/Zalo**, So that **xác thực danh tính để đặt lại mật khẩu hoặc đăng ký tài khoản**
+- **Mô tả:** As a **người dùng**, I want **nhập mã OTP đã được gửi qua email/SMS/Zalo**, So that **xác thực danh tính để đặt lại mật khẩu**
 
 **Priority:** Medium
 

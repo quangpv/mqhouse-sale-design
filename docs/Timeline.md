@@ -33,7 +33,7 @@ T6 01          T6 12
 
 **Thời gian:** 01/06 (Mon) → 12/06 (Fri)
 **Demo:** 12/06 (Fri)
-**Nội dung:** AUTH-01→06 (Login, Register, Forgot pwd, OTP, Reset, Change pwd)
+**Nội dung:** AUTH-01, AUTH-03→06 (Login, Forgot pwd, OTP, Reset, Change pwd)
 
 **Milestone:** ✅ Hệ thống xác thực hoàn chỉnh
 

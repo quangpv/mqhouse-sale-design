@@ -23,7 +23,7 @@
             <p class="text-xs text-gray-500">Tài liệu dự án</p>
           </div>
         </div>
-        <span class="text-xs text-gray-400 hidden sm:block">13 Epics · 76 Câu chuyện</span>
+        <span class="text-xs text-gray-400 hidden sm:block">13 Epics · 74 Câu chuyện</span>
       </div>
     </div>
     <!-- Tabs -->
@@ -58,7 +58,7 @@ const roles = [
 const epicMatrix = {
   headers:['Epic','Super Admin','Admin','Manager','HouseHolder','Sale','Khách hàng'],
   rows:[
-    ['Xác thực & Bảo mật','CRUD','C','C','C','C','C (đăng ký)'],
+    ['Xác thực & Bảo mật','CRUD','C','C','C','C','C'],
     ['Dashboard & Thống kê','R','R','R','R','R','-'],
     ['Tìm kiếm','R','R','R','R','R','R'],
     ['Bản đồ','R','R','R','R','R','R'],
@@ -80,9 +80,6 @@ const epics = [
       { id:'AUTH-01', name:'Đăng nhập hệ thống', role:'Người dùng', priority:'High', desc:'As a người dùng, tôi muốn đăng nhập bằng tên đăng nhập và mật khẩu để truy cập hệ thống.',
         ac:['Form đăng nhập: tên đăng nhập, mật khẩu, ghi nhớ','Validate không để trống','Hiển thị lỗi sai tên/mật khẩu hoặc tài khoản bị khóa','Đăng nhập thành công → Dashboard','Ghi nhớ đăng nhập, eye toggle','Link "Quên mật khẩu?"'],
         tasks:[['Database','Bảng nguoi_dung'],['Backend','POST /api/auth/login, logout'],['Backend','JWT middleware'],['Frontend','Màn hình login'],['Validation','Định dạng username, mật khẩu ≥6 ký tự']] },
-      { id:'AUTH-02', name:'Đăng ký tài khoản', role:'Khách hàng, Sale, HouseHolder', priority:'High', desc:'As a người dùng mới, tôi muốn đăng ký tài khoản để sử dụng hệ thống.',
-        ac:['Form: tên đăng nhập, mật khẩu, xác nhận mật khẩu, họ tên, email, số điện thoại','Validate các trường bắt buộc','mật khẩu và xác nhận mật khẩu khớp nhau','Kiểm tra tên đăng nhập đã tồn tại','Đăng ký thành công → về màn hình đăng nhập'],
-        tasks:[['Backend','POST /api/auth/register, check-username'],['Frontend','register.html, strength meter'],['Validation','Email, số điện thoại, mật khẩu']] },
       { id:'AUTH-03', name:'Quên mật khẩu', role:'Tất cả', priority:'Medium', desc:'As a người quên mật khẩu, tôi muốn nhập email/số điện thoại để nhận OTP.',
         ac:['Form nhập email/số điện thoại đã đăng ký','Validate không để trống','Kiểm tra email/số điện thoại tồn tại','Gửi OTP → chuyển OTP screen','Nút quay lại đăng nhập'],
         tasks:[['Backend','POST /api/auth/forgot-password'],['Frontend','forgot-password.html'],['Notification','Gửi email/SMS OTP']] },

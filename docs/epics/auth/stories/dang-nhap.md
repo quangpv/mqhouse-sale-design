@@ -15,7 +15,7 @@
 - [ ] Đăng nhập thành công → chuyển đến màn hình chính
 - [ ] Token tự động hết hạn sau thời gian nhất định → redirect về login
 - [ ] Link "Quên mật khẩu?" → màn hình quên mật khẩu
-- [ ] Link "Đăng ký ngay" → màn hình đăng ký
+- [ ] Link "Liên hệ admin" → màn hình liên hệ
 
 ## Technical Tasks
 
@@ -37,4 +37,4 @@
 - Redirect đến màn hình chính sau đăng nhập thành công
 - Xử lý 401 từ API → tự động redirect về login
 - Auto-refresh token trước khi hết hạn
-- Link "Quên mật khẩu?" → forgotPassword, "Đăng ký ngay" → register
+- Link "Quên mật khẩu?" → forgotPassword, "Liên hệ admin" → register

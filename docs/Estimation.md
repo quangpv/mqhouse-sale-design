@@ -12,7 +12,7 @@
 | Hạng mục | Số lượng |
 |----------|----------|
 | Epic | 13 |
-| User Stories | 74 |
+| User Stories | 72 |
 | Sprint | 12 (24 tuần) |
 | Sprint Dev | 9 (S1→S9) |
 | Sprint Testing | 3 (S10→S12) |
@@ -26,7 +26,7 @@
 
 | Sprint | Thời gian | Stories | Effort | Nhóm chính |
 |--------|-----------|---------|--------|------------|
-| S1 | 01/06→12/06 | AUTH-01→06 | 6 PW | Xác thực & Bảo mật |
+| S1 | 01/06→12/06 | AUTH-01, 03→06 | 5 PW | Xác thực & Bảo mật |
 | S2 | 15/06→26/06 | CAT-01→07, NAV-01→02 | 7 PW | Danh mục + Điều hướng |
 | S3 | 29/06→10/07 | USER-01→07 | 7 PW | Người dùng & Phân quyền |
 | S4 | 13/07→24/07 | BDS-01→04,08, PROFILE-01→02 | 8 PW | BĐS cơ bản + Hồ sơ |
@@ -59,18 +59,18 @@
 
 ### S1: Xác thực & Bảo mật (01/06→12/06)
 
-**Stories:** AUTH-01 (Đăng nhập), AUTH-02 (Đăng ký), AUTH-03 (Quên mật khẩu), AUTH-04 (Xác thực OTP), AUTH-05 (Đặt lại mật khẩu), AUTH-06 (Đổi mật khẩu)
+**Stories:** AUTH-01 (Đăng nhập), AUTH-03 (Quên mật khẩu), AUTH-04 (Xác thực OTP), AUTH-05 (Đặt lại mật khẩu), AUTH-06 (Đổi mật khẩu)
 
 | Hạng mục | Tasks |
 |----------|-------|
 | **Database** | Bảng `nguoi_dung`, `otp`, session management |
-| **Backend** | `POST /api/auth/login`, `/register`, `/forgot-password`, `/verify-otp`, `/reset-password`, `/change-password` |
+| **Backend** | `POST /api/auth/login`, `/forgot-password`, `/verify-otp`, `/reset-password`, `/change-password` |
 | **Backend** | JWT middleware, token validation |
-| **Frontend** | Login, Register, Forgot password, OTP, Reset/Change password screens |
+| **Frontend** | Login, Forgot password, OTP, Reset/Change password screens |
 | **Validation** | Username/password rules, email/SĐT format |
 | **Notification** | Gửi email/SMS OTP |
-| **Testing** | Test đăng nhập, đăng ký, quên mật khẩu, OTP |
-| **Demo** | **12/06** — Flow đăng ký → đăng nhập → đổi mật khẩu |
+| **Testing** | Test đăng nhập, quên mật khẩu, OTP |
+| **Demo** | **12/06** — Flow đăng nhập → đổi mật khẩu |
 
 ### S2: Danh mục + Điều hướng (15/06→26/06)
 

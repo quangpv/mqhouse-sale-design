@@ -2,7 +2,7 @@
 
 **Mã Epic:** AUTH
 **Business Objective:** Đảm bảo chỉ người dùng hợp lệ mới truy cập được hệ thống, bảo vệ thông tin tài khoản.
-**Mô tả:** Cho phép người dùng đăng nhập, đăng ký (qua Zalo OTP), khôi phục mật khẩu và xác thực qua OTP.
+**Mô tả:** Cho phép người dùng đăng nhập, khôi phục mật khẩu và xác thực qua OTP.
 **Dependency:** -
 
 ## Actors / Roles
