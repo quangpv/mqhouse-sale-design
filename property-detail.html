@@ -518,9 +518,12 @@
       chips.innerHTML = '';
       statuses.forEach(s => {
         const color = getStatusColor(s);
+        const active = sheetFilter && sheetFilter.status === s;
+        const nextStatus = active ? '' : s;
         const chip = document.createElement('span');
-        chip.className = `text-small font-medium px-2.5 py-1 rounded-md bg-${color}/10 text-${color}`;
+        chip.className = `text-small font-medium px-2.5 py-1 rounded-md cursor-pointer transition-all ${active ? `bg-${color} text-surface` : `bg-${color}/10 text-${color} hover:bg-${color}/20`}`;
         chip.innerText = `${counts[s]} ${s}`;
+        chip.onclick = (e) => { e.stopPropagation(); openRoomsSheet(null, null, nextStatus); };
         chips.appendChild(chip);
       });
 
@@ -646,8 +649,8 @@
 
     }
 
-    function openRoomsSheet(filterType, filterArea) {
-      sheetFilter = { status: null, type: filterType || null, area: filterArea || null };
+    function openRoomsSheet(filterType, filterArea, filterStatus) {
+      sheetFilter = { status: filterStatus || null, type: filterType || null, area: filterArea || null };
       renderSheetRoomList();
       const sheet = document.getElementById('rooms-overview-sheet');
       sheet.onclick = (e) => { if (e.target === sheet) dismissRoomsSheet(); };
