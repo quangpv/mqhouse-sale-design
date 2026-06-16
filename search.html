@@ -290,7 +290,7 @@
       <div class="bg-surface rounded-t-modal max-h-[85%] flex flex-col w-full max-w-lg shadow-2xl transform translate-y-10 transition-transform duration-200">
         <div id="roomListSheetInfo" class="px-4 py-3 border-b border-border shrink-0">
         </div>
-        <div id="roomListSheetBody" class="flex-1 overflow-y-auto px-4 pb-4 no-scrollbar">
+        <div id="roomListSheetBody" class="flex-1 overflow-y-auto pb-4 no-scrollbar">
         </div>
       </div>
     </div>
@@ -444,16 +444,17 @@
             `;
 
             document.getElementById('roomListSheetBody').innerHTML = `
-                <div class="space-y-3 pt-4">
+                <div>
                     ${item.rooms.map((r, i) => {
                         const imgs = r.images || [r.image];
+                        const last = i === item.rooms.length - 1;
                         return `
-                            <div class="bg-surface border border-border rounded-card overflow-hidden cursor-pointer" onclick="event.stopPropagation();closeRoomListSheet();parent.switchScreen('roomDetails')">
+                            <div class="cursor-pointer ${last ? '' : 'border-b border-border'}" onclick="event.stopPropagation();closeRoomListSheet();parent.switchScreen('roomDetails')">
                                 <div class="grid grid-cols-4 gap-1 h-[105px] w-full overflow-hidden bg-slate-100 relative">
                                     ${renderRoomImages(imgs)}
                                     <span class="absolute bottom-1 right-1 text-[11px] font-medium text-white ${r.available > 0 ? 'bg-success/80' : 'bg-error/80'} px-1.5 py-0.5 rounded-md backdrop-blur-[1px]">${r.available > 0 ? 'Còn ' + r.available : 'Hết phòng'}</span>
                                 </div>
-                                <div class="p-3">
+                                <div class="pt-2.5 pb-3 px-4">
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center gap-2">
                                             <span class="text-[13px] font-semibold text-textPrimary">${r.roomType}</span>
