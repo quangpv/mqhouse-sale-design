@@ -195,12 +195,15 @@
     </div>
 
     <!-- Persistent Bottom Control Footer -->
-    <div id="bottom-action-bar" class="p-4 bg-surface border-t border-borderClr shadow-md flex gap-3 items-stretch">
-      <button onclick="openRoomsSheet()" class="flex-1 bg-bgMain border border-borderClr rounded-btn py-3 flex items-center justify-center gap-2 hover:bg-borderClr/30 active:scale-[0.98] transition-all">
+    <div id="bottom-action-bar" class="p-4 bg-surface border-t border-borderClr shadow-md flex gap-2 items-stretch">
+      <button onclick="openRoomsSheet()" class="w-[60px] bg-bgMain border border-borderClr rounded-btn flex flex-col items-center justify-center gap-0.5 hover:bg-borderClr/30 active:scale-[0.98] transition-all">
         <i data-lucide="layout-dashboard" class="w-5 h-5 text-textSecondary"></i>
-        <span class="text-body font-medium text-textSecondary">Sơ đồ phòng</span>
+        <span class="text-[10px] font-medium text-textSecondary">Sơ đồ</span>
       </button>
-      <button id="approve-bottom-btn" onclick="openApproveDialog()" class="flex-1 bg-primary text-surface rounded-btn py-3 flex items-center justify-center gap-2 font-semibold text-body shadow-soft hover:bg-primary/90 active:scale-[0.98] transition-all">
+      <button id="lock-bottom-btn" onclick="openLockDialog()" class="flex-1 rounded-btn py-3 flex items-center justify-center gap-2 font-semibold text-body transition-all">
+        <i data-lucide="lock" class="w-4 h-4"></i> Khóa
+      </button>
+      <button id="approve-bottom-btn" onclick="openApproveDialog()" class="flex-1 rounded-btn py-3 flex items-center justify-center gap-2 font-semibold text-body transition-all">
         <i data-lucide="check-circle" class="w-4 h-4"></i> Duyệt
       </button>
     </div>
@@ -310,6 +313,18 @@
       </div>
     </div>
 
+    <!-- Lock Confirmation Dialog -->
+    <div id="lock-dialog" class="absolute inset-0 bg-textPrimary/40 z-30 hidden transition-opacity duration-200 opacity-0 pointer-events-none flex items-center justify-center p-4">
+      <div class="bg-surface rounded-modal p-6 shadow-xl w-full max-w-xs transition-transform duration-200 scale-95">
+        <h3 id="lock-dialog-title" class="text-h3 text-textPrimary mb-2">Xác nhận khóa</h3>
+        <p id="lock-dialog-desc" class="text-body text-textSecondary mb-6">Sau khi khóa, bất động sản sẽ ở chế độ chỉ xem. Bạn có chắc chắn?</p>
+        <div class="flex gap-3">
+          <button onclick="dismissLockDialog()" class="flex-1 bg-bgMain text-textPrimary border border-borderClr py-2.5 rounded-btn text-body font-medium hover:bg-borderClr/50 transition-colors">Hủy</button>
+          <button id="lock-dialog-confirm" onclick="confirmLockAction()" class="flex-1 bg-error text-surface py-2.5 rounded-btn text-body font-semibold shadow-soft hover:bg-error/90 transition-colors">Khóa</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Approve Confirmation Dialog -->
     <div id="approve-dialog" class="absolute inset-0 bg-textPrimary/40 z-30 hidden transition-opacity duration-200 opacity-0 pointer-events-none flex items-center justify-center p-4">
       <div class="bg-surface rounded-modal p-6 shadow-xl w-full max-w-xs transition-transform duration-200 scale-95">
@@ -371,6 +386,7 @@
     let datasetRooms = generateMockRooms(50);
     let focusEditingRoomId = null;
     let propertyApproved = false;
+    let propertyLocked = false;
     let sheetFilter = { status: null, type: null, area: null, designStyle: null };
 
     function initializeApplication() {
@@ -448,7 +464,10 @@
 
     function updatePropertyStatusBadge() {
       const badge = document.getElementById('property-status-badge');
-      if (!propertyApproved) {
+      if (propertyLocked) {
+        badge.innerText = 'Đã khóa';
+        badge.className = 'text-[10px] font-medium px-2 py-0.5 rounded-full ml-auto bg-error/10 text-error';
+      } else if (!propertyApproved) {
         badge.innerText = 'Chờ duyệt';
         badge.className = 'text-[10px] font-medium px-2 py-0.5 rounded-full ml-auto bg-warning/10 text-warning';
       } else {
@@ -464,19 +483,71 @@
     }
 
     function updateBottomBar() {
-      const btn = document.getElementById('approve-bottom-btn');
-      if (propertyApproved) {
-        const hasVacant = datasetRooms.some(r => r.status === 'Đang trống');
-        btn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Đã duyệt`;
-        btn.className = `flex-1 rounded-btn py-3 flex items-center justify-center gap-2 font-semibold text-body transition-all ${hasVacant ? 'bg-success/10 text-success border border-success/20' : 'bg-textSecondary/10 text-textSecondary border border-textSecondary/20'}`;
-        btn.onclick = null;
+      const lockBtn = document.getElementById('lock-bottom-btn');
+      if (propertyLocked) {
+        lockBtn.innerHTML = `<i data-lucide="lock" class="w-4 h-4"></i> Mở khóa`;
+        lockBtn.className = 'flex-1 bg-error text-surface rounded-btn py-3 flex items-center justify-center gap-2 font-semibold text-body shadow-soft';
+        lockBtn.onclick = openUnlockDialog;
         setTimeout(() => lucide.createIcons(), 10);
       } else {
-        btn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Duyệt`;
-        btn.className = 'flex-1 bg-primary text-surface rounded-btn py-3 flex items-center justify-center gap-2 font-semibold text-body shadow-soft hover:bg-primary/90 active:scale-[0.98] transition-all';
-        btn.onclick = openApproveDialog;
+        lockBtn.innerHTML = `<i data-lucide="lock" class="w-4 h-4"></i> Khóa`;
+        lockBtn.className = 'flex-1 bg-error/10 text-error border border-error/20 rounded-btn py-3 flex items-center justify-center gap-2 font-semibold text-body hover:bg-error/20 active:scale-[0.98] transition-all';
+        lockBtn.onclick = openLockDialog;
         setTimeout(() => lucide.createIcons(), 10);
       }
+
+      const appBtn = document.getElementById('approve-bottom-btn');
+      if (propertyApproved) {
+        const hasVacant = datasetRooms.some(r => r.status === 'Đang trống');
+        appBtn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Đã duyệt`;
+        appBtn.className = `flex-1 rounded-btn py-3 flex items-center justify-center gap-2 font-semibold text-body transition-all ${hasVacant ? 'bg-success/10 text-success border border-success/20' : 'bg-textSecondary/10 text-textSecondary border border-textSecondary/20'}`;
+        appBtn.onclick = null;
+        setTimeout(() => lucide.createIcons(), 10);
+      } else {
+        appBtn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Duyệt`;
+        appBtn.className = 'flex-1 bg-primary text-surface rounded-btn py-3 flex items-center justify-center gap-2 font-semibold text-body shadow-soft hover:bg-primary/90 active:scale-[0.98] transition-all';
+        appBtn.onclick = openApproveDialog;
+        setTimeout(() => lucide.createIcons(), 10);
+      }
+      appBtn.classList.toggle('hidden', propertyLocked);
+    }
+
+    function openLockDialog() {
+      document.getElementById('lock-dialog-title').innerText = 'Xác nhận khóa';
+      document.getElementById('lock-dialog-desc').innerText = 'Sau khi khóa, bất động sản sẽ ở chế độ chỉ xem. Bạn có chắc chắn?';
+      document.getElementById('lock-dialog-confirm').innerText = 'Khóa';
+      const dialog = document.getElementById('lock-dialog');
+      dialog.classList.remove('hidden');
+      setTimeout(() => {
+        dialog.classList.remove('opacity-0', 'pointer-events-none');
+        dialog.firstElementChild.classList.remove('scale-95');
+      }, 10);
+    }
+
+    function openUnlockDialog() {
+      document.getElementById('lock-dialog-title').innerText = 'Xác nhận mở khóa';
+      document.getElementById('lock-dialog-desc').innerText = 'Bất động sản sẽ có thể chỉnh sửa lại. Bạn có chắc chắn?';
+      document.getElementById('lock-dialog-confirm').innerText = 'Mở khóa';
+      const dialog = document.getElementById('lock-dialog');
+      dialog.classList.remove('hidden');
+      setTimeout(() => {
+        dialog.classList.remove('opacity-0', 'pointer-events-none');
+        dialog.firstElementChild.classList.remove('scale-95');
+      }, 10);
+    }
+
+    function dismissLockDialog() {
+      const dialog = document.getElementById('lock-dialog');
+      dialog.firstElementChild.classList.add('scale-95');
+      dialog.classList.add('opacity-0', 'pointer-events-none');
+      setTimeout(() => dialog.classList.add('hidden'), 200);
+    }
+
+    function confirmLockAction() {
+      propertyLocked = !propertyLocked;
+      updatePropertyStatusBadge();
+      updateBottomBar();
+      dismissLockDialog();
     }
 
     function openApproveDialog() {
@@ -533,11 +604,13 @@
         chips.appendChild(chip);
       });
 
-      const addChip = document.createElement('span');
-      addChip.className = 'text-small text-primary px-2.5 py-1 rounded-md border border-dashed border-primary/40 cursor-pointer hover:bg-primary/5 transition-colors flex items-center gap-1';
-      addChip.innerHTML = '<i data-lucide="plus" class="w-3.5 h-3.5"></i> Thêm phòng';
-      addChip.onclick = (e) => { e.stopPropagation(); parent.switchScreen('addProperty'); };
-      chips.appendChild(addChip);
+      if (!propertyLocked) {
+        const addChip = document.createElement('span');
+        addChip.className = 'text-small text-primary px-2.5 py-1 rounded-md border border-dashed border-primary/40 cursor-pointer hover:bg-primary/5 transition-colors flex items-center gap-1';
+        addChip.innerHTML = '<i data-lucide="plus" class="w-3.5 h-3.5"></i> Thêm phòng';
+        addChip.onclick = (e) => { e.stopPropagation(); parent.switchScreen('addProperty'); };
+        chips.appendChild(addChip);
+      }
 
       const areaChips = document.getElementById('rooms-area-chips');
       const uniqueAreas = [...new Set(datasetRooms.map(r => r.area))];
@@ -631,8 +704,8 @@
       filtered.forEach(room => {
         const color = getStatusColor(room.status);
         const cell = document.createElement('div');
-        cell.className = `flex flex-col items-center justify-center p-2 rounded-card bg-${color}/15 border border-${color}/40 cursor-pointer active:scale-[0.98] transition-all aspect-square`;
-        cell.onclick = () => { dismissRoomsSheet(); setTimeout(() => exposeQuickActionSheet(room.id), 250); };
+        cell.className = `flex flex-col items-center justify-center p-2 rounded-card bg-${color}/15 border border-${color}/40 ${propertyLocked ? '' : 'cursor-pointer active:scale-[0.98]'} transition-all aspect-square`;
+        if (!propertyLocked) cell.onclick = () => { dismissRoomsSheet(); setTimeout(() => exposeQuickActionSheet(room.id), 250); };
         cell.innerHTML = `
           <span class="text-[13px] font-semibold text-${color}">${room.id}</span>
           <span class="text-[9px] font-medium text-${color}/70 mt-1">${room.roomType}</span>
@@ -677,6 +750,7 @@
     }
 
     function exposeQuickActionSheet(roomId) {
+      if (propertyLocked) return;
       focusEditingRoomId = roomId;
       const targetObject = datasetRooms.find(r => r.id === roomId);
       if(!targetObject) return;
@@ -729,6 +803,7 @@
     }
 
     function commitRoomStateModification() {
+      if (propertyLocked) return;
       const fieldPrice = document.getElementById('target-room-price-field').value;
       const selectedStatus = document.querySelector('input[name="modalRoomStatusRadio"]:checked').value;
 
