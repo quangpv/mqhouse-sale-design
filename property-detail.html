@@ -120,6 +120,10 @@
         </div>
         <div class="flex flex-wrap gap-2" id="rooms-summary-chips">
         </div>
+        <div onclick="event.stopPropagation()" class="mt-3">
+          <p class="text-small font-medium text-textPrimary mb-2">Diện tích:</p>
+          <div class="flex flex-wrap gap-2" id="rooms-area-chips"></div>
+        </div>
       </div>
 
       <!-- Service Charges Badge List -->
@@ -367,7 +371,7 @@
     let datasetRooms = generateMockRooms(50);
     let focusEditingRoomId = null;
     let propertyApproved = false;
-    let sheetFilter = { status: null, type: null };
+    let sheetFilter = { status: null, type: null, area: null };
 
     function initializeApplication() {
       lucide.createIcons();
@@ -526,6 +530,14 @@
       addChip.onclick = (e) => { e.stopPropagation(); parent.switchScreen('addProperty'); };
       chips.appendChild(addChip);
 
+      const areaChips = document.getElementById('rooms-area-chips');
+      const uniqueAreas = [...new Set(datasetRooms.map(r => r.area))];
+      areaChips.innerHTML = uniqueAreas.map(a => {
+        const active = sheetFilter && sheetFilter.area === a;
+        const nextArea = active ? '' : a;
+        return `<span onclick="event.stopPropagation();openRoomsSheet(null, '${nextArea}')" class="text-small px-2.5 py-1 rounded-md border cursor-pointer transition-all ${active ? 'bg-primary text-surface border-primary' : 'text-textSecondary bg-bgMain border-borderClr hover:bg-borderClr/30'}">${a}</span>`;
+      }).join('');
+
       renderRoomCarousel();
 
       lucide.createIcons();
@@ -586,12 +598,14 @@
       const sheetTitle = document.querySelector('#rooms-overview-sheet h2');
       const filtered = datasetRooms.filter(r =>
         (!sf.status || r.status === sf.status) &&
-        (!sf.type || r.roomType === sf.type)
+        (!sf.type || r.roomType === sf.type) &&
+        (!sf.area || r.area === sf.area)
       );
 
-      const titleParts = ['Thông tin phòng'];
+      const titleParts = ['Phòng'];
       if (sf.status) titleParts.push('·', sf.status);
       if (sf.type) titleParts.push('·', sf.type);
+      if (sf.area) titleParts.push('·', sf.area);
       sheetTitle.innerText = titleParts.join(' ');
       document.getElementById('sheet-room-count').innerText = `${filtered.length} phòng`;
 
@@ -610,7 +624,7 @@
         cell.onclick = () => { dismissRoomsSheet(); setTimeout(() => exposeQuickActionSheet(room.id), 250); };
         cell.innerHTML = `
           <span class="text-[13px] font-semibold text-${color}">${room.id}</span>
-          <span class="text-[10px] font-medium text-${color}/70 mt-1">${room.roomType}</span>
+          <span class="text-[9px] font-medium text-${color}/70 mt-1">${room.roomType}</span>
           <span class="text-[9px] text-${color}/50 mt-0.5">${room.price}</span>
         `;
         list.appendChild(cell);
@@ -632,8 +646,8 @@
 
     }
 
-    function openRoomsSheet(filterType) {
-      sheetFilter = { status: null, type: filterType || null };
+    function openRoomsSheet(filterType, filterArea) {
+      sheetFilter = { status: null, type: filterType || null, area: filterArea || null };
       renderSheetRoomList();
       const sheet = document.getElementById('rooms-overview-sheet');
       sheet.onclick = (e) => { if (e.target === sheet) dismissRoomsSheet(); };
