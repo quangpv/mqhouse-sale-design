@@ -737,18 +737,6 @@
         function createCardMulti(item) {
             const hCls = item.favorited ? 'text-error bg-red-50/30' : 'text-textSecondary bg-slate-50 hover:text-error hover:bg-red-50/50';
             const hFill = item.favorited ? ' fill-current' : '';
-            const imgs = item.images;
-            const len = imgs.length;
-            let gHtml = '';
-            if (len === 1) {
-                gHtml = `<div class="col-span-4 h-full"><img src="${imgs[0]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"></div>`;
-            } else if (len === 2) {
-                gHtml = `<div class="col-span-2 h-full"><img src="${imgs[0]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"></div><div class="col-span-2 h-full"><img src="${imgs[1]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"></div>`;
-            } else {
-                const extra = len > 3 ? `<div class="absolute inset-0 bg-slate-900/40 flex items-center justify-center text-white text-small font-semibold backdrop-blur-[1px]">+${len - 3} ảnh</div>` : '';
-                gHtml = `<div class="col-span-2 h-full"><img src="${imgs[0]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"></div><div class="col-span-1 h-full"><img src="${imgs[1]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"></div><div class="col-span-1 h-full relative"><img src="${imgs[2]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]">${extra}</div>`;
-            }
-
             const rooms = item.rooms;
             let roomsHtml = rooms.map((r, i) => `
                 <div onclick="event.stopPropagation();openRoomListSheet(${item.id}, '${r.roomType}', '${r.designStyle}')" class="w-[140px] h-[115px] flex-shrink-0 bg-surface border border-border rounded-[8px] overflow-hidden flex flex-col cursor-pointer transition-colors duration-150">
@@ -791,7 +779,6 @@
             }
 
             return `<div onclick="parent.switchScreen('propertyDetails')" class="bg-surface border-b border-border flex flex-col group cursor-pointer">
-                <div class="grid grid-cols-4 gap-1 h-[105px] w-full overflow-hidden bg-slate-100 relative flex-shrink-0">${gHtml}</div>
                 <div class="p-2.5 px-4 space-y-0.5">
                     <div class="flex items-center justify-between">
                         <span class="text-small font-semibold text-primary tracking-wide">${item.category}</span>
