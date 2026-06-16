@@ -417,64 +417,55 @@
             setTimeout(() => sheet.classList.add('hidden'), 200);
         }
 
-        function openRoomListSheet(itemId, roomType, designStyle) {
+        function renderRoomImages(imgs) {
+            const len = imgs.length;
+            if (len === 1) {
+                return `<div class="col-span-4 h-full"><img src="${imgs[0]}" alt="" class="w-full h-full object-cover"></div>`;
+            } else if (len === 2) {
+                return `<div class="col-span-2 h-full"><img src="${imgs[0]}" alt="" class="w-full h-full object-cover"></div><div class="col-span-2 h-full"><img src="${imgs[1]}" alt="" class="w-full h-full object-cover"></div>`;
+            } else {
+                const extra = len > 3 ? `<div class="absolute inset-0 bg-slate-900/40 flex items-center justify-center text-white text-small font-semibold backdrop-blur-[1px]">+${len - 3} ảnh</div>` : '';
+                return `<div class="col-span-2 h-full"><img src="${imgs[0]}" alt="" class="w-full h-full object-cover"></div><div class="col-span-1 h-full"><img src="${imgs[1]}" alt="" class="w-full h-full object-cover"></div><div class="col-span-1 h-full relative"><img src="${imgs[2]}" alt="" class="w-full h-full object-cover">${extra}</div>`;
+            }
+        }
+
+        function openMultiRoomSheet(itemId) {
             const item = MOCK_DATA.find(i => i.id === itemId);
             if (!item || !item.rooms) return;
-            const matched = item.rooms.filter(r => r.roomType === roomType && r.designStyle === designStyle);
-            if (matched.length === 0) return;
-            const first = matched[0];
-            const expanded = matched.flatMap(r => {
-                const count = Math.max(r.available, 1);
-                return Array.from({ length: count }, () => ({ ...r }));
-            });
-
-            function roomStatus(available) {
-                if (available > 0) return { label: 'Đang trống', cls: 'text-success bg-green-50 border-success/10', overlay: 'bg-success/80' };
-                return { label: 'Đã thuê', cls: 'text-error bg-red-50 border-error/10', overlay: 'bg-error/80' };
-            }
-
-            function renderRoomImages(imgs) {
-                const len = imgs.length;
-                if (len === 1) {
-                    return `<div class="col-span-4 h-full"><img src="${imgs[0]}" alt="" class="w-full h-full object-cover"></div>`;
-                } else if (len === 2) {
-                    return `<div class="col-span-2 h-full"><img src="${imgs[0]}" alt="" class="w-full h-full object-cover"></div><div class="col-span-2 h-full"><img src="${imgs[1]}" alt="" class="w-full h-full object-cover"></div>`;
-                } else {
-                    const extra = len > 3 ? `<div class="absolute inset-0 bg-slate-900/40 flex items-center justify-center text-white text-small font-semibold backdrop-blur-[1px]">+${len - 3} ảnh</div>` : '';
-                    return `<div class="col-span-2 h-full"><img src="${imgs[0]}" alt="" class="w-full h-full object-cover"></div><div class="col-span-1 h-full"><img src="${imgs[1]}" alt="" class="w-full h-full object-cover"></div><div class="col-span-1 h-full relative"><img src="${imgs[2]}" alt="" class="w-full h-full object-cover">${extra}</div>`;
-                }
-            }
 
             document.getElementById('roomListSheetInfo').innerHTML = `
                 <h3 class="text-[15px] font-semibold text-textPrimary">${item.title}</h3>
                 <p class="text-[12px] text-textSecondary mt-0.5">${item.address}</p>
                 <div class="flex flex-wrap gap-x-1 gap-y-0.5 text-[12px] text-textSecondary mt-2">
-                    <span class="font-medium text-textPrimary">${first.roomType}</span>
+                    <span class="font-medium text-textPrimary">${item.propertyType}</span>
                     <span>·</span>
-                    <span>${first.designStyle}</span>
-                    <span>·</span>
-                    <span>${first.area} m²</span>
-                    <span>·</span>
-                    <span>${first.wc || 1} WC</span>
-                    <span>·</span>
-                    <span>${item.propertyType}</span>
+                    <span>${item.rooms.length} loại phòng</span>
                 </div>
             `;
 
             document.getElementById('roomListSheetBody').innerHTML = `
                 <div class="space-y-3 pt-4">
-                    ${expanded.map((r, i) => {
-                        const st = roomStatus(r.available);
+                    ${item.rooms.map((r, i) => {
                         const imgs = r.images || [r.image];
                         return `
                             <div class="bg-surface border border-border rounded-card overflow-hidden cursor-pointer" onclick="event.stopPropagation();closeRoomListSheet();parent.switchScreen('roomDetails')">
                                 <div class="grid grid-cols-4 gap-1 h-[105px] w-full overflow-hidden bg-slate-100 relative">
                                     ${renderRoomImages(imgs)}
-                                    <span class="absolute bottom-1 right-1 text-[11px] font-medium text-white ${st.overlay} px-1.5 py-0.5 rounded-md backdrop-blur-[1px]">${st.label}</span>
+                                    <span class="absolute bottom-1 right-1 text-[11px] font-medium text-white ${r.available > 0 ? 'bg-success/80' : 'bg-error/80'} px-1.5 py-0.5 rounded-md backdrop-blur-[1px]">${r.available > 0 ? 'Còn ' + r.available : 'Hết phòng'}</span>
                                 </div>
-                                <div class="p-3 flex items-center justify-between">
-                                    <span class="text-[13px] font-semibold text-textPrimary">P-${item.id}-${i}</span>
-                                    <span class="text-[14px] font-semibold text-primary">${r.price} tr/tháng</span>
+                                <div class="p-3">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-[13px] font-semibold text-textPrimary">${r.roomType}</span>
+                                            <span class="text-[12px] text-textSecondary">${r.designStyle}</span>
+                                        </div>
+                                        <span class="text-[14px] font-semibold text-primary">${r.price}tr/tháng</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-[12px] text-textSecondary mt-1">
+                                        <span>${r.area} m²</span>
+                                        <span>·</span>
+                                        <span><i data-lucide="bath" class="w-3.5 h-3.5 inline"></i> ${r.wc || 1} WC</span>
+                                    </div>
                                 </div>
                             </div>
                         `;
@@ -739,7 +730,7 @@
             const hFill = item.favorited ? ' fill-current' : '';
             const rooms = item.rooms;
             let roomsHtml = rooms.map((r, i) => `
-                <div onclick="event.stopPropagation();openRoomListSheet(${item.id}, '${r.roomType}', '${r.designStyle}')" class="w-[140px] h-[115px] flex-shrink-0 bg-surface border border-border rounded-[8px] overflow-hidden flex flex-col cursor-pointer transition-colors duration-150">
+                <div onclick="event.stopPropagation();openMultiRoomSheet(${item.id})" class="w-[140px] h-[115px] flex-shrink-0 bg-surface border border-border rounded-[8px] overflow-hidden flex flex-col cursor-pointer transition-colors duration-150">
                     <div class="h-[65px] bg-slate-100 overflow-hidden flex-shrink-0 relative">
                         <img src="${r.image}" alt="" class="w-full h-full object-cover">
                         <span class="absolute bottom-1 right-1 text-[11px] font-medium ${r.available > 0 ? 'text-white bg-success/80' : 'text-white bg-error/80'} px-1.5 py-0.5 rounded-md backdrop-blur-[1px]">${r.available > 0 ? 'Còn ' + r.available : 'Hết'}</span>
