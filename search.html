@@ -449,7 +449,7 @@
                         const imgs = r.images || [r.image];
                         const last = i === item.rooms.length - 1;
                         return `
-                            <div class="cursor-pointer ${last ? '' : 'border-b border-border'}" onclick="event.stopPropagation();closeRoomListSheet();parent.switchScreen('roomDetails')">
+                            <div class="cursor-pointer ${last ? '' : 'border-b border-border'}" onclick="event.stopPropagation();closeRoomListSheet();parent.__roomFilter={type:'${r.roomType}',designStyle:'${r.designStyle}'};parent.switchScreen('propertyDetails')">
                                 <div class="grid grid-cols-4 gap-1 h-[105px] w-full overflow-hidden bg-slate-100 relative">
                                     ${renderRoomImages(imgs)}
                                     <span class="absolute bottom-1 right-1 text-[11px] font-medium text-white ${r.available > 0 ? 'bg-success/80' : 'bg-error/80'} px-1.5 py-0.5 rounded-md backdrop-blur-[1px]">${r.available > 0 ? 'Còn ' + r.available : 'Hết phòng'}</span>

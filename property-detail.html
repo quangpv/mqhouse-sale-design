@@ -371,7 +371,7 @@
     let datasetRooms = generateMockRooms(50);
     let focusEditingRoomId = null;
     let propertyApproved = false;
-    let sheetFilter = { status: null, type: null, area: null };
+    let sheetFilter = { status: null, type: null, area: null, designStyle: null };
 
     function initializeApplication() {
       lucide.createIcons();
@@ -379,6 +379,12 @@
       updatePropertyStatusBadge();
       updateBottomBar();
       renderRoomSummary();
+
+      if (parent.__roomFilter) {
+        const f = parent.__roomFilter;
+        openRoomsSheet(f.type, null, null, f.designStyle);
+        parent.__roomFilter = null;
+      }
 
       document.getElementsByName('modalRoomStatusRadio').forEach(radio => {
         radio.addEventListener('change', () => {
@@ -570,7 +576,7 @@
         const area = g.rooms[0].area;
 
         html += `
-          <div onclick="event.stopPropagation();openRoomsSheet('${g.roomType}')" class="w-[140px] h-[115px] flex-shrink-0 bg-surface border border-borderClr rounded-[8px] overflow-hidden flex flex-col cursor-pointer transition-colors duration-150 hover:shadow-soft">
+          <div onclick="event.stopPropagation();openRoomsSheet('${g.roomType}', null, null, '${g.designStyle}')" class="w-[140px] h-[115px] flex-shrink-0 bg-surface border border-borderClr rounded-[8px] overflow-hidden flex flex-col cursor-pointer transition-colors duration-150 hover:shadow-soft">
             <div class="h-[65px] bg-slate-100 overflow-hidden flex-shrink-0 relative">
               <img src="${img}" alt="" loading="lazy" class="w-full h-full object-cover">
               <span class="absolute bottom-1 right-1 text-[11px] font-medium px-1.5 py-0.5 rounded-md backdrop-blur-[1px] ${available > 0 ? 'text-white bg-success/80' : 'text-white bg-error/80'}">${available > 0 ? 'Còn ' + available : 'Hết'}</span>
@@ -602,12 +608,14 @@
       const filtered = datasetRooms.filter(r =>
         (!sf.status || r.status === sf.status) &&
         (!sf.type || r.roomType === sf.type) &&
-        (!sf.area || r.area === sf.area)
+        (!sf.area || r.area === sf.area) &&
+        (!sf.designStyle || r.designStyle === sf.designStyle)
       );
 
       const titleParts = ['Phòng'];
       if (sf.status) titleParts.push('·', sf.status);
       if (sf.type) titleParts.push('·', sf.type);
+      if (sf.designStyle) titleParts.push('·', sf.designStyle);
       if (sf.area) titleParts.push('·', sf.area);
       sheetTitle.innerText = titleParts.join(' ');
       document.getElementById('sheet-room-count').innerText = `${filtered.length} phòng`;
@@ -649,8 +657,8 @@
 
     }
 
-    function openRoomsSheet(filterType, filterArea, filterStatus) {
-      sheetFilter = { status: filterStatus || null, type: filterType || null, area: filterArea || null };
+    function openRoomsSheet(filterType, filterArea, filterStatus, filterDesignStyle) {
+      sheetFilter = { status: filterStatus || null, type: filterType || null, area: filterArea || null, designStyle: filterDesignStyle || null };
       renderSheetRoomList();
       const sheet = document.getElementById('rooms-overview-sheet');
       sheet.onclick = (e) => { if (e.target === sheet) dismissRoomsSheet(); };
