@@ -295,8 +295,6 @@
           </div>
           <div class="flex overflow-x-auto flex-nowrap scrollbar-none gap-2 pb-1 px-4" id="sheet-filter-status">
           </div>
-          <div class="flex overflow-x-auto flex-nowrap scrollbar-none gap-2 px-4" id="sheet-filter-type">
-          </div>
         </div>
 
         <!-- Scrollable Room List -->
@@ -632,16 +630,6 @@
         statusChips.appendChild(chip);
       });
 
-      const typeChips = document.getElementById('sheet-filter-type');
-      typeChips.innerHTML = '';
-      Object.keys(roomDesignStyles).forEach(t => {
-        const active = t === sf.type;
-        const chip = document.createElement('span');
-        chip.className = `shrink-0 text-small font-medium px-3 py-1.5 rounded-btn cursor-pointer transition-all ${active ? 'bg-primary text-surface' : 'bg-primary/10 text-primary hover:bg-primary/20'}`;
-        chip.innerText = t;
-        chip.onclick = (e) => { e.stopPropagation(); sheetFilter.type = active ? null : t; renderSheetRoomList(); };
-        typeChips.appendChild(chip);
-      });
     }
 
     function openRoomsSheet(filterType) {
