@@ -3,12 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chi Tiết Bất Động Sản - Cập Nhật</title>
-  <!-- Google Fonts: Inter -->
+  <title>Chi Tiết Loại Phòng - Cập Nhật</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -59,15 +57,13 @@
 </head>
 <body class="bg-bgMain min-h-screen flex justify-center">
 
-  <!-- Mobile Standalone Container Area -->
   <div class="w-full max-w-md bg-surface h-dvh shadow-soft relative flex flex-col overflow-hidden">
-    
-    <!-- Scrollable content track -->
+
     <div class="flex-1 overflow-y-auto">
-      
+
       <!-- Overlaid Navigation Headers -->
       <div class="absolute top-4 left-0 right-0 z-10 px-4 flex justify-between items-center">
-        <button onclick="parent.switchScreen('home')" class="w-10 h-10 bg-surface rounded-full flex items-center justify-center shadow-soft text-textPrimary hover:scale-95 transition-transform duration-150">
+        <button onclick="parent.switchScreen('propertyDetails')" class="w-10 h-10 bg-surface rounded-full flex items-center justify-center shadow-soft text-textPrimary hover:scale-95 transition-transform duration-150">
           <i data-lucide="arrow-left" class="w-5 h-5"></i>
         </button>
         <div class="flex gap-2">
@@ -82,7 +78,7 @@
 
       <!-- Hero Banner Image Slider -->
       <div class="relative h-64 bg-borderClr overflow-hidden">
-        <img id="main-gallery" src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80" alt="Bất động sản" class="w-full h-full object-cover transition-all duration-200">
+        <img id="main-gallery" src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80" alt="Loại phòng" class="w-full h-full object-cover transition-all duration-200">
         <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
           <span onclick="shiftActiveSlide(0)" id="slide-dot-0" class="w-2 h-2 rounded-full bg-surface cursor-pointer transition-all duration-150"></span>
           <span onclick="shiftActiveSlide(1)" id="slide-dot-1" class="w-2 h-2 rounded-full bg-surface/50 cursor-pointer transition-all duration-150"></span>
@@ -93,36 +89,36 @@
       <!-- Core Info Frame -->
       <div class="px-4 mt-4">
         <div class="flex items-center gap-2 mb-2">
-          <span class="text-[10px] font-medium px-2 py-0.5 bg-primary/10 text-primary rounded-full">Mã: CH-2026</span>
-          <span class="text-[10px] font-medium px-2 py-0.5 bg-textSecondary/10 text-textSecondary rounded-full">Căn hộ</span>
-          <span id="property-status-badge" class="text-[10px] font-medium px-2 py-0.5 bg-warning/10 text-warning rounded-full ml-auto">Chờ duyệt</span>
+          <span class="text-[10px] font-medium px-2 py-0.5 bg-primary/10 text-primary rounded-full" id="room-type-code">Mã: ST-2026</span>
+          <span id="room-type-availability" class="text-[10px] font-medium px-2 py-0.5 rounded-full ml-auto"></span>
         </div>
-        <h1 class="text-h2 text-textPrimary mb-1">Skyline Serviced Residence</h1>
-        <p class="text-h3 text-primary font-semibold mb-3">7.200.000 - 8.500.000 <span class="text-small font-normal text-textSecondary">đ/tháng</span></p>
+        <h1 class="text-h2 text-textPrimary mb-1" id="room-type-title">Studio - Thiết kế 1</h1>
+        <p class="text-h3 text-primary font-semibold mb-3" id="room-type-price">7.200.000 - 8.500.000 <span class="text-small font-normal text-textSecondary">đ/tháng</span></p>
+        <p class="text-body text-textSecondary flex items-center gap-3" id="room-type-stats">
+          <span><i data-lucide="maximize" class="w-4 h-4 text-primary inline"></i> <span id="stat-area">25m²</span></span>
+          <span><i data-lucide="bath" class="w-4 h-4 text-primary inline"></i> <span id="stat-wc">1 WC</span></span>
+          <span><i data-lucide="door-open" class="w-4 h-4 text-primary inline"></i> <span id="stat-total">12 phòng</span></span>
+        </p>
+        <p class="text-body text-textSecondary flex items-center gap-1 mt-3">
+          <i data-lucide="building" class="w-4 h-4 text-primary shrink-0"></i>
+          <span id="property-name">Skyline Serviced Residence</span>
+        </p>
         <p class="text-body text-textSecondary flex items-center gap-1">
-          <i data-lucide="map-pin" class="w-4 h-4 text-primary"></i> 128 Đường Điện Biên Phủ, Phường 22, Bình Thạnh, HCM
+          <i data-lucide="map-pin" class="w-4 h-4 text-primary shrink-0"></i>
+          <span id="property-address">128 Đường Điện Biên Phủ, Phường 22, Bình Thạnh, HCM</span>
         </p>
       </div>
 
-      <!-- Room Type Carousel -->
-      <div class="mt-4 overflow-hidden">
-        <div class="flex px-4 gap-2 overflow-x-auto scrollbar-none" id="room-type-carousel"></div>
-      </div>
-
-      <!-- Rooms Summary → opens bottom sheet -->
+      <!-- Rooms Summary -->
       <div onclick="openRoomsSheet()" class="mt-4 pb-4 px-4 border-b border-borderClr cursor-pointer active:bg-bgMain/50 transition-colors">
         <div class="flex items-center justify-between mb-3">
           <h3 class="text-small font-semibold text-textSecondary uppercase tracking-wider">Thông tin phòng</h3>
           <div class="flex items-center gap-1 text-primary">
-            <span class="text-body font-medium" id="rooms-summary-count">50 phòng</span>
+            <span class="text-body font-medium" id="rooms-summary-count">0 phòng</span>
             <i data-lucide="chevron-right" class="w-4 h-4"></i>
           </div>
         </div>
         <div class="flex flex-wrap gap-2" id="rooms-summary-chips">
-        </div>
-        <div onclick="event.stopPropagation()" class="mt-3">
-          <p class="text-small font-medium text-textPrimary mb-2">Diện tích:</p>
-          <div class="flex flex-wrap gap-2" id="rooms-area-chips"></div>
         </div>
       </div>
 
@@ -145,8 +141,7 @@
       <!-- Split Utilities Section -->
       <div class="p-4 border-b border-borderClr space-y-4">
         <h3 class="text-small font-semibold text-textSecondary uppercase tracking-wider">Thông tin tiện ích</h3>
-        
-        <!-- Sub-section: Nội thất cơ bản -->
+
         <div>
           <p class="text-small font-medium text-textPrimary mb-2 flex items-center gap-1">
             <i data-lucide="armchair" class="w-3.5 h-3.5 text-textSecondary"></i> Nội thất cơ bản & Dịch vụ:
@@ -160,7 +155,6 @@
           </div>
         </div>
 
-        <!-- Sub-section: Kết cấu tòa nhà -->
         <div>
           <p class="text-small font-medium text-textPrimary mb-2 flex items-center gap-1">
             <i data-lucide="layers" class="w-3.5 h-3.5 text-textSecondary"></i> Kết cấu không gian:
@@ -195,24 +189,17 @@
     </div>
 
     <!-- Persistent Bottom Control Footer -->
-    <div id="bottom-action-bar" class="p-4 bg-surface border-t border-borderClr shadow-md flex gap-2 items-stretch">
-      <button onclick="openRoomsSheet()" class="w-[60px] bg-bgMain border border-borderClr rounded-btn flex flex-col items-center justify-center gap-0.5 hover:bg-borderClr/30 active:scale-[0.98] transition-all">
+    <div id="bottom-action-bar" class="p-4 bg-surface border-t border-borderClr shadow-md">
+      <button onclick="openRoomsSheet()" class="w-full bg-bgMain border border-borderClr rounded-btn py-3 flex items-center justify-center gap-2 hover:bg-borderClr/30 active:scale-[0.98] transition-all">
         <i data-lucide="layout-dashboard" class="w-5 h-5 text-textSecondary"></i>
-        <span class="text-[10px] font-medium text-textSecondary">Sơ đồ</span>
-      </button>
-      <button id="lock-bottom-btn" onclick="openLockDialog()" class="flex-1 rounded-btn py-3 flex items-center justify-center gap-2 font-semibold text-body transition-all">
-        <i data-lucide="lock" class="w-4 h-4"></i> Khóa
-      </button>
-      <button id="approve-bottom-btn" onclick="openApproveDialog()" class="flex-1 rounded-btn py-3 flex items-center justify-center gap-2 font-semibold text-body transition-all">
-        <i data-lucide="check-circle" class="w-4 h-4"></i> Duyệt
+        <span class="text-body font-medium text-textSecondary">Sơ đồ phòng</span>
       </button>
     </div>
 
-    <!-- Quick Room Status Update Bottom Sheet (~[Cập nhật phòng nhanh]) -->
+    <!-- Quick Room Status Update Bottom Sheet -->
     <div id="quick-action-sheet" class="fixed inset-0 bg-textPrimary/40 z-30 hidden transition-opacity duration-200 opacity-0 pointer-events-none">
       <div class="absolute bottom-0 left-0 right-0 bg-surface rounded-t-modal shadow-xl transition-transform duration-200 translate-y-full max-h-[85vh] flex flex-col">
 
-        <!-- Sticky Top: drag handle + title -->
         <div class="shrink-0 pt-4 pb-2 px-6">
           <div class="w-12 h-1 bg-borderClr rounded-full mx-auto mb-2"></div>
           <div class="flex justify-between items-center">
@@ -220,7 +207,6 @@
           </div>
         </div>
 
-        <!-- Scrollable Body -->
         <div class="flex-1 overflow-y-auto px-6">
           <div class="mb-6">
             <label class="text-small font-semibold text-textSecondary uppercase block mb-2">Giá phòng cấu hình (VND)</label>
@@ -249,7 +235,6 @@
             </div>
           </div>
 
-          <!-- Customer Info (chỉ hiện khi chọn Đã cọc / Đã cho thuê) -->
           <div id="customer-section" class="mb-6 hidden">
             <label class="text-small font-semibold text-textSecondary uppercase block mb-3">Thông tin khách hàng</label>
 
@@ -276,7 +261,6 @@
           </div>
         </div>
 
-        <!-- Sticky Bottom: actions -->
         <div class="shrink-0 p-6 border-t border-borderClr">
           <div class="flex gap-3">
             <button onclick="dismissActionSheet(true)" class="flex-1 bg-bgMain text-textPrimary border border-borderClr py-3 rounded-btn text-body font-medium hover:bg-borderClr/50 transition-colors">Hủy</button>
@@ -290,53 +274,26 @@
     <div id="rooms-overview-sheet" class="fixed inset-0 bg-textPrimary/40 z-30 hidden transition-opacity duration-200 opacity-0 pointer-events-none">
       <div class="absolute bottom-0 left-0 right-0 bg-surface rounded-t-modal shadow-xl transition-transform duration-200 translate-y-full max-h-[85vh] flex flex-col">
 
-        <!-- Sticky Top -->
         <div class="shrink-0 pt-4 pb-2">
           <div class="w-12 h-1 bg-borderClr rounded-full mx-auto mb-3"></div>
           <div class="flex items-center justify-between mb-3 px-4">
-            <h2 class="text-h3 text-textPrimary">Thông tin phòng</h2>
+            <h2 class="text-h3 text-textPrimary" id="sheet-room-title">Thông tin phòng</h2>
             <span class="text-body font-medium text-textSecondary" id="sheet-room-count"></span>
           </div>
           <div class="flex overflow-x-auto flex-nowrap scrollbar-none gap-2 pb-1 px-4" id="sheet-filter-status">
           </div>
         </div>
 
-        <!-- Scrollable Room List -->
         <div class="flex-1 overflow-y-auto px-4 pb-4">
-          <div class="space-y-2" id="sheet-room-list">
+          <div id="sheet-room-list">
           </div>
         </div>
 
       </div>
     </div>
 
-    <!-- Lock Confirmation Dialog -->
-    <div id="lock-dialog" class="absolute inset-0 bg-textPrimary/40 z-30 hidden transition-opacity duration-200 opacity-0 pointer-events-none flex items-center justify-center p-4">
-      <div class="bg-surface rounded-modal p-6 shadow-xl w-full max-w-xs transition-transform duration-200 scale-95">
-        <h3 id="lock-dialog-title" class="text-h3 text-textPrimary mb-2">Xác nhận khóa</h3>
-        <p id="lock-dialog-desc" class="text-body text-textSecondary mb-6">Sau khi khóa, bất động sản sẽ ở chế độ chỉ xem. Bạn có chắc chắn?</p>
-        <div class="flex gap-3">
-          <button onclick="dismissLockDialog()" class="flex-1 bg-bgMain text-textPrimary border border-borderClr py-2.5 rounded-btn text-body font-medium hover:bg-borderClr/50 transition-colors">Hủy</button>
-          <button id="lock-dialog-confirm" onclick="confirmLockAction()" class="flex-1 bg-error text-surface py-2.5 rounded-btn text-body font-semibold shadow-soft hover:bg-error/90 transition-colors">Khóa</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Approve Confirmation Dialog -->
-    <div id="approve-dialog" class="absolute inset-0 bg-textPrimary/40 z-30 hidden transition-opacity duration-200 opacity-0 pointer-events-none flex items-center justify-center p-4">
-      <div class="bg-surface rounded-modal p-6 shadow-xl w-full max-w-xs transition-transform duration-200 scale-95">
-        <h3 class="text-h3 text-textPrimary mb-2">Xác nhận duyệt</h3>
-        <p class="text-body text-textSecondary mb-6">Bạn có chắc chắn muốn duyệt bất động sản này?</p>
-        <div class="flex gap-3">
-          <button onclick="dismissApproveDialog()" class="flex-1 bg-bgMain text-textPrimary border border-borderClr py-2.5 rounded-btn text-body font-medium hover:bg-borderClr/50 transition-colors">Hủy</button>
-          <button onclick="confirmApprove()" class="flex-1 bg-primary text-surface py-2.5 rounded-btn text-body font-semibold shadow-soft hover:bg-primary/90 transition-colors">Xác nhận</button>
-        </div>
-      </div>
-    </div>
-
   </div>
 
-  <!-- Lucide Script Component Dependencies -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script>
     const mockImages = [
@@ -345,6 +302,19 @@
       "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80"
     ];
     let activeSlideIndex = 0;
+    let datasetRooms = [];
+    let focusEditingRoomId = null;
+    let propertyLocked = false;
+    let roomTypeFilter = { roomType: '', designStyle: '' };
+    let sheetFilter = { status: null };
+
+    const roomDesignStyles = {
+      "Phòng đơn": ["Kiểu 1", "Kiểu 2", "Kiểu 3"],
+      "Phòng đôi": [],
+      "Studio": ["Thiết kế 1", "Thiết kế 2", "Thiết kế 3"],
+      "Duplex": ["Thiết kế A", "Thiết kế B"],
+      "Kí túc xá": ["4 giường", "6 giường", "8 giường"]
+    };
 
     function generateMockRooms(count) {
       const floors = Math.ceil(count / 10);
@@ -373,31 +343,47 @@
       return rooms;
     }
 
-    const roomDesignStyles = {
-      "Phòng đơn": ["Kiểu 1", "Kiểu 2", "Kiểu 3"],
-      "Phòng đôi": [],
-      "Studio": ["Thiết kế 1", "Thiết kế 2", "Thiết kế 3"],
-      "Duplex": ["Thiết kế A", "Thiết kế B"],
-      "Kí túc xá": ["4 giường", "6 giường", "8 giường"]
-    };
-    let datasetRooms = generateMockRooms(50);
-    let focusEditingRoomId = null;
-    let propertyApproved = false;
-    let propertyLocked = false;
-    let sheetFilter = { status: null, type: null, area: null, designStyle: null };
+    function getRoomsData() {
+      if (parent && parent.__getDatasetRooms) {
+        return parent.__getDatasetRooms();
+      }
+      if (parent && parent.datasetRooms) {
+        return parent.datasetRooms;
+      }
+      return generateMockRooms(50);
+    }
+
+    function getPropertyLocked() {
+      if (parent && parent.__getPropertyLocked !== undefined) {
+        return parent.__getPropertyLocked();
+      }
+      if (parent && parent.__propertyLocked !== undefined) {
+        return parent.__propertyLocked;
+      }
+      return false;
+    }
 
     function initializeApplication() {
       lucide.createIcons();
-      shiftActiveSlide(0);
-      updatePropertyStatusBadge();
-      updateBottomBar();
-      renderRoomSummary();
+      propertyLocked = getPropertyLocked();
 
-      if (parent.__roomFilter) {
-        const f = parent.__roomFilter;
-        openRoomsSheet(f.type, null, null, f.designStyle);
-        parent.__roomFilter = null;
+      if (parent && parent.__roomTypeFilter) {
+        roomTypeFilter = { ...parent.__roomTypeFilter };
+        parent.__roomTypeFilter = null;
       }
+
+      document.getElementById('property-name').innerText = 'Skyline Serviced Residence';
+      document.getElementById('property-address').innerText = '128 Đường Điện Biên Phủ, Phường 22, Bình Thạnh, HCM';
+      if (parent && parent.__propertyInfo) {
+        document.getElementById('property-name').innerText = parent.__propertyInfo.name;
+        document.getElementById('property-address').innerText = parent.__propertyInfo.address;
+        parent.__propertyInfo = null;
+      }
+
+      datasetRooms = getRoomsData();
+      shiftActiveSlide(0);
+      renderRoomTypeHeader();
+      renderRoomSummary();
 
       document.getElementsByName('modalRoomStatusRadio').forEach(radio => {
         radio.addEventListener('change', () => {
@@ -428,14 +414,14 @@
     function shiftActiveSlide(targetIndex) {
       activeSlideIndex = targetIndex;
       document.getElementById('main-gallery').src = mockImages[targetIndex];
-      for(let i = 0; i < 3; i++) {
-        const indicatorDot = document.getElementById(`slide-dot-${i}`);
-        if(i === targetIndex) {
-          indicatorDot.classList.remove('bg-surface/50');
-          indicatorDot.classList.add('bg-surface', 'w-4');
+      for (let i = 0; i < 3; i++) {
+        const dot = document.getElementById(`slide-dot-${i}`);
+        if (i === targetIndex) {
+          dot.classList.remove('bg-surface/50');
+          dot.classList.add('bg-surface', 'w-4');
         } else {
-          indicatorDot.classList.remove('bg-surface', 'w-4');
-          indicatorDot.classList.add('bg-surface/50');
+          dot.classList.remove('bg-surface', 'w-4');
+          dot.classList.add('bg-surface/50');
         }
       }
     }
@@ -444,7 +430,7 @@
       const containerNode = document.getElementById('fav-trigger');
       const graphicIcon = document.getElementById('fav-icon');
       containerNode.classList.toggle('bg-red-50');
-      if(graphicIcon.getAttribute('fill') === 'currentColor') {
+      if (graphicIcon.getAttribute('fill') === 'currentColor') {
         graphicIcon.removeAttribute('fill');
         graphicIcon.classList.remove('text-error');
         graphicIcon.classList.add('text-textPrimary');
@@ -459,119 +445,8 @@
       parent.switchScreen('sharing');
     }
 
-    function updatePropertyStatusBadge() {
-      const badge = document.getElementById('property-status-badge');
-      if (propertyLocked) {
-        badge.innerText = 'Đã khóa';
-        badge.className = 'text-[10px] font-medium px-2 py-0.5 rounded-full ml-auto bg-error/10 text-error';
-      } else if (!propertyApproved) {
-        badge.innerText = 'Chờ duyệt';
-        badge.className = 'text-[10px] font-medium px-2 py-0.5 rounded-full ml-auto bg-warning/10 text-warning';
-      } else {
-        const hasVacant = datasetRooms.some(r => r.status === 'Đang trống');
-        if (hasVacant) {
-          badge.innerText = 'Có phòng trống';
-          badge.className = 'text-[10px] font-medium px-2 py-0.5 rounded-full ml-auto bg-success/10 text-success';
-        } else {
-          badge.innerText = 'Hết phòng';
-          badge.className = 'text-[10px] font-medium px-2 py-0.5 rounded-full ml-auto bg-textSecondary/10 text-textSecondary';
-        }
-      }
-    }
-
-    function updateBottomBar() {
-      const lockBtn = document.getElementById('lock-bottom-btn');
-      if (propertyLocked) {
-        lockBtn.innerHTML = `<i data-lucide="lock" class="w-4 h-4"></i> Mở khóa`;
-        lockBtn.className = 'flex-1 bg-error text-surface rounded-btn py-3 flex items-center justify-center gap-2 font-semibold text-body shadow-soft';
-        lockBtn.onclick = openUnlockDialog;
-        setTimeout(() => lucide.createIcons(), 10);
-      } else {
-        lockBtn.innerHTML = `<i data-lucide="lock" class="w-4 h-4"></i> Khóa`;
-        lockBtn.className = 'flex-1 bg-error/10 text-error border border-error/20 rounded-btn py-3 flex items-center justify-center gap-2 font-semibold text-body hover:bg-error/20 active:scale-[0.98] transition-all';
-        lockBtn.onclick = openLockDialog;
-        setTimeout(() => lucide.createIcons(), 10);
-      }
-
-      const appBtn = document.getElementById('approve-bottom-btn');
-      if (propertyApproved) {
-        const hasVacant = datasetRooms.some(r => r.status === 'Đang trống');
-        appBtn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Đã duyệt`;
-        appBtn.className = `flex-1 rounded-btn py-3 flex items-center justify-center gap-2 font-semibold text-body transition-all ${hasVacant ? 'bg-success/10 text-success border border-success/20' : 'bg-textSecondary/10 text-textSecondary border border-textSecondary/20'}`;
-        appBtn.onclick = null;
-        setTimeout(() => lucide.createIcons(), 10);
-      } else {
-        appBtn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Duyệt`;
-        appBtn.className = 'flex-1 bg-primary text-surface rounded-btn py-3 flex items-center justify-center gap-2 font-semibold text-body shadow-soft hover:bg-primary/90 active:scale-[0.98] transition-all';
-        appBtn.onclick = openApproveDialog;
-        setTimeout(() => lucide.createIcons(), 10);
-      }
-      appBtn.classList.toggle('hidden', propertyLocked);
-    }
-
-    function openLockDialog() {
-      document.getElementById('lock-dialog-title').innerText = 'Xác nhận khóa';
-      document.getElementById('lock-dialog-desc').innerText = 'Sau khi khóa, bất động sản sẽ ở chế độ chỉ xem. Bạn có chắc chắn?';
-      document.getElementById('lock-dialog-confirm').innerText = 'Khóa';
-      const dialog = document.getElementById('lock-dialog');
-      dialog.classList.remove('hidden');
-      setTimeout(() => {
-        dialog.classList.remove('opacity-0', 'pointer-events-none');
-        dialog.firstElementChild.classList.remove('scale-95');
-      }, 10);
-    }
-
-    function openUnlockDialog() {
-      document.getElementById('lock-dialog-title').innerText = 'Xác nhận mở khóa';
-      document.getElementById('lock-dialog-desc').innerText = 'Bất động sản sẽ có thể chỉnh sửa lại. Bạn có chắc chắn?';
-      document.getElementById('lock-dialog-confirm').innerText = 'Mở khóa';
-      const dialog = document.getElementById('lock-dialog');
-      dialog.classList.remove('hidden');
-      setTimeout(() => {
-        dialog.classList.remove('opacity-0', 'pointer-events-none');
-        dialog.firstElementChild.classList.remove('scale-95');
-      }, 10);
-    }
-
-    function dismissLockDialog() {
-      const dialog = document.getElementById('lock-dialog');
-      dialog.firstElementChild.classList.add('scale-95');
-      dialog.classList.add('opacity-0', 'pointer-events-none');
-      setTimeout(() => dialog.classList.add('hidden'), 200);
-    }
-
-    function confirmLockAction() {
-      propertyLocked = !propertyLocked;
-      updatePropertyStatusBadge();
-      updateBottomBar();
-      dismissLockDialog();
-    }
-
-    function openApproveDialog() {
-      const dialog = document.getElementById('approve-dialog');
-      dialog.classList.remove('hidden');
-      setTimeout(() => {
-        dialog.classList.remove('opacity-0', 'pointer-events-none');
-        dialog.firstElementChild.classList.remove('scale-95');
-      }, 10);
-    }
-
-    function dismissApproveDialog() {
-      const dialog = document.getElementById('approve-dialog');
-      dialog.firstElementChild.classList.add('scale-95');
-      dialog.classList.add('opacity-0', 'pointer-events-none');
-      setTimeout(() => dialog.classList.add('hidden'), 200);
-    }
-
-    function confirmApprove() {
-      propertyApproved = true;
-      updatePropertyStatusBadge();
-      updateBottomBar();
-      dismissApproveDialog();
-    }
-
     function getStatusColor(status) {
-      switch(status) {
+      switch (status) {
         case 'Đang trống': return 'success';
         case 'Đã cọc': return 'warning';
         case 'Đã cho thuê': return 'textSecondary';
@@ -580,14 +455,58 @@
       }
     }
 
-    function renderRoomSummary() {
-      const chips = document.getElementById('rooms-summary-chips');
-      const countEl = document.getElementById('rooms-summary-count');
-      countEl.innerText = `${datasetRooms.length} phòng`;
+    function renderRoomTypeHeader() {
+      const filtered = datasetRooms.filter(r =>
+        r.roomType === roomTypeFilter.roomType &&
+        (roomTypeFilter.designStyle ? r.designStyle === roomTypeFilter.designStyle : true)
+      );
 
+      const available = filtered.filter(r => r.status === 'Đang trống').length;
+      const total = filtered.length;
+      const firstRoom = filtered[0] || {};
+
+      const prices = filtered.map(r => parseInt(r.price.replace(/\./g, ''))).filter(p => !isNaN(p));
+      const minP = prices.length ? Math.min(...prices) : 0;
+      const maxP = prices.length ? Math.max(...prices) : 0;
+      const minStr = minP ? (minP / 1000000).toFixed(1) + 'tr' : '';
+      const maxStr = maxP ? (maxP / 1000000).toFixed(1) + 'tr' : '';
+      const priceRange = minStr === maxStr || !maxStr ? minStr : `${minStr} - ${maxStr}`;
+
+      document.getElementById('room-type-code').innerText = `Mã: ${roomTypeFilter.roomType.toUpperCase().slice(0, 3)}-2026`;
+      document.getElementById('room-type-title').innerText = roomTypeFilter.designStyle
+        ? `${roomTypeFilter.roomType} - ${roomTypeFilter.designStyle}`
+        : roomTypeFilter.roomType;
+      document.getElementById('room-type-price').innerHTML = `${priceRange} <span class="text-small font-normal text-textSecondary">đ/tháng</span>`;
+
+      document.getElementById('stat-area').innerText = firstRoom.area || '—';
+      document.getElementById('stat-wc').innerText = firstRoom.wc ? `${firstRoom.wc} WC` : '—';
+      document.getElementById('stat-total').innerText = `${total} phòng`;
+
+      const badge = document.getElementById('room-type-availability');
+      if (available > 0) {
+        badge.innerText = `Còn ${available} phòng`;
+        badge.className = 'text-[10px] font-medium px-2 py-0.5 rounded-full ml-auto bg-success/10 text-success';
+      } else {
+        badge.innerText = 'Hết phòng';
+        badge.className = 'text-[10px] font-medium px-2 py-0.5 rounded-full ml-auto bg-textSecondary/10 text-textSecondary';
+      }
+
+      lucide.createIcons();
+    }
+
+    function renderRoomSummary() {
+      const filtered = datasetRooms.filter(r =>
+        r.roomType === roomTypeFilter.roomType &&
+        (roomTypeFilter.designStyle ? r.designStyle === roomTypeFilter.designStyle : true)
+      );
+
+      const countEl = document.getElementById('rooms-summary-count');
+      countEl.innerText = `${filtered.length} phòng`;
+
+      const chips = document.getElementById('rooms-summary-chips');
       const statuses = ['Đang trống', 'Đã cọc', 'Đã cho thuê', 'Sắp trống'];
       const counts = {};
-      statuses.forEach(s => counts[s] = datasetRooms.filter(r => r.status === s).length);
+      statuses.forEach(s => counts[s] = filtered.filter(r => r.status === s).length);
 
       chips.innerHTML = '';
       statuses.forEach(s => {
@@ -597,7 +516,7 @@
         const chip = document.createElement('span');
         chip.className = `text-small font-medium px-2.5 py-1 rounded-md cursor-pointer transition-all ${active ? `bg-${color} text-surface` : `bg-${color}/10 text-${color} hover:bg-${color}/20`}`;
         chip.innerText = `${counts[s]} ${s}`;
-        chip.onclick = (e) => { e.stopPropagation(); openRoomsSheet(null, null, nextStatus); };
+        chip.onclick = (e) => { e.stopPropagation(); openRoomsSheet(nextStatus); };
         chips.appendChild(chip);
       });
 
@@ -609,107 +528,43 @@
         chips.appendChild(addChip);
       }
 
-      const areaChips = document.getElementById('rooms-area-chips');
-      const uniqueAreas = [...new Set(datasetRooms.map(r => r.area))];
-      areaChips.innerHTML = uniqueAreas.map(a => {
-        const active = sheetFilter && sheetFilter.area === a;
-        const nextArea = active ? '' : a;
-        return `<span onclick="event.stopPropagation();openRoomsSheet(null, '${nextArea}')" class="text-small px-2.5 py-1 rounded-md border cursor-pointer transition-all ${active ? 'bg-primary text-surface border-primary' : 'text-textSecondary bg-bgMain border-borderClr hover:bg-borderClr/30'}">${a}</span>`;
-      }).join('');
-
-      renderRoomCarousel();
-
       lucide.createIcons();
     }
 
-    function renderRoomCarousel() {
-      const container = document.getElementById('room-type-carousel');
-      const groups = {};
-      datasetRooms.forEach(r => {
-        const key = r.roomType + '|||' + (r.designStyle || '');
-        if (!groups[key]) groups[key] = { roomType: r.roomType, designStyle: r.designStyle || '', rooms: [], minPrice: Infinity, maxPrice: 0 };
-        groups[key].rooms.push(r);
-        const p = parseInt(r.price.replace(/\./g, ''));
-        if (p < groups[key].minPrice) groups[key].minPrice = p;
-        if (p > groups[key].maxPrice) groups[key].maxPrice = p;
-      });
-
-      const entries = Object.values(groups);
-      let html = '';
-      entries.forEach((g, i) => {
-        const available = g.rooms.filter(r => r.status === 'Đang trống').length;
-        const total = g.rooms.length;
-        const minP = g.minPrice !== Infinity ? (g.minPrice / 1000000).toFixed(1) + 'tr' : '';
-        const maxP = g.maxPrice !== 0 ? (g.maxPrice / 1000000).toFixed(1) + 'tr' : '';
-        const priceRange = minP === maxP || !maxP ? minP : `${minP} - ${maxP}`;
-        const img = mockImages[i % 3];
-        const area = g.rooms[0].area;
-
-        html += `
-          <div onclick="event.stopPropagation();navigateToRoomTypeDetail('${g.roomType}', '${g.designStyle}')" class="w-[140px] h-[115px] flex-shrink-0 bg-surface border border-borderClr rounded-[8px] overflow-hidden flex flex-col cursor-pointer transition-colors duration-150 hover:shadow-soft">
-            <div class="h-[65px] bg-slate-100 overflow-hidden flex-shrink-0 relative">
-              <img src="${img}" alt="" loading="lazy" class="w-full h-full object-cover">
-              <span class="absolute bottom-1 right-1 text-[11px] font-medium px-1.5 py-0.5 rounded-md backdrop-blur-[1px] ${available > 0 ? 'text-white bg-success/80' : 'text-white bg-error/80'}">${available > 0 ? 'Còn ' + available : 'Hết'}</span>
-            </div>
-            <div class="flex-1 p-1 flex flex-col justify-center gap-0.5">
-              <div class="flex items-center justify-between">
-                <span class="text-[11px] font-semibold text-primary">${g.roomType}</span>
-                <div class="flex items-center gap-0.5">
-                  <span class="text-[11px] text-textSecondary">${area}</span>
-                  <span class="text-[11px] text-textSecondary">·</span>
-                  <span class="text-[11px] text-textSecondary"><i data-lucide="bath" class="w-3 h-3 inline"></i> ${g.rooms[0].wc || 1}</span>
-                </div>
-              </div>
-              <div class="flex items-center justify-between">
-                <span class="text-[11px] text-textSecondary">${g.designStyle}</span>
-                <span class="text-small font-bold text-textPrimary">${priceRange}</span>
-              </div>
-            </div>
-          </div>
-        `;
-      });
-      container.innerHTML = html;
-    }
-
-    function renderSheetRoomList() {
-      const sf = sheetFilter;
-      const list = document.getElementById('sheet-room-list');
-      const sheetTitle = document.querySelector('#rooms-overview-sheet h2');
+    function renderSheetRoomList(filterStatus) {
       const filtered = datasetRooms.filter(r =>
-        (!sf.status || r.status === sf.status) &&
-        (!sf.type || r.roomType === sf.type) &&
-        (!sf.area || r.area === sf.area) &&
-        (!sf.designStyle || r.designStyle === sf.designStyle)
+        r.roomType === roomTypeFilter.roomType &&
+        (roomTypeFilter.designStyle ? r.designStyle === roomTypeFilter.designStyle : true) &&
+        (!filterStatus || r.status === filterStatus)
       );
 
-      const titleParts = ['Phòng'];
-      if (sf.status) titleParts.push('·', sf.status);
-      if (sf.type) titleParts.push('·', sf.type);
-      if (sf.designStyle) titleParts.push('·', sf.designStyle);
-      if (sf.area) titleParts.push('·', sf.area);
-      sheetTitle.innerText = titleParts.join(' ');
+      const titleEl = document.getElementById('sheet-room-title');
+      const parts = ['Phòng', roomTypeFilter.roomType];
+      if (filterStatus) parts.push('·', filterStatus);
+      titleEl.innerText = parts.join(' ');
+
       document.getElementById('sheet-room-count').innerText = `${filtered.length} phòng`;
 
+      const list = document.getElementById('sheet-room-list');
       list.innerHTML = '';
+
       if (filtered.length === 0) {
         list.className = 'flex flex-col items-center justify-center py-12 text-textSecondary';
-        list.innerHTML = `
-          <span class="text-body font-medium">Không có phòng nào</span>
-        `;
+        list.innerHTML = '<span class="text-body font-medium">Không có phòng nào</span>';
       } else {
-      list.className = 'grid grid-cols-4 gap-2';
-      filtered.forEach(room => {
-        const color = getStatusColor(room.status);
-        const cell = document.createElement('div');
-        cell.className = `flex flex-col items-center justify-center p-2 rounded-card bg-${color}/15 border border-${color}/40 ${propertyLocked ? '' : 'cursor-pointer active:scale-[0.98]'} transition-all aspect-square`;
-        if (!propertyLocked) cell.onclick = () => { dismissRoomsSheet(); setTimeout(() => exposeQuickActionSheet(room.id), 250); };
-        cell.innerHTML = `
-          <span class="text-[13px] font-semibold text-${color}">${room.id}</span>
-          <span class="text-[9px] font-medium text-${color}/70 mt-1">${room.roomType}</span>
-          <span class="text-[9px] text-${color}/50 mt-0.5">${room.price}</span>
-        `;
-        list.appendChild(cell);
-      });
+        list.className = 'grid grid-cols-4 gap-2';
+        filtered.forEach(room => {
+          const color = getStatusColor(room.status);
+          const cell = document.createElement('div');
+          cell.className = `flex flex-col items-center justify-center p-2 rounded-card bg-${color}/15 border border-${color}/40 ${propertyLocked ? '' : 'cursor-pointer active:scale-[0.98]'} transition-all aspect-square`;
+          if (!propertyLocked) cell.onclick = () => { dismissRoomsSheet(); setTimeout(() => exposeQuickActionSheet(room.id), 250); };
+          cell.innerHTML = `
+            <span class="text-[13px] font-semibold text-${color}">${room.id}</span>
+            <span class="text-[9px] font-medium text-${color}/70 mt-1">${room.roomType}</span>
+            <span class="text-[9px] text-${color}/50 mt-0.5">${room.price}</span>
+          `;
+          list.appendChild(cell);
+        });
       }
 
       const statusChips = document.getElementById('sheet-filter-status');
@@ -717,19 +572,23 @@
       statusChips.innerHTML = '';
       statuses.forEach(s => {
         const color = getStatusColor(s);
-        const active = s === sf.status;
+        const active = s === filterStatus;
         const chip = document.createElement('span');
         chip.className = `shrink-0 text-small font-medium px-3 py-1.5 rounded-btn cursor-pointer transition-all ${active ? `bg-${color} text-surface` : `bg-${color}/10 text-${color} hover:bg-${color}/20`}`;
         chip.innerText = s;
-        chip.onclick = (e) => { e.stopPropagation(); sheetFilter.status = active ? null : s; renderSheetRoomList(); };
+        chip.onclick = (e) => {
+          e.stopPropagation();
+          const nextFilter = active ? null : s;
+          sheetFilter.status = nextFilter;
+          renderSheetRoomList(nextFilter);
+        };
         statusChips.appendChild(chip);
       });
-
     }
 
-    function openRoomsSheet(filterType, filterArea, filterStatus, filterDesignStyle) {
-      sheetFilter = { status: filterStatus || null, type: filterType || null, area: filterArea || null, designStyle: filterDesignStyle || null };
-      renderSheetRoomList();
+    function openRoomsSheet(filterStatus) {
+      sheetFilter.status = filterStatus || null;
+      renderSheetRoomList(filterStatus || null);
       const sheet = document.getElementById('rooms-overview-sheet');
       sheet.onclick = (e) => { if (e.target === sheet) dismissRoomsSheet(); };
       sheet.classList.remove('hidden');
@@ -750,17 +609,16 @@
       if (propertyLocked) return;
       focusEditingRoomId = roomId;
       const targetObject = datasetRooms.find(r => r.id === roomId);
-      if(!targetObject) return;
+      if (!targetObject) return;
 
       document.getElementById('target-room-node-title').innerText = `Cập nhật phòng ${targetObject.id}`;
       document.getElementById('target-room-price-field').value = targetObject.price;
 
       const radios = document.getElementsByName('modalRoomStatusRadio');
       radios.forEach(radio => {
-        if(radio.value === targetObject.status) radio.checked = true;
+        if (radio.value === targetObject.status) radio.checked = true;
       });
 
-      // Reset customer fields
       const customerSection = document.getElementById('customer-section');
       document.getElementById('customer-image-display').classList.add('hidden');
       document.getElementById('customer-image-placeholder').classList.remove('hidden');
@@ -789,13 +647,13 @@
       }, 10);
     }
 
-    function dismissActionSheet(returnToRooms) {
+    function dismissActionSheet(returnToSheet) {
       const containerNode = document.getElementById('quick-action-sheet');
       containerNode.firstElementChild.classList.add('translate-y-full');
       containerNode.classList.add('opacity-0', 'pointer-events-none');
       setTimeout(() => {
         containerNode.classList.add('hidden');
-        if (returnToRooms) openRoomsSheet();
+        if (returnToSheet) openRoomsSheet(sheetFilter.status);
       }, 200);
     }
 
@@ -827,30 +685,14 @@
         return item;
       });
 
+      if (parent && parent.__setDatasetRooms) {
+        parent.__setDatasetRooms(datasetRooms);
+      }
+
+      renderRoomTypeHeader();
       renderRoomSummary();
-      updatePropertyStatusBadge();
       dismissActionSheet(true);
     }
-
-
-
-
-
-    function navigateToRoomTypeDetail(roomType, designStyle) {
-      if (parent) {
-        parent.__roomTypeFilter = { roomType, designStyle };
-        parent.__propertyLocked = propertyLocked;
-        parent.__propertyInfo = {
-          name: document.querySelector('.text-h2.text-textPrimary')?.innerText || '',
-          address: document.querySelector('.text-body.text-textSecondary.flex.items-center.gap-1')?.innerText?.trim() || ''
-        };
-        parent.switchScreen('roomTypeDetail');
-      }
-    }
-
-    window.__getPropertyLocked = () => propertyLocked;
-    window.__getDatasetRooms = () => datasetRooms;
-    window.__setDatasetRooms = (data) => { datasetRooms = data; renderRoomSummary(); updatePropertyStatusBadge(); };
 
     window.onload = initializeApplication;
   </script>

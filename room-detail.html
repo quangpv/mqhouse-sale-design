@@ -485,7 +485,30 @@
     function runtimeApplicationInit() {
       lucide.createIcons();
       jumpToRoomSlide(0);
-      
+
+      if (parent && parent.__roomIdToShow) {
+        currentRoomId = parent.__roomIdToShow;
+        parent.__roomIdToShow = null;
+        const rooms = getRoomsData();
+        const room = rooms.find(r => r.id === currentRoomId);
+        if (room) {
+          baselineRoomStatus = room.status;
+          roomCustomer = room.customer || null;
+          document.getElementById('room-code-display').innerText = `Mã phòng: ${currentRoomId}`;
+          document.getElementById('room-title-display').innerText = `Phòng ${room.roomType}`;
+          document.getElementById('room-price-display').innerHTML = `${room.price} <span class="text-body font-normal text-textSecondary">đ / tháng</span>`;
+          const indicator = document.getElementById('room-state-indicator');
+          const statusColors = {
+            'Đang trống': 'bg-success/10 text-success',
+            'Đã cọc': 'bg-warning/10 text-warning',
+            'Đã cho thuê': 'bg-textSecondary/10 text-textSecondary',
+            'Sắp trống': 'bg-error/10 text-error'
+          };
+          indicator.innerText = room.status;
+          indicator.className = `text-small font-medium px-2.5 py-0.5 rounded-full ${statusColors[room.status] || 'bg-textSecondary/10 text-textSecondary'}`;
+        }
+      }
+
       const radios = document.getElementsByName('roomStatusRadio');
       radios.forEach(radio => {
         if(radio.value === baselineRoomStatus) radio.checked = true;
