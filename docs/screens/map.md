@@ -27,6 +27,7 @@
 - **MapMarkerOverlay**: Custom Google Maps OverlayView showing price badge and property icon.
 - **MyLocationOverlay**: Animated ping/pulse circles at user location.
 - **Collapsible bottom sheet**: Drag handle, snap points (110px, 420px).
+- **Property card (bottom sheet)**: Same layout as Search cards — text section on top (address, then title + meta left / red bold price right-aligned vertically centered), image grid below with status badge + distance badge stacked top-left and share/heart icon overlay top-right. Multi card keeps inline distance after title.
 - **Glassmorphism filter pills**: Backdrop blur with dropdown menus.
 - **Filter modal sheets**: Full-screen modal overlays for detail/price/amenities.
 
@@ -35,6 +36,8 @@
 - Custom OverlayView for map markers instead of standard markers (for branded price labels).
 - Glassmorphism (backdrop-filter: blur) for toolbar overlay on map.
 - Animated pulse for "My Location" indicator.
+- Bottom sheet cards mirror Search card layout (linear text-on-top/image-below, `abbrevRoomType()` abbrev, red bold price) — keep both files in sync.
+- Bottom sheet list items separated by `divide-y divide-border`; selected card highlighted via `ring-1 ring-primary/20`.
 
 ## 3. Entry Points
 - Search → Map icon button.

@@ -33,8 +33,9 @@
 - **Room list bottom sheet**: For multi-room properties; rooms grouped by type/design style.
 
 ### Components
-- **Property card (single)**: Image, type badge, room status badge (green/red), title, address, price, heart, share button.
-- **Property card (multi)**: Image grid (2/3+ images), type badge, room status badges, title, address, price range, heart, share button.
+- **Property card (single)**: Text section on top — address, then row of (title + detail meta) left / price right (right-aligned, vertically centered) — image grid below with status badge overlay (top-left) and share/heart icon overlay (top-right, `bg-white/90`).
+- **Property card (multi)**: Header with address, then title row with heart/share, horizontal scroll of room mini-cards (room-type abbrev badge, red bold price, "Còn N / Hết" availability overlay unchanged).
+- **Room list bottom sheet**: Rooms grouped by type/design style; price red bold; room type kept in full name (not abbreviated).
 - **Quick filter dropdown**: Scroll-aware positioning, click-outside close.
 - **Filter bottom sheet**: Modal overlay with scrollable filter groups.
 - **Range sliders**: Dual-handle (Giá, Diện tích), single-handle (Bán kính).
@@ -44,6 +45,8 @@
 - Client-side filtering with `filterState` object and `applyFilters()` function.
 - Scroll-aware dropdown positioning for quick filters (avoids viewport clipping).
 - Two card variants for single vs multi-room properties.
+- Card layout: linear text-on-top / image-below; room-type name abbreviated via `abbrevRoomType()` (STD/1PN/2PN/DUP/SLP) on search cards only; price emphasized `text-h3 font-bold text-error`.
+- Result list items separated by `divide-y divide-border` (no per-card border).
 
 ## 3. Entry Points
 - Dashboard search bar / Categories / Banners.

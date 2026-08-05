@@ -7,8 +7,9 @@
 
 **Acceptance Criteria:**
 - [ ] Form tạo BĐS dạng single scroll page với các section:
-  - **Thông tin cơ bản:** mã BĐS, loại BĐS
-  - **Hình ảnh:** upload tối đa 10 ảnh (grid preview, xóa từng ảnh)
+  - **Thông tin cơ bản:** tên dự án (bắt buộc, tối đa 255 ký tự), mã BĐS, loại BĐS
+  - **Hình ảnh:** upload tối đa 5 ảnh (grid preview, xóa từng ảnh), tap ảnh để chọn ảnh đại diện (mặc định ảnh đầu)
+  - **Logo watermark:** upload 1 logo (png/webp, ngoài quota 5 ảnh), toggle "Áp watermark lên ảnh" (mặc định bật), preview overlay góc dưới phải trên mỗi thumbnail
   - **Vị trí địa lý:** Tỉnh/thành, Quận/huyện, địa chỉ đường, GPS auto-fill
   - **Nội thất tổng thể:** nhóm nội thất (group-item UI, thêm/sửa/xóa nhóm và item)
   - **Tiện ích tòa nhà:** nhóm tiện ích (group-item UI, thêm/sửa/xóa nhóm và item)
@@ -30,7 +31,7 @@
 ### Backend
 - INSERT vào bảng `bat_dong_san` + bảng liên quan (hình ảnh, nội thất, tiện ích, dịch vụ)
 - `POST /api/properties` - tạo BĐS mới (multipart/form-data nếu có file)
-- `POST /api/upload` - upload hình ảnh (tối đa 10)
+- `POST /api/upload` - upload hình ảnh (tối đa 5)
 - `DELETE /api/upload/:id` - xóa hình ảnh
 - `GET /api/catalog/furniture` - danh sách nội thất để chọn
 - `GET /api/catalog/utilities` - danh sách tiện ích để chọn
@@ -44,6 +45,7 @@
 - Màn hình add-property.html: single scroll page với các section
 - Màn hình thêm phòng riêng: screen-them-phong với kế thừa dữ liệu BDS
 - Image upload với preview, xóa từng ảnh
+- Watermark: slot upload logo + toggle + overlay trên thumbnail (BĐS & phòng kế thừa)
 - Group-item UI cho nội thất/tiện ích (thêm/sửa/xóa nhóm và item)
 - Service dialog: type toggle (cố định/theo mức sử dụng), price, unit, cycle, initial index
 - Sơ đồ phòng grid: 4 cột, click để sửa nhanh (quick-update bottom sheet)
@@ -52,4 +54,5 @@
 - Validation form
 - Validate mã BĐS không để trống
 - Validate diện tích > 0, giá thuê > 0
-- Tối đa 10 hình ảnh, định dạng: jpg, png, webp
+- Validate tên dự án không để trống
+- Tối đa 5 hình ảnh, định dạng: jpg, png, webp; ảnh đại diện mặc định là ảnh đầu tiên

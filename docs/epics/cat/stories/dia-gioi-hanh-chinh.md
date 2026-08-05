@@ -14,6 +14,7 @@
 - [ ] Xóa: confirm, không xóa nếu đang được sử dụng
 - [ ] Chọn parent khi tạo Quận/Phường
 - [ ] Tìm kiếm trong cây địa giới
+- [ ] Cấu hình tìm kiếm nhanh: dropdown địa giới cũ (3 cấp) / mới (2 cấp), lưu toàn hệ thống, mặc định "mới"; áp cho danh sách Quận/Phường trên màn hình Trang chủ
 
 ## Technical Tasks
 
@@ -28,3 +29,5 @@
 - Tree component (catalog.html - tab Địa giới HC)
 - CRUD dialog
 - Search trong tree
+- Geo mode config card (dropdown + auto-save localStorage `mq_geo_mode`)
+- Dashboard quick search render chips theo mode & tỉnh chọn

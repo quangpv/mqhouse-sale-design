@@ -148,7 +148,7 @@
 
         <!-- Scrollable Vertical Rooms Stream List -->
         <div class="flex-1 overflow-y-auto no-scrollbar bg-surface pb-24">
-            <div id="result-list" class="space-y-2"></div>
+            <div id="result-list" class="divide-y divide-border"></div>
         </div>
 
     </div>
@@ -460,7 +460,7 @@
                                             <span class="text-[13px] font-semibold text-textPrimary">${r.roomType}</span>
                                             <span class="text-[12px] text-textSecondary">${r.designStyle}</span>
                                         </div>
-                                        <span class="text-[14px] font-semibold text-primary">${r.price}tr/tháng</span>
+                                        <span class="text-[15px] font-bold text-error">${r.price}tr/tháng</span>
                                     </div>
                                     <div class="flex items-center gap-2 text-[12px] text-textSecondary mt-1">
                                         <span>${r.area} m²</span>
@@ -672,10 +672,14 @@
             { id: 5, type: 'single', propertyType: "Phòng trọ", title: "Phú Nhuận Garden Homestay", category: "PHÒNG TRỌ KHÉP KÍN", status: "available", price: 3.8, area: 18, roomType: "Studio", designStyle: "Tiêu chuẩn", address: "120 Bạch Đằng, Phường 14, Bình Thạnh", favorited: false, images: ["https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400", "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400"], wc: 1 },
         ];
 
+        function abbrevRoomType(t) {
+            return ({ 'Studio': 'STD', '1 Phòng ngủ': '1PN', '2 Phòng ngủ': '2PN', 'Duplex': 'DUP', 'Sleeppod': 'SLP' })[t] || t;
+        }
+
         function createCardSingle(item) {
             const isAvail = item.status === 'available';
-            const stCls = isAvail ? 'text-success bg-green-50 border-success/10' : 'text-error bg-red-50 border-error/10';
-            const hCls = item.favorited ? 'text-error bg-red-50/30' : 'text-textSecondary bg-slate-50 hover:text-error hover:bg-red-50/50';
+            const stCls = isAvail ? 'text-white bg-success/90' : 'text-white bg-error/90';
+            const hCls = item.favorited ? 'text-error bg-white/90' : 'text-textSecondary bg-white/90 hover:text-error';
             const hFill = item.favorited ? ' fill-current' : '';
             const imgs = item.images;
             const len = imgs.length;
@@ -688,39 +692,35 @@
                 const extra = len > 3 ? `<div class="absolute inset-0 bg-slate-900/40 flex items-center justify-center text-white text-small font-semibold backdrop-blur-[1px]">+${len - 3} ảnh</div>` : '';
                 gHtml = `<div class="col-span-2 h-full"><img src="${imgs[0]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"></div><div class="col-span-1 h-full"><img src="${imgs[1]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"></div><div class="col-span-1 h-full relative"><img src="${imgs[2]}" alt="" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]">${extra}</div>`;
             }
-            return `<div onclick="parent.switchScreen('propertyDetails')" class="bg-surface border-b border-border flex flex-col group cursor-pointer">
-                <div class="grid grid-cols-4 gap-1 h-[105px] w-full overflow-hidden bg-slate-100 flex-shrink-0 relative">${gHtml}</div>
-                <div class="p-4 flex-1 flex flex-col justify-between">
-                    <div class="space-y-1">
-                        <div class="flex items-start justify-between gap-2">
-                            <div class="flex flex-wrap items-center gap-1.5 min-w-0">
-                                <span class="text-small font-semibold text-primary tracking-wide">${item.category}</span>
-                                <span class="text-[11px] px-2 py-0.5 bg-blue-50 text-primary rounded-md font-medium whitespace-nowrap">${item.roomType}</span>
+            return `<div onclick="parent.switchScreen('propertyDetails')" class="bg-surface flex flex-col group cursor-pointer pb-4">
+                <div class="p-4 pb-3">
+                    <p class="text-small text-textSecondary line-clamp-1">${item.address}</p>
+                    <div class="flex items-center justify-between gap-3 mt-1">
+                        <div class="space-y-1 min-w-0 flex-1">
+                            <h4 class="text-body font-semibold text-textPrimary line-clamp-1">${item.title}</h4>
+                            <div class="flex items-center flex-wrap gap-1.5 text-[11px] text-textSecondary">
+                                <span class="px-2 py-0.5 bg-blue-50 text-primary rounded-md font-medium whitespace-nowrap">${abbrevRoomType(item.roomType)}</span>
+                                <span>${item.designStyle}</span>
+                                <span class="mx-0.5">·</span>
+                                <span>${item.area} m²</span>
+                                <span class="mx-0.5">·</span>
+                                <span>${item.wc || 1} WC</span>
                             </div>
-                            <span class="text-small font-semibold ${stCls} px-2 py-0.5 rounded-full border whitespace-nowrap flex-shrink-0">${isAvail ? 'Còn phòng' : 'Hết phòng'}</span>
                         </div>
-                        <h4 class="text-body font-semibold text-textPrimary line-clamp-1">${item.title}</h4>
-                        <p class="text-small text-textSecondary line-clamp-2">${item.address}</p>
-                        <div class="text-[11px] text-textSecondary">
-                            <span>${item.designStyle}</span>
-                            <span class="mx-1">·</span>
-                            <span>${item.area} m²</span>
-                            <span class="mx-1">·</span>
-                            <span>${item.wc || 1} WC</span>
+                        <div class="text-h3 font-bold text-error leading-none text-right flex-shrink-0">
+                            ${item.price}tr <span class="text-small font-medium text-textSecondary">/tháng</span>
                         </div>
                     </div>
-                    <div class="flex items-center justify-between">
-                        <div class="text-textSecondary text-small font-medium">
-                            <span class="text-body font-semibold text-primary">${item.price}tr</span> /tháng
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="event.stopPropagation();parent.switchScreen('sharing')" class="w-8 h-8 flex items-center justify-center text-textSecondary hover:text-primary bg-slate-50 hover:bg-blue-50/50 rounded-full transition-colors duration-150" title="Chia sẻ bài đăng">
-                                <i data-lucide="share-2" class="w-4 h-4"></i>
-                            </button>
-                            <button onclick="event.stopPropagation();" class="w-8 h-8 flex items-center justify-center ${hCls} rounded-full transition-colors duration-150" title="${item.favorited ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'}">
-                                <i data-lucide="heart" class="w-4 h-4${hFill}"></i>
-                            </button>
-                        </div>
+                </div>
+                <div class="grid grid-cols-4 gap-1 h-[110px] w-full overflow-hidden bg-slate-100 flex-shrink-0 relative">${gHtml}
+                    <span class="absolute top-1.5 left-1.5 z-10 text-small font-semibold ${stCls} px-2 py-0.5 rounded-full whitespace-nowrap">${isAvail ? 'Còn phòng' : 'Hết phòng'}</span>
+                    <div class="absolute top-1.5 right-1.5 z-10 flex items-center gap-1.5">
+                        <button onclick="event.stopPropagation();parent.switchScreen('sharing')" class="w-7 h-7 flex items-center justify-center text-textSecondary hover:text-primary bg-white/90 backdrop-blur-[1px] shadow-sm rounded-full transition-colors duration-150" title="Chia sẻ bài đăng">
+                            <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+                        </button>
+                        <button onclick="event.stopPropagation();" class="w-7 h-7 flex items-center justify-center ${hCls} backdrop-blur-[1px] shadow-sm rounded-full transition-colors duration-150" title="${item.favorited ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'}">
+                            <i data-lucide="heart" class="w-3.5 h-3.5${hFill}"></i>
+                        </button>
                     </div>
                 </div>
             </div>`;
@@ -738,7 +738,7 @@
                     </div>
                     <div class="flex-1 p-1 flex flex-col justify-center gap-0.5">
                         <div class="flex items-center justify-between">
-                            <span class="text-[11px] font-semibold text-primary">${r.roomType}</span>
+                            <span class="text-[11px] font-semibold text-primary">${abbrevRoomType(r.roomType)}</span>
                             <div class="flex items-center gap-0.5">
                                 <span class="text-[11px] text-textSecondary">${r.area}m²</span>
                                 <span class="text-[11px] text-textSecondary">·</span>
@@ -747,7 +747,7 @@
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-[11px] text-textSecondary">${r.designStyle}</span>
-                            <span class="text-small font-bold text-textPrimary">${r.price}tr</span>
+                            <span class="text-small font-bold text-error">${r.price}tr</span>
                         </div>
                     </div>
                 </div>
@@ -770,11 +770,12 @@
                 `;
             }
 
-            return `<div onclick="parent.switchScreen('propertyDetails')" class="bg-surface border-b border-border flex flex-col group cursor-pointer">
-                <div class="pb-2.5 px-4 space-y-0.5">
-                    <div class="flex items-center justify-between">
-                        <span class="text-small font-semibold text-primary tracking-wide">${item.category}</span>
-                        <div class="flex items-center gap-2">
+            return `<div onclick="parent.switchScreen('propertyDetails')" class="bg-surface flex flex-col group cursor-pointer">
+                <div class="pt-4 px-4 pb-1 space-y-1">
+                    <p class="text-small text-textSecondary line-clamp-1">${item.address}</p>
+                    <div class="flex items-center justify-between gap-2">
+                        <h4 class="text-body font-semibold text-textPrimary line-clamp-1 flex-1 min-w-0">${item.title}</h4>
+                        <div class="flex items-center gap-2 flex-shrink-0">
                             <button onclick="event.stopPropagation();parent.switchScreen('sharing')" class="w-8 h-8 flex items-center justify-center text-textSecondary hover:text-primary bg-slate-50 hover:bg-blue-50/50 rounded-full transition-colors duration-150" title="Chia sẻ bài đăng">
                                 <i data-lucide="share-2" class="w-4 h-4"></i>
                             </button>
@@ -783,10 +784,8 @@
                             </button>
                         </div>
                     </div>
-                    <h4 class="text-body font-semibold text-textPrimary">${item.title}</h4>
-                    <p class="text-small text-textSecondary line-clamp-2">${item.address}</p>
                 </div>
-                <div class="flex items-center gap-2 overflow-x-auto no-scrollbar px-4 pb-2.5">
+                <div class="flex items-center gap-2 overflow-x-auto no-scrollbar px-4 py-3">
                     ${roomsHtml}
                 </div>
             </div>`;

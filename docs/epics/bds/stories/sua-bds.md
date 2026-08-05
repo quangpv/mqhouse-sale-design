@@ -9,6 +9,7 @@
 - [ ] Mở form sửa với dữ liệu hiện tại
 - [ ] Sửa tất cả các trường giống khi tạo
 - [ ] Thêm/xóa/sắp xếp lại hình ảnh
+- [ ] Đổi/xóa logo watermark, bật/tắt watermark trên ảnh
 - [ ] Nếu sửa bởi HouseHolder/Manager và BĐS đã duyệt → về "chờ duyệt"
 - [ ] Nếu sửa bởi Admin/Super Admin → giữ nguyên trạng thái
 - [ ] Lưu lịch sử chỉnh sửa

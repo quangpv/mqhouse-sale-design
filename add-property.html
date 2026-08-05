@@ -75,6 +75,10 @@
             <div class="flex-1 overflow-y-auto px-4 space-y-6 py-4 no-scrollbar min-h-0">
                 <div class="bg-surface p-4 rounded-card shadow-soft space-y-4 border border-border">
                     <div>
+                        <label class="block text-small font-medium text-textSecondary mb-1">Tên dự án <span class="text-error">*</span></label>
+                        <input type="text" id="bds-ten" value="The Horizon Residence" maxlength="255" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary focus:outline-none focus:border-primary custom-transition" placeholder="VD: The Horizon Residence">
+                    </div>
+                    <div>
                         <label class="block text-small font-medium text-textSecondary mb-1">Mã bất động sản</label>
                         <input type="text" id="bds-ma" value="BDS-2026-HQ" class="w-full h-10 px-3 bg-background border border-border rounded-input text-body text-textPrimary focus:outline-none focus:border-primary custom-transition">
                     </div>
@@ -90,23 +94,32 @@
 
                 <div class="bg-surface p-4 rounded-card shadow-soft space-y-3 border border-border">
                     <div class="flex justify-between items-center">
-                        <h3 class="text-body font-semibold text-textPrimary">Upload hình ảnh (Tối đa 10)</h3>
-                        <span class="text-small text-textSecondary">2 / 10</span>
+                        <h3 class="text-body font-semibold text-textPrimary">Upload hình ảnh (Tối đa 5)</h3>
+                        <span class="text-small text-textSecondary" id="bds-image-counter">0 / 5</span>
                     </div>
-                    <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-                        <button onclick="triggerUpload()" class="w-20 h-20 shrink-0 border-2 border-dashed border-border rounded-input flex flex-col items-center justify-center text-textSecondary hover:text-primary hover:border-primary custom-transition bg-background">
-                            <i data-lucide="camera" class="w-5 h-5 mb-1"></i>
-                            <span class="text-[10px]">Thêm hình</span>
-                        </button>
-                        <div class="relative w-20 h-20 shrink-0 rounded-input overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=150&q=80" class="w-full h-full object-cover" alt="BDS">
-                            <button class="absolute top-1 right-1 bg-black/50 text-white rounded-full p-0.5" onclick="this.parentElement.remove()"><i data-lucide="x" class="w-3 h-3"></i></button>
+                    <div class="flex items-start gap-3">
+                        <div class="relative w-10 h-10 shrink-0">
+                            <button id="bds-wm-upload-btn" onclick="triggerLogoUpload('bds')" class="w-10 h-10 border-2 border-dashed border-border rounded-input flex items-center justify-center text-textSecondary hover:text-primary hover:border-primary custom-transition bg-background" title="Chọn logo watermark">
+                                <i data-lucide="image-plus" class="w-4 h-4"></i>
+                            </button>
+                            <div id="bds-wm-preview" class="hidden w-10 h-10 rounded-input overflow-hidden border border-border">
+                                <img id="bds-wm-img" src="" class="w-full h-full object-cover" alt="Logo watermark">
+                                <button onclick="removeLogo('bds')" class="absolute -top-1.5 -right-1.5 bg-black/60 text-white rounded-full p-0.5" title="Xóa logo">
+                                    <i data-lucide="x" class="w-2.5 h-2.5"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="relative w-20 h-20 shrink-0 rounded-input overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=150&q=80" class="w-full h-full object-cover" alt="BDS">
-                            <button class="absolute top-1 right-1 bg-black/50 text-white rounded-full p-0.5" onclick="this.parentElement.remove()"><i data-lucide="x" class="w-3 h-3"></i></button>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-body font-medium text-textPrimary">Logo watermark</p>
+                            <div class="flex items-center justify-between mt-2">
+                                <p class="text-body text-textPrimary">Áp watermark lên ảnh</p>
+                                <button id="bds-wm-toggle" onclick="toggleWatermark('bds')" class="w-11 h-6 rounded-full flex items-center px-0.5 custom-transition shrink-0 bg-primary">
+                                    <div id="bds-wm-knob" class="w-5 h-5 rounded-full bg-white shadow custom-transition translate-x-5"></div>
+                                </button>
+                            </div>
                         </div>
                     </div>
+                    <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar" id="bds-image-container"></div>
                 </div>
 
                 <div class="bg-surface p-4 rounded-card shadow-soft space-y-4 border border-border">
@@ -295,17 +308,24 @@
                 <div class="bg-surface p-4 rounded-card shadow-soft space-y-3 border border-border">
                     <div class="flex justify-between items-center">
                         <h3 class="text-body font-semibold text-textPrimary">Hình ảnh thực tế phòng</h3>
-                        <span class="text-small text-textSecondary">1 / 10</span>
+                        <span class="text-small text-textSecondary" id="phong-image-counter">0 / 20</span>
                     </div>
-                    <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-                        <button onclick="triggerUpload()" class="w-20 h-20 shrink-0 border-2 border-dashed border-border rounded-input flex flex-col items-center justify-center text-textSecondary bg-background">
-                            <i data-lucide="camera" class="w-4 h-4 mb-1"></i>
-                            <span class="text-[10px]">Thêm hình</span>
-                        </button>
-                        <div class="relative w-20 h-20 shrink-0 rounded-input overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=150&q=80" class="w-full h-full object-cover" alt="Phong">
+                    <div id="phong-wm-box" class="flex items-start gap-3">
+                        <div class="w-10 h-10 shrink-0 rounded-input overflow-hidden border border-border bg-background">
+                            <img id="phong-wm-img" src="" class="w-full h-full object-cover" alt="Watermark BDS">
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-body font-medium text-textPrimary">Watermark từ BDS</p>
+                            <p class="text-small text-textSecondary">Kế thừa từ BDS cha — có thể tắt trên phòng này</p>
+                            <div class="flex items-center justify-between mt-2">
+                                <p class="text-body text-textPrimary">Áp watermark lên ảnh phòng</p>
+                                <button id="phong-wm-toggle" onclick="toggleWatermark('phong')" class="w-11 h-6 rounded-full flex items-center px-0.5 custom-transition shrink-0 bg-primary">
+                                    <div id="phong-wm-knob" class="w-5 h-5 rounded-full bg-white shadow custom-transition translate-x-5"></div>
+                                </button>
+                            </div>
                         </div>
                     </div>
+                    <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar" id="phong-image-container"></div>
                 </div>
 
                 <div class="bg-surface p-4 rounded-card shadow-soft space-y-3 border border-border">
@@ -320,7 +340,7 @@
                     <div class="flex justify-between items-center">
                         <div>
                             <h3 class="text-body font-semibold text-textPrimary">Nội thất phòng</h3>
-                            <p class="text-[11px] text-textSecondary">Đã thừa hưởng từ cấu hình mẫu BDS</p>
+                            <p class="text-[11px] text-textSecondary">Đã thừa hưởng từ cấu hình dự án</p>
                         </div>
                         <button onclick="openNameDialog('phong-noithat-nhom-add', 'Thêm nhóm nội thất', 'Nhập tên nhóm riêng cho phòng này')" class="text-primary hover:bg-blue-50 p-1.5 rounded-full custom-transition">
                             <i data-lucide="plus" class="w-5 h-5"></i>
@@ -333,7 +353,7 @@
                     <div class="flex justify-between items-center">
                         <div>
                             <h3 class="text-body font-semibold text-textPrimary">Tiện ích phòng</h3>
-                            <p class="text-[11px] text-textSecondary">Đã thừa hưởng từ cấu hình mẫu BDS</p>
+                            <p class="text-[11px] text-textSecondary">Đã thừa hưởng từ cấu hình dự án</p>
                         </div>
                         <button onclick="openNameDialog('phong-tienich-nhom-add', 'Thêm nhóm tiện ích', 'Nhập tên tiện ích riêng cho phòng này')" class="text-primary hover:bg-blue-50 p-1.5 rounded-full custom-transition">
                             <i data-lucide="plus" class="w-5 h-5"></i>
@@ -346,7 +366,7 @@
                     <div class="flex justify-between items-center">
                         <div>
                             <h3 class="text-body font-semibold text-textPrimary">Dịch vụ phòng</h3>
-                            <p class="text-[11px] text-textSecondary">Đã thừa hưởng từ cấu hình mẫu BDS</p>
+                            <p class="text-[11px] text-textSecondary">Đã thừa hưởng từ cấu hình dự án</p>
                         </div>
                         <button onclick="openServiceDialog(null, 'phong')" class="text-primary hover:bg-blue-50 p-1.5 rounded-full custom-transition">
                             <i data-lucide="plus" class="w-5 h-5"></i>
@@ -492,6 +512,11 @@
         }
 
         // MOCK DATA ĐỒNG BỘ CHO CẢ BDS VÀ PHÒNG KẾ THỪA
+        // LOGO WATERMARK MẶC ĐỊNH (SVG placeholder để demo overlay, thay bằng ảnh thật khi upload)
+        const DEFAULT_LOGO = 'data:image/svg+xml,' + encodeURIComponent(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#2563EB"/><rect x="12" y="26" width="9" height="26" rx="2" fill="#ffffff"/><rect x="25" y="14" width="9" height="38" rx="2" fill="#ffffff"/><rect x="38" y="14" width="9" height="38" rx="2" fill="#ffffff"/><rect x="51" y="26" width="9" height="26" rx="2" fill="#ffffff"/></svg>'
+        );
+
         let bdsData = {
             noiThat: [
                 { id: "bds-nt1", name: "Nội thất cơ bản", items: ["Giường ngủ", "Tủ quần áo", "Kệ bếp"] },
@@ -512,18 +537,36 @@
                 { id: "p3", code: "P.201", status: "Đã cọc", price: 5900000, area: "25m²", wc: 2, designStyle: "" },
                 { id: "p4", code: "P.202", status: "Sắp trống", price: 6200000, area: "35m²", wc: 1, designStyle: "" },
                 { id: "p5", code: "P.301", status: "Đang trống", price: 5500000, area: "20m²", wc: 1, designStyle: "" }
-            ]
+            ],
+            watermark: { logo: DEFAULT_LOGO, enabled: true },
+            avatarIndex: 0
         };
 
         // Trạng thái độc lập của phòng khi bấm vào chỉnh sửa/thêm mới
-        let phongEditingData = { noiThat: [], tienIch: [], dichVu: [], isEditMode: false, currentId: null };
+        let phongEditingData = { noiThat: [], tienIch: [], dichVu: [], isEditMode: false, currentId: null, watermark: { logo: null, enabled: true }, avatarIndex: 0 };
         let activeScope = 'bds'; 
         let currentMenuContext = null;
         let selectedServiceType = 'Cố định';
         let phongCodeList = [];
 
+        // Danh sách ảnh demo — BDS tối đa 5, phòng tối đa 20
+        let bdsImages = [
+            "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=150&q=80",
+            "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=150&q=80"
+        ];
+        let phongImages = [
+            "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=150&q=80"
+        ];
+        const SRC_POOL = [
+            "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=150&q=80",
+            "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=150&q=80",
+            "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=150&q=80",
+            "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=150&q=80"
+        ];
+
         document.addEventListener("DOMContentLoaded", () => {
             renderBDSViews();
+            renderWatermarkControls('bds');
             lucide.createIcons();
         });
 
@@ -537,6 +580,8 @@
             document.getElementById('bds-dichvu-container').innerHTML = renderServiceGrid(bdsData.dichVu, 'bds');
             // Render Sơ đồ phòng Grid
             renderPhongGrid();
+            // Render danh sách hình ảnh (counter, ảnh đại diện, thêm/xóa)
+            renderImageStrip('bds');
             lucide.createIcons();
         }
 
@@ -545,6 +590,7 @@
             document.getElementById('phong-noithat-container').innerHTML = renderSectionList(phongEditingData.noiThat, 'phong', 'noithat');
             document.getElementById('phong-tienich-container').innerHTML = renderSectionList(phongEditingData.tienIch, 'phong', 'tienich');
             document.getElementById('phong-dichvu-container').innerHTML = renderServiceGrid(phongEditingData.dichVu, 'phong');
+            renderImageStrip('phong');
             lucide.createIcons();
         }
 
@@ -613,12 +659,79 @@
             }).join('');
         }
 
+        // Render hàng ảnh động cho BDS hoặc phòng: counter, ảnh đại diện, thêm/xóa
+        function renderImageStrip(scope) {
+            const isBds = scope === 'bds';
+            const images = isBds ? bdsImages : phongImages;
+            const max = isBds ? 5 : 20;
+            const av = isBds ? bdsData : phongEditingData;
+            const container = document.getElementById(isBds ? 'bds-image-container' : 'phong-image-container');
+            const counter = document.getElementById(isBds ? 'bds-image-counter' : 'phong-image-counter');
+            counter.innerText = `${images.length} / ${max}`;
+
+            const addBtn = `
+                <button onclick="addImage('${scope}')" class="w-20 h-20 shrink-0 border-2 border-dashed border-border rounded-input flex flex-col items-center justify-center text-textSecondary hover:text-primary hover:border-primary custom-transition bg-background">
+                    <i data-lucide="camera" class="w-4 h-4 mb-1"></i>
+                    <span class="text-[10px]">Thêm hình</span>
+                </button>`;
+
+            const thumbs = images.map((src, i) => `
+                <div onclick="setAvatar('${scope}', ${i})" class="relative w-20 h-20 shrink-0 rounded-input overflow-hidden cursor-pointer ${i === av.avatarIndex ? 'ring-2 ring-primary ring-offset-1' : ''} custom-transition">
+                    <img src="${src}" class="w-full h-full object-cover" alt="${isBds ? 'BDS' : 'Phòng'}">
+                    <div data-wm-badge="${scope}" class="absolute bottom-0 right-0 hidden m-0.5 w-4 h-4 bg-white/90 border border-white rounded-[3px] overflow-hidden shadow-sm">
+                        <img src="" class="w-full h-full object-cover" alt="Watermark">
+                    </div>
+                    <button onclick="event.stopPropagation(); removeImage('${scope}', ${i})" class="absolute top-1 right-1 bg-black/50 text-white rounded-full p-0.5" title="Xóa hình">
+                        <i data-lucide="x" class="w-3 h-3"></i>
+                    </button>
+                    ${i === av.avatarIndex ? `
+                    <span class="absolute top-1 left-1 bg-primary text-white text-[9px] font-bold px-1.5 py-0.5 rounded-[4px] flex items-center gap-0.5 shadow-sm">
+                        <i data-lucide="star" class="w-2.5 h-2.5"></i> Đại diện
+                    </span>` : ''}
+                </div>`).join('');
+
+            container.innerHTML = addBtn + thumbs;
+            lucide.createIcons();
+            renderWatermarkBadges(scope);
+        }
+
+        function addImage(scope) {
+            const isBds = scope === 'bds';
+            const images = isBds ? bdsImages : phongImages;
+            const max = isBds ? 5 : 20;
+            if (images.length >= max) {
+                showToast(isBds ? "Tối đa 5 hình ảnh cho tòa nhà!" : "Tối đa 20 hình ảnh cho phòng!");
+                return;
+            }
+            images.push(SRC_POOL[images.length % SRC_POOL.length]);
+            renderImageStrip(scope);
+            showToast("Đang mở thư viện ảnh để thêm hình...");
+        }
+
+        function removeImage(scope, index) {
+            const isBds = scope === 'bds';
+            const images = isBds ? bdsImages : phongImages;
+            const av = isBds ? bdsData : phongEditingData;
+            images.splice(index, 1);
+            if (av.avatarIndex >= images.length) av.avatarIndex = Math.max(0, images.length - 1);
+            renderImageStrip(scope);
+            showToast("Đã xóa hình ảnh.");
+        }
+
+        function setAvatar(scope, index) {
+            const isBds = scope === 'bds';
+            const av = isBds ? bdsData : phongEditingData;
+            av.avatarIndex = index;
+            renderImageStrip(scope);
+        }
+
         // ĐIỀU HƯỚNG VÀ KẾ THỪA DỮ LIỆU CHUYỂN TIẾP
         function navigateTo(screenId) {
             if (screenId === 'them-phong') {
                 document.getElementById('screen-them-bds').classList.add('hidden');
                 document.getElementById('screen-them-phong').classList.remove('hidden');
-                document.getElementById('lbl-parent-bds').innerText = 'BDS: ' + (document.getElementById('bds-ma').value || 'BDS-2026-HQ');
+                const tenDuAn = document.getElementById('bds-ten').value.trim();
+                document.getElementById('lbl-parent-bds').innerText = 'BDS: ' + (document.getElementById('bds-ma').value || 'BDS-2026-HQ') + (tenDuAn ? ' · ' + tenDuAn : '');
                 
                 // Nếu chưa có dữ liệu chỉnh sửa riêng biệt, thực hiện nhân bản kế thừa từ BDS
                 if(!phongEditingData.isEditMode) {
@@ -633,6 +746,8 @@
                     phongEditingData.noiThat = JSON.parse(JSON.stringify(bdsData.noiThat));
                     phongEditingData.tienIch = JSON.parse(JSON.stringify(bdsData.tienIch));
                     phongEditingData.dichVu = JSON.parse(JSON.stringify(bdsData.dichVu));
+                    phongEditingData.watermark = { logo: bdsData.watermark.logo, enabled: bdsData.watermark.enabled };
+                    phongEditingData.avatarIndex = 0;
                 } else {
                     // EDIT mode: show single input
                     document.getElementById('phong-ma-section-add').classList.add('hidden');
@@ -640,6 +755,7 @@
                 }
                 updateRoomDesignStyles();
                 renderPhongViews();
+                renderWatermarkControls('phong');
             } else {
                 document.getElementById('screen-them-phong').classList.add('hidden');
                 document.getElementById('screen-them-bds').classList.remove('hidden');
@@ -669,6 +785,7 @@
             phongEditingData.noiThat = JSON.parse(JSON.stringify(bdsData.noiThat));
             phongEditingData.tienIch = JSON.parse(JSON.stringify(bdsData.tienIch));
             phongEditingData.dichVu = JSON.parse(JSON.stringify(bdsData.dichVu));
+            phongEditingData.avatarIndex = 0;
 
             navigateTo('them-phong');
         }
@@ -858,6 +975,8 @@
 
         // XÁC NHẬN TẠO BDS
         function handleCreateBDS() {
+            const ten = document.getElementById('bds-ten').value.trim();
+            if(!ten) { showToast("Vui lòng nhập tên dự án!"); return; }
             const ma = document.getElementById('bds-ma').value.trim();
             if(!ma) { showToast("Vui lòng nhập mã bất động sản!"); return; }
             showToast("Đã tạo bất động sản thành công!");
@@ -881,6 +1000,67 @@
             quan.innerHTML = tinh === "Hồ Chí Minh" 
                 ? '<option value="Quận 1">Quận 1</option><option value="Bình Thạnh" selected>Bình Thạnh</option>'
                 : '<option value="Thủ Dầu Một">Thủ Dầu Một</option><option value="Pleiku">Pleiku</option>';
+        }
+
+        // [<<Name>> watermark] CONTROL — logo watermark trên ảnh BĐS & phòng
+        function watermarkMeta(scope) {
+            return scope === 'bds' ? bdsData.watermark : phongEditingData.watermark;
+        }
+
+        function renderWatermarkControls(scope) {
+            const wm = watermarkMeta(scope);
+            const p = scope === 'bds' ? 'bds' : 'phong';
+            const uploadBtn = document.getElementById(p + '-wm-upload-btn');
+            const preview = document.getElementById(p + '-wm-preview');
+            const img = document.getElementById(p + '-wm-img');
+            const toggle = document.getElementById(p + '-wm-toggle');
+            const knob = document.getElementById(p + '-wm-knob');
+            const box = document.getElementById('phong-wm-box');
+
+            if (img) {
+                const hasLogo = !!wm.logo;
+                img.src = wm.logo || '';
+                if (uploadBtn) uploadBtn.classList.toggle('hidden', hasLogo);
+                if (preview) preview.classList.toggle('hidden', !hasLogo);
+                if (box) box.classList.toggle('opacity-40', !hasLogo);
+            }
+            if (toggle) {
+                toggle.className = 'w-11 h-6 rounded-full flex items-center px-0.5 custom-transition shrink-0 ' + (wm.enabled ? 'bg-primary' : 'bg-slate-300');
+            }
+            if (knob) {
+                knob.className = 'w-5 h-5 rounded-full bg-white shadow custom-transition ' + (wm.enabled ? 'translate-x-5' : '');
+            }
+            renderWatermarkBadges(scope);
+        }
+
+        function renderWatermarkBadges(scope) {
+            const wm = watermarkMeta(scope);
+            const show = !!(wm.enabled && wm.logo);
+            document.querySelectorAll('[data-wm-badge="' + scope + '"]').forEach(badge => {
+                badge.classList.toggle('hidden', !show);
+                const bimg = badge.querySelector('img');
+                if (bimg && bimg.src !== wm.logo) bimg.src = wm.logo;
+            });
+        }
+
+        function triggerLogoUpload(scope) {
+            showToast("Đang mở thư viện ảnh để chọn logo...");
+            setTimeout(() => {
+                watermarkMeta(scope).logo = DEFAULT_LOGO;
+                renderWatermarkControls(scope);
+                showToast("Đã chọn logo watermark!");
+            }, 600);
+        }
+
+        function removeLogo(scope) {
+            watermarkMeta(scope).logo = null;
+            renderWatermarkControls(scope);
+            showToast("Đã xóa logo watermark.");
+        }
+
+        function toggleWatermark(scope) {
+            watermarkMeta(scope).enabled = !watermarkMeta(scope).enabled;
+            renderWatermarkControls(scope);
         }
 
         function triggerUpload() { showToast("Đang mở thư viện ảnh..."); }

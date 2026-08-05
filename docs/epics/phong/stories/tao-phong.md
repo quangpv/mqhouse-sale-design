@@ -11,7 +11,8 @@
 - [ ] Các trường: tên phòng, mô tả, loại phòng, diện tích, giá thuê, giá cọc
 - [ ] Chọn nội thất, tiện ích cho phòng
 - [ ] Chọn dịch vụ kèm theo (giá, đơn vị, chu kỳ, chỉ số đầu)
-- [ ] Upload tối đa 10 hình ảnh
+- [ ] Upload tối đa 20 hình ảnh, tap ảnh để chọn ảnh đại diện (mặc định ảnh đầu)
+- [ ] Ảnh phòng mang watermark kế thừa từ BĐS cha (có thể tắt riêng)
 - [ ] Validate các trường bắt buộc
 - [ ] Có thể thêm nhiều phòng cùng lúc
 - [ ] Mỗi phòng có thể xóa tạm thời (trong form) trước khi lưu

@@ -138,7 +138,7 @@ const epics = [
   { id:'BDS', name:'Quản lý Bất động sản', desc:'Quản lý toàn bộ vòng đời bất động sản từ tạo mới đến hết hạn.', dep:'AUTH, USER, CAT', phase:2,
     stories:[
       { id:'BDS-01', name:'Tạo bất động sản', role:'HouseHolder, Manager, Admin, Super Admin', priority:'High', desc:'Thêm mới bất động sản với đầy đủ thông tin.',
-        ac:['Form 2 tab: bất động sản và Phòng','Thông tin: tên, mô tả, địa chỉ, loại, diện tích, giá','Nội thất group-item, tiện ích','Chọn tọa độ trên bản đồ','Upload 10 hình, xem trước','Tự động lưu nháp','HouseHolder/Manager → chờ duyệt; Admin → đã duyệt'],
+        ac:['Form 2 tab: bất động sản và Phòng','Thông tin: tên, mô tả, địa chỉ, loại, diện tích, giá','Nội thất group-item, tiện ích','Chọn tọa độ trên bản đồ','Upload 5 hình, xem trước, chọn ảnh đại diện (mặc định ảnh đầu)','Tự động lưu nháp','HouseHolder/Manager → chờ duyệt; Admin → đã duyệt'],
         tasks:[['Backend','POST /api/properties, /upload'],['Frontend','add-property.html, Google Maps picker'],['Validation','Diện tích >0, giá >0, tọa độ hợp lệ']] },
       { id:'BDS-02', name:'Xem chi tiết bất động sản', role:'Tất cả', priority:'High', desc:'Xem chi tiết bất động sản với đầy đủ thông tin.',
         ac:['Tên, giá, địa chỉ, mô tả','Gallery hình ảnh','danh sách nội thất, tiện ích','Bản đồ nhỏ','danh sách phòng trực thuộc','Trạng thái: còn trống / sắp có phòng / hết phòng'],
@@ -165,7 +165,7 @@ const epics = [
   { id:'PHONG', name:'Quản lý Phòng', desc:'Quản lý chi tiết từng phòng, trạng thái, đặt cọc và hợp đồng.', dep:'AUTH, BDS', phase:2,
     stories:[
       { id:'PHONG-01', name:'Tạo phòng', role:'HouseHolder, Manager, Admin, Super Admin', priority:'High', desc:'Thêm phòng mới vào bất động sản.',
-        ac:['Form: tên, mô tả, loại phòng, diện tích, giá, cọc','Chọn nội thất, tiện ích','Chọn dịch vụ kèm (giá, đơn vị, chỉ số đầu)','Upload 10 hình','Thêm nhiều phòng cùng lúc'],
+        ac:['Form: tên, mô tả, loại phòng, diện tích, giá, cọc','Chọn nội thất, tiện ích','Chọn dịch vụ kèm (giá, đơn vị, chỉ số đầu)','Upload 20 hình, chọn ảnh đại diện (mặc định ảnh đầu)','Thêm nhiều phòng cùng lúc'],
         tasks:[['Backend','POST /api/properties/:id/rooms'],['Frontend','Room form, service dialog']] },
       { id:'PHONG-02', name:'Xem chi tiết phòng', role:'Tất cả', priority:'High', desc:'Xem chi tiết phòng trong bất động sản.',
         ac:['Hiển thị: tên, giá, cọc, diện tích, loại','Gallery ảnh','danh sách nội thất, tiện ích, dịch vụ','Trạng thái phòng (8 trạng thái)','Thông tin khách thuê hiện tại'],
@@ -219,7 +219,7 @@ const epics = [
   { id:'CAT', name:'Danh mục hệ thống', desc:'Quản lý danh mục dùng chung.', dep:'AUTH', phase:1,
     stories:[
       { id:'CAT-01', name:'Địa giới hành chính', role:'Super Admin (ghi), tất cả (xem)', priority:'High', desc:'Cây 3 cấp Tỉnh/Quận/Phường.',
-        ac:['Tree: Tỉnh→Quận→Phường','Expand/collapse','Thêm/sửa/xóa node','Tìm kiếm trong cây'],
+        ac:['Tree: Tỉnh→Quận→Phường','Expand/collapse','Thêm/sửa/xóa node','Tìm kiếm trong cây','Cấu hình địa giới cũ/mới (2 cấp) cho tìm kiếm nhanh'],
         tasks:[['Backend','CRUD /api/locations, tree, children'],['Frontend','Tree component']] },
       { id:'CAT-02', name:'Loại bất động sản', role:'Super Admin (ghi), tất cả (xem)', priority:'Medium', desc:'danh sách loại bất động sản.',
         ac:['Bảng: tên, mô tả, trạng thái','CRUD','Xóa (nếu không có bất động sản nào dùng)'], tasks:[['Backend','CRUD /api/catalog/property-types'],['Frontend','Table + dialog']] },

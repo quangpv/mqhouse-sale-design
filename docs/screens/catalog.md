@@ -10,6 +10,7 @@
 - **Header**: "Danh mục" title with 3 tabs and animated indicator.
 
 #### Tab 1 — Địa giới hành chính (Administrative Geography)
+- **Cấu hình tìm kiếm nhanh**: card đầu tab với dropdown địa giới cũ (3 cấp) / mới (2 cấp), lưu toàn hệ thống (localStorage `mq_geo_mode`), ảnh hưởng chips Quận/Phường trên Trang chủ.
 - Search input + "+" add province button.
 - Tree view: Provinces → Districts → Wards with expand/collapse chevrons.
 - Expand/collapse all button.
@@ -33,6 +34,7 @@
 - Toast notification on save.
 
 ### Components
+- **Geo mode config card**: dropdown select địa giới cũ/mới + hint text, save on change + toast.
 - **Tree view**: Nested lists with chevron expand/collapse, indentation levels.
 - **Geo detail panel**: Slide-in panel showing selected node details.
 - **Bottom sheets**: Create (tạo tỉnh), add child (thêm cấp con), edit (sửa), delete (xóa) with error state if children exist.
@@ -66,6 +68,7 @@
 - **Province/district/ward names**: Required, max 100 characters, unique at sibling level.
 - **Service price**: Must be a positive number.
 - **Permission save**: At least one permission must be selected per role.
+- **Geo mode config**: Bắt buộc 1 trong 2 giá trị (`new` / `old`), mặc định `new`; lưu ngay khi đổi (auto-save).
 
 ### Permission rules
 - **Tab 1 (Geography)**: Admin, Quản lý khu vực can CRUD. Sale and Chủ nhà are read-only.
@@ -97,6 +100,7 @@
 
 ## 8. Mapping Notes
 - [DESIGN GAP] CAT-07 (File management) has no separate UI — files are uploaded inline in property/room forms rather than managed in a centralized catalog.
+- Geo mode config lưu global qua localStorage để đồng bộ giữa các trang static (production: bảng cấu hình hệ thống / settings API).
 - Geography tree expects hierarchical data structure: provinces → districts → wards (3 levels max).
 - [ASSUMPTION] Permission changes take effect immediately on save (no staging or approval workflow).
 - [STORY GAP] No bulk import/export for geography or category data.

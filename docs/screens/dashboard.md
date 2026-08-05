@@ -13,7 +13,7 @@
   - "Dịch vụ đăng tin BDS chuyên nghiệp" — property advertising
   - "Cho thuê văn phòng & mặt bằng" — office/space rental
   - "Nhà đất giá tốt mỗi ngày" — daily deals
-- **Quick search section**: "Tìm kiếm nhanh" with province selector button (opens bottom sheet with all 63 provinces) and district filter chips (Quận 1, 2, 3, 4, 7, Bình Thạnh).
+- **Quick search section**: "Tìm kiếm nhanh" with province selector button (opens bottom sheet with all 63 provinces) and filter chips. Chips render theo cấu hình địa giới ở Catalog: chế độ **cũ (3 cấp)** → chips Quận/Huyện; chế độ **mới (2 cấp)** → chips Phường/Xã. Chọn Tỉnh → render lại chips theo tỉnh đó.
 - **Featured section "Nổi bật"**: Horizontal scrollable cards (3 items: Flora Novia, Vinhomes Central Park, Sunrise City View).
 - **Latest section "Mới nhất"**: Horizontal scrollable cards (3 items).
 - **Recent section "Xem gần đây"**: Vertical row list (5 properties).
@@ -43,7 +43,8 @@
 ### Validation rules
 - Search input: Free text, minimum 2 characters to trigger search.
 - Province selector: Exactly 1 province must be selected.
-- District chips: Multiple selection allowed, all chips deselectable.
+- Filter chips: Multiple selection allowed, all chips deselectable.
+- Chip list phụ thuộc cấu hình địa giới toàn hệ thống (`mq_geo_mode`): `old` = Quận/Huyện, `new` = Phường/Xã; render theo tỉnh đang chọn.
 
 ### Permission rules
 - All authenticated (logged-in) users can view the dashboard.
@@ -52,6 +53,7 @@
 ### Conditional rendering rules
 - Recent section ("Xem gần đây") only renders if the user has viewed at least one property in the current session.
 - "+" button only visible if user has permission to create properties.
+- Filter chips: nếu tỉnh đang chọn chưa có dữ liệu địa giới trong chế độ hiện tại → hiển thị placeholder "Không có dữ liệu địa giới cho tỉnh này".
 
 ## 6. Related User Stories
 | ID | Title | Status |

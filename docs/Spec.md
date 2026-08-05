@@ -24,7 +24,7 @@
 - Kéo bottom sheet từ dưới lên để xem danh sách BĐS trong khu vực đang nhìn
 
 ## 5. Quản lý Bất động sản
-- Thêm BĐS mới: nhập tên, địa chỉ, giá, diện tích, số phòng, nội thất, tiện ích, upload ảnh (tối đa 10 tấm), chọn tọa độ trên bản đồ
+- Thêm BĐS mới: nhập tên, địa chỉ, giá, diện tích, số phòng, nội thất, tiện ích, upload ảnh (tối đa 5 tấm + chọn ảnh đại diện), chọn tọa độ trên bản đồ
 - Sửa, xóa BĐS (ai tạo thì được sửa, admin sửa được hết)
 - BĐS mới tạo cần admin duyệt mới hiện lên
 - Admin bấm duyệt hoặc từ chối (kèm lý do), duyệt được nhiều cái cùng lúc
@@ -334,7 +334,9 @@
         - BĐS nổi bật ưu tiên hiển thị và xuất hiện trong gợi ý
         - Hiển thị icon/badge trên card BĐS
     - Giới hạn kỹ thuật
-        - Tối đa 10 hình ảnh, định dạng: jpg, png, webp
+        - Tối đa 5 hình ảnh, định dạng: jpg, png, webp
+        - Ảnh đại diện BĐS: chọn từ danh sách ảnh đã upload, mặc định ảnh đầu tiên; xóa ảnh đại diện → tự chuyển sang ảnh kế tiếp
+        - Logo watermark (tùy chọn): 1 file png/webp, không tính vào quota 5 ảnh; áp lên ảnh BĐS; phòng kế thừa; có toggle bật/tắt (mặc định bật)
         - Tên BĐS tối đa 255 ký tự, không để trống
         - Diện tích > 0 m², giá thuê > 0 VNĐ/tháng
         - Tọa độ: latitude (-90 đến 90), longitude (-180 đến 180)
@@ -375,7 +377,9 @@
         - Từ chối → nhập lý do từ chối, chuyển về trạng thái cũ
         - Tự động gửi thông báo cho Sale khi duyệt hoặc từ chối
     - Giới hạn kỹ thuật
-        - Tối đa 10 hình ảnh/phòng
+        - Tối đa 20 hình ảnh/phòng
+        - Ảnh đại diện phòng: chọn từ danh sách ảnh phòng, mặc định ảnh đầu tiên; xóa ảnh đại diện → tự chuyển sang ảnh kế tiếp
+        - Ảnh phòng có thể mang watermark kế thừa từ BĐS cha (tắt được trên từng phòng)
         - Giá thuê > 0 VNĐ/tháng, diện tích > 0 m²
         - Giá cọc ≥ 0 VNĐ
 
@@ -487,6 +491,7 @@
     - Xem
         - Công khai (mọi người xem được)
     - Cây 3 cấp: Tỉnh (parent_id = null) → Quận/Huyện → Phường/Xã
+    - Cấu hình tìm kiếm nhanh: chế độ địa giới cũ (3 cấp) / mới (2 cấp, bỏ cấp huyện), do Admin|Super Admin đặt toàn hệ thống, mặc định "mới", chỉ ảnh hưởng danh sách Quận/Phường trong "Tìm kiếm nhanh" trên màn hình Trang chủ
     - Chặn xóa nếu còn node con
     - Chặn xóa nếu đang được sử dụng bởi UserArea hoặc BĐS
     - Trạng thái: [Đang hoạt động, Đã khóa]

@@ -332,43 +332,73 @@
             'Vĩnh Long', 'Vĩnh Phúc', 'Yên Bái'
         ];
 
+        // ĐỊA GIỚI HÀNH CHÍNH CŨ (3 cấp) / MỚI (2 cấp) — cấu hình ở Catalog
+        const geoQuickSearch = {
+            old: {
+                'Hồ Chí Minh': ['Quận 1', 'Quận 3', 'Quận 4', 'Quận 5', 'Quận 7', 'Bình Thạnh'],
+                'Hà Nội': ['Ba Đình', 'Hoàn Kiếm', 'Đống Đa', 'Hai Bà Trưng', 'Cầu Giấy', 'Thanh Xuân']
+            },
+            new: {
+                'Hồ Chí Minh': ['Phường Bến Nghé', 'Phường Đa Kao', 'Phường Thảo Điền', 'Phường An Khánh', 'Phường Bình Trưng Tây', 'Phường Tân Thuận Tây'],
+                'Hà Nội': ['Phường Tràng Tiền', 'Phường Hàng Trống', 'Phường Nguyễn Du', 'Phường Dịch Vọng', 'Phường Yên Hòa', 'Phường Quan Hoa']
+            }
+        };
+
+        function getGeoQuickMode() {
+            return localStorage.getItem('mq_geo_mode') || 'new';
+        }
+
+        let selectedQuickProvince = 'Hồ Chí Minh';
+        let selectedQuickChip = null;
+
         function toggleProvincePopup() {
             document.getElementById('province-popup').classList.toggle('hidden');
             lucide.createIcons();
         }
 
         function selectProvince(name) {
+            selectedQuickProvince = name;
             document.getElementById('selected-province').textContent = name;
+            renderQuickSearchChips();
             toggleProvincePopup();
+        }
+
+        function renderQuickSearchChips() {
+            const mode = getGeoQuickMode();
+            const list = (geoQuickSearch[mode] && geoQuickSearch[mode][selectedQuickProvince]) || [];
+            const districtContainer = document.getElementById('district-list');
+            districtContainer.innerHTML = '';
+
+            if (list.length === 0) {
+                const empty = document.createElement('span');
+                empty.textContent = 'Không có dữ liệu địa giới cho tỉnh này';
+                empty.className = 'px-4 py-2 text-small text-textSecondary italic whitespace-nowrap';
+                empty.style.marginLeft = '16px';
+                districtContainer.appendChild(empty);
+                return;
+            }
+
+            list.forEach((name, i) => {
+                const btn = document.createElement('button');
+                btn.textContent = name;
+                btn.className = 'px-4 py-2 bg-surface border border-border text-textPrimary text-body font-medium rounded-button shadow-soft hover:border-border whitespace-nowrap transition-colors duration-150';
+                if (i === 0) btn.style.marginLeft = '16px';
+                if (i === list.length - 1) btn.style.marginRight = '16px';
+                btn.onclick = () => {
+                    if (selectedQuickChip) {
+                        selectedQuickChip.className = 'px-4 py-2 bg-surface border border-border text-textPrimary text-body font-medium rounded-button shadow-soft hover:border-border whitespace-nowrap transition-colors duration-150';
+                    }
+                    btn.className = 'px-4 py-2 bg-primary text-white text-body font-medium rounded-button shadow-soft whitespace-nowrap transition-colors duration-150';
+                    selectedQuickChip = btn;
+                };
+                districtContainer.appendChild(btn);
+            });
         }
 
         // Render UI Pipeline
         document.addEventListener("DOMContentLoaded", () => {
-            const districts = ['Quận 1', 'Quận 2', 'Quận 3', 'Quận 4', 'Quận 7', 'Bình Thạnh'];
-            const districtContainer = document.getElementById('district-list');
-            let selectedDistrict = null;
-            districts.forEach((name, i) => {
-                const btn = document.createElement('button');
-                btn.textContent = name;
-                btn.className = i === 0
-                    ? 'px-4 py-2 bg-primary text-white text-body font-medium rounded-button shadow-soft whitespace-nowrap transition-colors duration-150'
-                    : 'px-4 py-2 bg-surface border border-border text-textPrimary text-body font-medium rounded-button shadow-soft hover:border-border whitespace-nowrap transition-colors duration-150';
-                if (i === 0) btn.style.marginLeft = '16px';
-                if (i === districts.length - 1) btn.style.marginRight = '16px';
-                if (i === 0) selectedDistrict = btn;
-                btn.onclick = () => {
-                    if (selectedDistrict) {
-                        selectedDistrict.className = 'px-4 py-2 bg-surface border border-border text-textPrimary text-body font-medium rounded-button shadow-soft hover:border-border whitespace-nowrap transition-colors duration-150';
-                        selectedDistrict.style.marginLeft = selectedDistrict.style.marginLeft || '';
-                        selectedDistrict.style.marginRight = selectedDistrict.style.marginRight || '';
-                    }
-                    btn.className = 'px-4 py-2 bg-primary text-white text-body font-medium rounded-button shadow-soft whitespace-nowrap transition-colors duration-150';
-                    if (i === 0) btn.style.marginLeft = '16px';
-                    if (i === districts.length - 1) btn.style.marginRight = '16px';
-                    selectedDistrict = btn;
-                };
-                districtContainer.appendChild(btn);
-            });
+            document.getElementById('selected-province').textContent = selectedQuickProvince;
+            renderQuickSearchChips();
 
             const provinceList = document.getElementById('province-list');
             provinces.forEach(name => {
